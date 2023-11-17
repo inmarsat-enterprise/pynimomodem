@@ -2,9 +2,10 @@
 
 A Python implementation of the Viasat NIMO modem interface for satellite IoT.
 
-NIMO stands for **N**on-**I**P **M**odem **O**RBCOMM and represents a family
-of low cost satellite data modems that use network protocols developed by
-[ORBCOMM](www.orbcomm.com) including IsatData Pro (IDP) and OGx.
+NIMO stands for **N**on-**I**P **M**odem for **O**rbcomm waveform
+and represents a family of low cost satellite data modems that use network
+protocols developed by [ORBCOMM](www.orbcomm.com)
+including [IsatData Pro](https://www.inmarsat.com/en/solutions-services/enterprise/services/isatdata-pro.html) and its successor, OGx.
 
 These ORBCOMM protocols can operate over the Viasat L-band global network in
 cooperation with a varietry of authorized Viasat IoT service partners, and
