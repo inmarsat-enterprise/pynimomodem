@@ -1,6 +1,6 @@
 import logging
 
-from .helpers import dprint, vlog
+from .nimoutils import dprint, vlog
 
 POLYNOMIAL = 0x1021
 CRCXMODEM_SEPARATOR = '*'
