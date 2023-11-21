@@ -66,7 +66,7 @@ def test_prefix_removal(command_buffer: AtCommandBuffer):
         result = command_buffer.read_at_response(prefix)
     assert result == AtErrorCode.OK
     response = command_buffer.get_response()
-    assert prefix not in response
+    assert response and prefix not in response
 
 
 def test_crc(command_buffer: AtCommandBuffer):

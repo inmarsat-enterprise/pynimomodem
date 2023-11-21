@@ -8,6 +8,10 @@ This module provides mapping of constants used within a NIMO modem.
 from enum import Enum, IntEnum, IntFlag
 
 
+MSG_MO_MAX_SIZE = 6400
+MSG_MT_MAX_SIZE = 10000
+
+
 class AtParsingState(IntEnum):
     """"""
     ECHO = 0
