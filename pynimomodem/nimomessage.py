@@ -1,50 +1,166 @@
-class SatelliteMessage:
-    def __init__(self) -> None:
-        self.priority = None
-        self.state = None
-        self.payload = []
-        self._message_name = None
+import logging
+from .nimoconstants import MessagePriority, MessageState
+
+_log = logging.getLogger(__name__)
+
+
+class NimoMessage:
+    """A satellite message.
     
-    def set_name(self, name: str) -> bool:
-        pass
+    Attributes:
+        name (str): The message name in the modem's queue.
+        priority (MessagePriority): The priority assigned.
+        state (MessageState): The message state.
+        payload (bytes): The data content of the message.
+        codec_sin (int): The first byte of payload.
+        codec_min (int): The second byte of payload.
+        length (int): The size of the payload.
     
-    def get_name(self) -> str:
-        pass
+    """
+    def __init__(self,
+                 name: str = '',
+                 priority: MessagePriority = MessagePriority.NONE,
+                 state: MessageState = MessageState.UNAVAILABLE,
+                 length: int = 0,
+                 bytes_delivered: int = 0,
+                 payload: bytes = b'',
+                 ) -> None:
+        self._message_name: str = ''
+        if name:
+            self.name = name
+        self._priority = MessagePriority.NONE
+        if priority is not None:
+            self.priority = priority
+        self._state = MessageState.UNAVAILABLE
+        if state is not None:
+            self.state = state
+        self._length: int = 0
+        if length:
+            self.length = length
+        self._bytes_delivered: int = 0
+        if bytes_delivered:
+            self.bytes_delivered = bytes_delivered
+        self.payload: bytes = payload
     
-    def get_codec_sin(self) -> int:
-        pass
+    @property
+    def name(self) -> str:
+        return self._message_name
     
-    def get_codec_min(self) -> int:
-        pass
+    @name.setter
+    def name(self, message_name: str):
+        if not isinstance(message_name, str) or len(message_name) == 0:
+            raise ValueError('Invalid message name')
+        self._message_name = message_name
     
+    @property
+    def priority(self) -> MessagePriority:
+        return self._priority
+    
+    @priority.setter
+    def priority(self, value: MessagePriority):
+        if not MessagePriority.is_valid(value):
+            raise ValueError('Invalid MessagePriority')
+        self._priority = MessagePriority(value)
+    
+    @property
+    def state(self) -> MessageState:
+        return self._state
+    
+    @state.setter
+    def state(self, value: MessageState):
+        if not MessageState.is_valid(value):
+            raise ValueError('Invalid MessagePriority')
+        self._state = MessageState(value)
+    
+    @property
+    def codec_sin(self) -> int:
+        if self.payload and len(self.payload) > 2:
+            return int(self.payload[0])
+        return -1
+        
+    @property
+    def codec_min(self) -> int:
+        if self.payload and len(self.payload) > 2:
+            return int(self.payload[1])
+        return -1
+    
+    @property
     def length(self) -> int:
-        pass
+        if len(self.payload) > 0:
+            length = len(self.payload)
+            if self._length != length:
+                self._length = length
+        return self._length
+    
+    @length.setter
+    def length(self, value: int):
+        if not isinstance(value, int) or value <= 0:
+            raise ValueError('Invalid message length')
+        if len(self.payload) > 1 and value != len(self.payload):
+            # >1 condition allows for SIN peel-off from MT parsing
+            _log.warn('Length mismatch with payload size')
+        self._length = value
+    
+    @property
+    def bytes_delivered(self) -> int:
+        return self._bytes_delivered
+    
+    @bytes_delivered.setter
+    def bytes_delivered(self, value: int):
+        if not isinstance(value, int) or value < 0:
+            raise ValueError('Invalid bytes delivered')
+        if value > self.length:
+            _log.error('Bytes delivered mismatch with message length')
+            return
+        self._bytes_delivered = value
 
 
-class MoMessage(SatelliteMessage):
+class MoMessage(NimoMessage):
     """A Mobile-Originated Message."""
-    def set_name(self, name: str) -> bool:
-        pass
+    
 
-
-class MtMessage(SatelliteMessage):
+class MtMessage(NimoMessage):
     """A Mobile-Terminated message."""
 
 
-class SatelliteMessageState:
-    """State metadata for a message in the NIMO modem's queue."""
+class NimoMessageState:
+    """State metadata for a message in the NIMO modem's queue.
+    
+    Attributes:
+        name (str): The message name in the modem queue.
+        state (MessageState): The state of the message.
+        length (int): The size of the data payload (including codec bytes)
+        bytes_delivered (int): Progress of the message completion.
+    
+    """
     def __init__(self,
                  name: str = '',
                  state: int = 0,
                  length: int = 0,
                  bytes_delivered: int = 0) -> None:
-        self.state: int = state
+        self._message_name: str = ''
+        if name:
+            self.name = name
+        self._state: MessageState = state
         self.length: int = length
         self.bytes_delivered: int = bytes_delivered
-        self._name: str = name
     
-    def get_name(self) -> str:
-        pass
+    @property
+    def name(self) -> str:
+        return self._message_name
     
-    def set_name(self, name: str) -> bool:
-        pass
+    @name.setter
+    def name(self, message_name: str):
+        if not isinstance(message_name, str) or len(message_name) == 0:
+            raise ValueError('Invalid message name')
+        self._message_name = message_name
+    
+    @property
+    def state(self) -> MessageState:
+        return self._state
+    
+    @state.setter
+    def state(self, value: MessageState):
+        if not MessageState.is_valid(value):
+            raise ValueError('Invalid MessagePriority')
+        self._state = MessageState(value)

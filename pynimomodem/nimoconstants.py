@@ -4,16 +4,34 @@
 This module provides mapping of constants used within a NIMO modem.
 
 """
-
+# from dataclasses import dataclass
 from enum import Enum, IntEnum, IntFlag
 
 
-MSG_MO_MAX_SIZE = 6400
-MSG_MT_MAX_SIZE = 10000
+MSG_MO_MAX_SIZE = 6400      # IsatData Pro
+MSG_MT_MAX_SIZE = 10000     # IsatData Pro (non-low power)
+MSG_MO_NAME_MAX_LEN = 8     # Max characters for name in Orbcomm modems
+MSG_MO_NAME_QMAX_LEN = 12   # Max characters for name in Quectel modems
 
 
-class AtParsingState(IntEnum):
-    """"""
+class NimoIntEnum(IntEnum):
+    """IntEnum class wrapper with is_valid method."""
+    @classmethod
+    def is_valid(cls, value) -> bool:
+        """True if the value exists in the enumeration."""
+        return value in set(item.value for item in cls)
+
+
+class NimoFloatEnum(Enum):
+    """Enum class wrapper with is_valid method."""
+    @classmethod
+    def is_valid(cls, value) -> bool:
+        """True if the value exists in the enumeration."""
+        return value in set(item.value for item in cls)
+
+
+class AtParsingState(NimoIntEnum):
+    """Maps AT command response parsing states."""
     ECHO = 0
     RESPONSE = 1
     CRC = 2
@@ -21,7 +39,8 @@ class AtParsingState(IntEnum):
     ERROR = 4
 
 
-class MessagePriority(IntEnum):
+class MessagePriority(NimoIntEnum):
+    """Message priorities for NIMO modem messages."""
     NONE = 0
     HIGH = 1
     MEDH = 2
@@ -29,13 +48,15 @@ class MessagePriority(IntEnum):
     LOW = 4
 
 
-class DataFormat(IntEnum):
+class DataFormat(NimoIntEnum):
+    """Data formats used for submitting or extracting message data/payload."""
     TEXT = 1
     HEX = 2
     BASE64 = 3
 
 
-class SatelliteControlState(IntEnum):
+class SatelliteControlState(NimoIntEnum):
+    """States of the NIMO modem internal network acquisition process."""
     STOPPED = 0
     GNSS_WAIT = 1
     SEARCH_START = 2
@@ -53,7 +74,8 @@ class SatelliteControlState(IntEnum):
     CONNECT_CONFIRMED_BEAM = 14
 
 
-class BeamSearchState(IntEnum):
+class BeamSearchState(NimoIntEnum):
+    """States of the NIMO modem satellite beam internal selection process."""
     IDLE = 0
     SEARCH_ANY_TRAFFIC = 1
     SEARCH_LAST_TRAFFIC = 2
@@ -63,7 +85,8 @@ class BeamSearchState(IntEnum):
     DELAY_TRAFFIC_SEARCH = 6
 
 
-class MessageState(IntEnum):
+class MessageState(NimoIntEnum):
+    """Message states of NIMO modem messages."""
     UNAVAILABLE = 0
     RX_PENDING = 1
     RX_COMPLETE = 2
@@ -75,14 +98,9 @@ class MessageState(IntEnum):
     TX_CANCELLED = 8
 
 
-class IdpEnum(IntEnum):
-    @classmethod
-    def is_valid(cls, value: int) -> bool:
-        """True if the value exists in the enumeration."""
-        return value in [v.value for v in cls.__members__.values()]
-
-
-class AtErrorCode(IdpEnum):
+class AtErrorCode(NimoIntEnum):
+    """AT command error codes for NIMO modems."""
+    # Standard / documented
     OK = 0
     ERROR = 4
     INVALID_CRC = 100
@@ -98,12 +116,19 @@ class AtErrorCode(IdpEnum):
     RESERVED_110 = 110
     RESERVED_111 = 111
     READ_ONLY_PARAMETER = 112
-    # Extensions
+    # Extensions for additional situations
     TIMEOUT = 255
     CRC_CONFIG_MISMATCH = 254
+    UNABLE_TO_DELETE = 253
 
 
-class PowerMode(IdpEnum):
+class PowerMode(NimoIntEnum):
+    """The Power Mode setting of the NIMO modem.
+    
+    Implies various internal state machine settings for balancing power
+    consumption against speed of recovery from line of sight blockages.
+    
+    """
     MOBILE_POWERED = 0
     FIXED_POWERED = 1
     MOBILE_BATTERY = 2
@@ -154,7 +179,13 @@ class PowerMode(IdpEnum):
         return 1600 * 60
 
 
-class WakeupPeriod(IdpEnum):
+class WakeupPeriod(NimoIntEnum):
+    """The Wakeup Period setting of a NIMO modem.
+    
+    Determines how often the modem wakes up to listen briefly for potential
+    mobile-terminated messages to be delivered by the network.
+    
+    """
     SECONDS_5 = 0
     SECONDS_30 = 1
     MINUTES_1 = 2
@@ -174,7 +205,12 @@ class WakeupPeriod(IdpEnum):
         return value
 
 
-class GnssMode(IdpEnum):
+class GnssMode(NimoIntEnum):
+    """Base class for manufacturer-specific variants."""
+
+
+class GnssModeOrbcomm(GnssMode):
+    """The operating mode setting for the built-in GNSS in a NIMO modem."""
     GPS = 0
     GLONASS = 1
     BEIDOU = 2
@@ -187,21 +223,32 @@ class GnssMode(IdpEnum):
     BEIDOU_GALILEO = 15
 
 
-# Dynamic Platform Model - use with caution
-GNSS_DPM_MODES = {
-    0: 'PORTABLE',
-    2: 'STATIONARY',
-    3: 'PEDESTRIAN',
-    4: 'AUTOMOTIVE',
-    5: 'SEA',
-    6: 'AIR_1G',
-    7: 'AIR_2G',
-    8: 'AIR_4G'
-}
+class GnssModeQuectel(GnssMode):
+    GPS = 0
+    GPS_BDS = 1
+    GPS_GLONASS = 2
+    GPS_GALILEO = 3
+    GPS_GLONASS_GALILEO_BDS = 4
 
 
-class SignalLevelRegional(Enum):
-    """Qualitative descriptors for SNR/CN0 values for a IDP Regional Beam.
+class GnssDynamicPlatformModel(NimoIntEnum):
+    """The dynamic acquisition and tracking model used by the modem's GNSS.
+    
+    SUPPORTED ON SELECT MODEMS ONLY. CONSULT MANUFACTURER PRIOR TO USE.
+    
+    """
+    PORTABLE = 0
+    STATIONARY = 2
+    PEDESTRIAN = 3
+    AUTOMOTIVE = 4
+    SEA = 5
+    AIR_1G = 6
+    AIR_2G = 7
+    AIR_4G = 8
+
+
+class SignalLevelRegional(NimoFloatEnum):
+    """Qualitative descriptors for SNR/CN0 values for a NIMO Regional Beam.
     
     BARS_n: *n* is a scale from 0..5 to be used as greaterThan threshold
     NONE, MARGINAL, GOOD: a scale to be used as greaterOrEqual threshold
@@ -216,7 +263,8 @@ class SignalLevelRegional(Enum):
     INVALID = 55.0
 
 
-class SignalQuality(IntEnum):
+class SignalQuality(NimoIntEnum):
+    """Qualitative descriptor corresponding to a SignalLevel"""
     NONE = 0
     WEAK = 1
     LOW = 2
@@ -227,6 +275,7 @@ class SignalQuality(IntEnum):
 
 
 class EventNotification(IntFlag):
+    """Bitmask enumerated values for NIMO modem events."""
     GNSS_FIX_NEW = 0b000000000001
     MESSAGE_MT_RECEIVED = 0b000000000010
     MESSAGE_MO_COMPLETE = 0b000000000100
@@ -241,7 +290,8 @@ class EventNotification(IntFlag):
     NETWORK_PING_ACKNOWLEDGED = 0b100000000000
 
 
-class TransmitterStatus(IdpEnum):
+class NetworkStatus(NimoIntEnum):
+    """Simplified state of network acquisition and tracking."""
     UNKNOWN = 0
     RX_STOPPED = 1
     RX_SEARCHING = 2
@@ -253,7 +303,8 @@ class TransmitterStatus(IdpEnum):
     BLOCKED = 8
 
 
-class EventTraceClass(IdpEnum):
+class EventTraceClass(NimoIntEnum):
+    """Event Trace categories for the NIMO modem."""
     HARDWARE_FAULT = 1
     SYSTEM = 2
     SATELLITE = 3
@@ -261,11 +312,12 @@ class EventTraceClass(IdpEnum):
     MESSAGE = 5
 
 
-class EventTraceSubclass(IdpEnum):
+class EventTraceSubclass(NimoIntEnum):
     """Base class for trace subclasses"""
 
 
 class EventTraceSystem(EventTraceSubclass):
+    """Event Trace subcategories for NIMO modem System events."""
     RESET = 1
     LOW_POWER = 2
     SYSTEM_STATS = 3
@@ -273,6 +325,7 @@ class EventTraceSystem(EventTraceSubclass):
 
 
 class EventTraceSatellite(EventTraceSubclass):
+    """Event Trace subcategories for NIMO modem Satellite events."""
     RX_STATUS = 1
     TX_STATUS = 2
     BEAM_CONNECT = 3
@@ -290,11 +343,13 @@ class EventTraceSatellite(EventTraceSubclass):
 
 
 class EventTraceGnss(EventTraceSubclass):
+    """Event Trace subcategories for NIMO modem GNSS events."""
     FIX_STATS = 1
     DOPPLER = 4
 
 
 class EventTraceMessage(EventTraceSubclass):
+    """Event Trace subcategories for NIMO modem Message events."""
     RECEIVE_STATS = 1
     TRANSMIT_STATS = 2
     TRANSMIT_UTILITY = 3
@@ -372,7 +427,8 @@ EVENT_TRACES = (
 )
 
 
-class GeoBeam(IdpEnum):
+class GeoBeam(NimoIntEnum):
+    """Geographic Beam identifiers mapped to readable names."""
     GLOBAL_BB = 0
     AMER_RB1 = 1
     AMER_RB2 = 2
@@ -450,8 +506,8 @@ class GeoBeam(IdpEnum):
         return self.value
 
 
-class InmarsatSatellites(Enum):
-    """"""
+class InmarsatSatellites(NimoFloatEnum):
+    """Maps the Inmarsat/Viasat active satellites/locations supporting NIMO."""
     AMER = -98.0
     AORWSC = -54.0
     MEAS = 64.0
@@ -460,6 +516,7 @@ class InmarsatSatellites(Enum):
     
     @classmethod
     def closest(self, longitude: float, latitude: float = 0.0):
+        """Get the closest geostationary satellite to a given location."""
         satellite_list = list(map(lambda x: x.value,
                                   InmarsatSatellites._member_map_.values()))
         value = min(satellite_list, key=lambda x:abs(x-longitude))
