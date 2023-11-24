@@ -4,10 +4,8 @@ IDP modem S-register definitions useful for creating a digital twin of the modem
 Updated register map of default and configured values can be read from the modem
 using AT%SREG which returns a human-readable table.
 """
-
-
 # Tuples: (name[0], default[1], read-only[2], range[3], description[4], note[5])
-REGISTER_DEFINITIONS = [
+ORBCOMM_REGISTER_DEFINITIONS = [
     ('S0', 0, True, [0, 255], 'auto answer', 'unused'),
     ('S3', 13, False, [1, 127], 'command termination character', None),
     ('S4', 10, False, [0, 127], 'response formatting character', None),
@@ -166,7 +164,7 @@ class SRegister(object):
 class SRegisters(dict):
     """A dictionary twin of the modem's S registers."""
     def __init__(self):
-        for tup in REGISTER_DEFINITIONS:
+        for tup in ORBCOMM_REGISTER_DEFINITIONS:
             name, dflt, ro, lo_hi, desc, note = tup
             self[name] = SRegister(name,
                                    dflt,
