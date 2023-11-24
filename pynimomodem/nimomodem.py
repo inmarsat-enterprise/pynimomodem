@@ -3,13 +3,14 @@ import time
 import base64
 from dataclasses import dataclass
 from enum import IntEnum
+from threading import Event
 
 from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer, Serial
 from .nimoconstants import (
     MSG_MO_MAX_SIZE,
     AtErrorCode,
-    BeamSearchState,
-    SatelliteControlState,
+    BeamState,
+    ControlState,
     SignalLevelRegional,
     SignalQuality,
     DataFormat,
@@ -23,7 +24,7 @@ from .nimoconstants import (
 )
 from .nimomessage import MtMessage, NimoMessage, MoMessage
 from .nimoutils import iso_to_ts, vlog
-from .nmealocation import ModemLocation, get_location_from_nmea_data
+from .nmealocation import Location, get_location_from_nmea_data
 
 VLOG_TAG = 'nimomodem'
 
@@ -38,33 +39,34 @@ class Manufacturer(IntEnum):
 
 @dataclass
 class SatelliteAcquisitionDetail:
-    """"""
-    vcid: int = 0
+    """Details about the satellite acquisition state of the modem.
+    
+    Attributes:
+        ctrl_state (NimoControlState): Primary network acquisition state.
+        beam_state (NimoBeamState): Secondary beam acquistion state.
+        rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
+        vcid (int): Virtual carrier identifier for low-level sanity check.
+    
+    """
+    ctrl_state: ControlState = ControlState.STOPPED
+    beam_state: BeamState = BeamState.IDLE
     rssi: float = 0.0
-    ctrl_state: SatelliteControlState = SatelliteControlState.STOPPED
-    beam_search_state: BeamSearchState = BeamSearchState.IDLE
-
-
-@dataclass
-class MoSubmission:
-    """"""
-    success: bool = False
-    name: str = ''
+    vcid: int = 0
 
 
 @dataclass
 class ModemRegister:
-    """"""
+    """Base class for a NIMO modem S-register."""
 
 
 class NimoModemError(Exception):
-    """"""
+    """Base class for NIMO modem errors."""
 
 
 class NimoModem:
     """A class for NIMO satellite IoT modem interaction."""
     # __slots__ = ('_modem', '_mobile_id',
-    #              '_mfr_code', '_modem_booted', '_queue',
+    #              '_mfr_code', '_modem_booted', '_ready',
     #              )
     
     def __init__(self, serial: Serial) -> None:
@@ -72,7 +74,12 @@ class NimoModem:
         self._modem_booted: bool = False
         self._mobile_id: str = ''
         self._manufacturer: Manufacturer = Manufacturer.NONE
-        self._queue = None
+        self._ready = Event()
+        self._ready.set()
+    
+    @property
+    def is_ready(self) -> bool:
+        return self._ready.is_set()
     
     @property
     def crc_enabled(self) -> bool:
@@ -102,11 +109,16 @@ class NimoModem:
                              prefix: str = '',
                              timeout: int = DEFAULT_AT_TIMEOUT) -> str:
         """Send a command and return the response."""
-        self._modem.send_at_command(command)
-        err = self._modem.read_at_response(prefix, timeout)
-        if err == AtErrorCode.OK:
-            return self._modem.get_response()
-        raise NimoModemError(err)
+        self._ready.wait()
+        self._ready.clear()
+        try:
+            self._modem.send_at_command(command)
+            err = self._modem.read_at_response(prefix, timeout)
+            if err == AtErrorCode.OK:
+                return self._modem.get_response()
+            raise NimoModemError(err)
+        finally:
+            self._ready.set()
     
     def is_connected(self) -> bool:
         """Indicates if the modem is responding to a basic AT query."""
@@ -320,13 +332,24 @@ class NimoModem:
         
         """
         cmd = 'ATS90=3 S91=1 S92=1 S122? S123? S116? S101?'
+        prefix = ''
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QEVNT=3,1'
+            prefix = '+QEVNT:'
         try:
-            result_str = self._at_command_response(cmd)
-            results = [int(x) for x in result_str.split('\n')]
-            ctrl_state = SatelliteControlState(results[0])
-            beam_state = BeamSearchState(results[1])
-            rssi = float(results[2]) / 100
-            vcid = results[3]
+            result_str = self._at_command_response(cmd, prefix, timeout=10)
+            if self._mfr == Manufacturer.ORBCOMM:
+                results = [int(x) for x in result_str.split('\n')]
+                ctrl_state = ControlState(results[0])
+                beam_state = BeamState(results[1])
+                rssi = float(results[2]) / 100
+                vcid = results[3]
+            elif self._mfr == Manufacturer.QUECTEL:
+                results = [int(x) for x in result_str.split(',')]
+                ctrl_state = ControlState(results[6+22])
+                beam_state = BeamState(results[6+23])
+                rssi = float(results[6+16]) / 100
+                vcid = results[6+1]
             return SatelliteAcquisitionDetail(ctrl_state=ctrl_state,
                                               beam_search_state=beam_state,
                                               rssi=rssi,
@@ -459,9 +482,10 @@ class NimoModem:
             message_states = self.get_mo_message_states(message_name)
             if len(message_states) > 0:
                 state = message_states[0].state
-                if ((state == MessageState.TX_CANCELLED) or
-                    (self._is_simulator and state == MessageState.TX_COMPLETE)):
+                if state == MessageState.TX_CANCELLED:
                     return True
+            elif self._is_simulator:
+                return True
         except NimoModemError:
             pass
         _log.warn('Failed to cancel message %s', message_name)
@@ -562,7 +586,7 @@ class NimoModem:
             cmd = 'AT+GRMGR'
             prefix = '+GRMGR:'
         data_format = DataFormat.BASE64
-        cmd += f'"{message_name}",{data_format}'
+        cmd += f'="{message_name}",{data_format}'
         response = self._at_command_response(cmd, prefix)
         if response:
             return self._parse_mt_message(response)
@@ -646,7 +670,7 @@ class NimoModem:
                 return states[0].state
         return MessageState.UNAVAILABLE
     
-    def del_mt_message(self, message_name: str) -> int:
+    def delete_mt_message(self, message_name: str) -> bool:
         """Remove a mobile-terminated message from the modem's Rx queue."""
         cmd = 'AT%MGFM'
         if self._mfr == Manufacturer.QUECTEL:
@@ -654,8 +678,8 @@ class NimoModem:
         cmd += f'="{message_name}"'
         self._at_command_response(cmd)
         if self.get_mt_state(message_name) == MessageState.RX_RETRIEVED:
-            return AtErrorCode.OK
-        return AtErrorCode.UNABLE_TO_DELETE
+            return True
+        return False
     
     def receive_data(self, message_name: str) -> 'bytes|None':
         """Get the raw data from a mobile-terminated message."""
@@ -733,7 +757,17 @@ class NimoModem:
                       gsa: bool = True,
                       gsv: bool = False,
                       ) -> str:
-        """Get a set of NMEA data to derive a location."""
+        """Get a set of NMEA data detailing the modem's location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+            rmc (bool): Include Recommended Minimum data.
+            gga (bool): Include altitude and fix quality data.
+            gsa (bool): Include Dilution of Precision data.
+            gsv (bool): Include verbose GNSS satellite details.
+        
+        """
         cmd = 'AT%GPS'
         prefix = '%GPS:'
         if self._mfr == Manufacturer.QUECTEL:
@@ -741,7 +775,7 @@ class NimoModem:
             prefix = '+QGNSS:'
         cmd += f'={stale_secs},{wait_secs}'
         if rmc:
-            cmd += '"RMC"'
+            cmd += ',"RMC"'
         if gga:
             cmd += ',"GGA"'
         if gsa:
@@ -758,29 +792,53 @@ class NimoModem:
     
     def get_location(self,
                      stale_secs: int = 1,
-                     wait_secs: int = 35) -> ModemLocation:
-        """Get the modem's location."""
-        return get_location_from_nmea_data(self.get_nmea_data(stale_secs,
-                                                              wait_secs))
+                     wait_secs: int = 35) -> 'Location|None':
+        """Get the modem's location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+        
+        """
+        nmea_data = self.get_nmea_data(stale_secs, wait_secs)
+        if nmea_data:
+            return get_location_from_nmea_data(nmea_data)
+        return None
     
     def get_event_mask(self) -> int:
         """Get the set of monitored events that trigger event notification."""
         cmd = 'ATS88?'
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError:
+            return 0
     
     def set_event_mask(self, event_mask: int) -> bool:
         """Set monitored events that trigger event notification."""
+        max_bits = 12
+        if not isinstance(event_mask, int) or event_mask > 2**max_bits-1:
+            raise ValueError('Invalid event bitmask')
         cmd = f'ATS88={event_mask}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
     def get_events_asserted_mask(self) -> int:
         """Get the set of events that are active following a notification."""
         cmd = 'ATS89?'
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError:
+            return 0
     
-    def get_qurc_mask(self) -> int:
+    def get_qurc_ctl(self) -> int:
         """Get the event list that trigger Unsolicited Report Codes."""
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')
     
-    def set_qurc_mask(self, qurc_mask: int) -> bool:
+    def set_qurc_ctl(self, qurc_mask: int) -> bool:
         """Set the event list that trigger Unsolicited Report Codes."""
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')

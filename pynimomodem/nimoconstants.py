@@ -55,7 +55,7 @@ class DataFormat(NimoIntEnum):
     BASE64 = 3
 
 
-class SatelliteControlState(NimoIntEnum):
+class ControlState(NimoIntEnum):
     """States of the NIMO modem internal network acquisition process."""
     STOPPED = 0
     GNSS_WAIT = 1
@@ -74,7 +74,7 @@ class SatelliteControlState(NimoIntEnum):
     CONNECT_CONFIRMED_BEAM = 14
 
 
-class BeamSearchState(NimoIntEnum):
+class BeamState(NimoIntEnum):
     """States of the NIMO modem satellite beam internal selection process."""
     IDLE = 0
     SEARCH_ANY_TRAFFIC = 1
@@ -416,8 +416,8 @@ EVENT_TRACE_SATELLITE_GENERAL = EventTrace(
         }),
         ('gnss_state_timer', 'uint'),
         ('reserved21', 'uint'),
-        ('satellite_control_state', SatelliteControlState),
-        ('beam_search_state', BeamSearchState),
+        ('satellite_control_state', ControlState),
+        ('beam_search_state', BeamState),
     )
 )
 

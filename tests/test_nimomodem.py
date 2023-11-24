@@ -1,11 +1,24 @@
+import logging
 import os
-import pytest
+import time
 
+import pytest
 from serial import Serial
 
-from pynimomodem.nimomodem import NimoModem, SatelliteAcquisitionDetail, NimoMessage, MessageState, Manufacturer
+from pynimomodem.nimomodem import (
+    Location,
+    Manufacturer,
+    MessageState,
+    NimoMessage,
+    NimoModem,
+    SatelliteAcquisitionDetail,
+)
+from pynimomodem.nimoconstants import (
+    EventNotification,
+)
 
 SERIAL_PORT = os.getenv('SERIAL_PORT', '/dev/ttyUSB0')
+log = logging.getLogger(__name__)
 
 
 @pytest.fixture
@@ -120,7 +133,7 @@ def test_get_acquisition_detail(modem: NimoModem):
     detail = modem.get_acquisition_detail()
     assert isinstance(detail, SatelliteAcquisitionDetail)
     assert isinstance(detail.ctrl_state, int)
-    assert isinstance(detail.beam_search_state, int)
+    assert isinstance(detail.beam_state, int)
     assert isinstance(detail.rssi, float)
     assert isinstance(detail.vcid, int) and detail.vcid in range(0, 4096)
 
@@ -189,3 +202,182 @@ def test_send_text(modem: NimoModem):
         if len(statuses) > 0:
             if statuses[0].state >= MessageState.TX_COMPLETE:
                 complete = True
+
+
+def test_large_message(modem: NimoModem):
+    data = b'\x10'
+    for b in range(1, 5000):
+        data += b'\xff'
+    message_name = modem.send_data(data)
+    complete = False
+    while not complete:
+        statuses = modem.get_mo_message_states(message_name)
+        if len(statuses) > 0:
+            if statuses[0].state >= MessageState.TX_COMPLETE:
+                complete = True
+
+
+def test_cancel_message(modem: NimoModem):
+    data = b'\x10'
+    for b in range(1, 1000):
+        data += b'\xff'
+    message_name = modem.send_data(data)
+    cancelled = modem.cancel_mo_message(message_name)
+    assert cancelled
+
+
+def test_get_mt_states(modem: NimoModem):
+    mt_states = modem.get_mt_message_states()
+    assert isinstance(mt_states, list)
+    for mt_state in mt_states:
+        assert isinstance(mt_state, NimoMessage)
+
+
+def test_get_mt_message(modem: NimoModem):
+    mt_states = modem.get_mt_message_states()
+    assert len(mt_states) > 0
+    message_name = mt_states[0].name
+    mt_message = modem.get_mt_message(message_name)
+    assert isinstance(mt_message, NimoMessage)
+    assert mt_message.length > 0
+    assert mt_message.bytes_delivered == mt_message.length
+    assert len(mt_message.payload) == mt_message.length
+    log.info('Message RawPayload: %s', [int(b) for b in mt_message.payload])
+
+
+def test_receive_data(modem: NimoModem):
+    mt_states = modem.get_mt_message_states()
+    assert len(mt_states) > 0
+    message_name = mt_states[0].name
+    data = modem.receive_data(message_name)
+    assert isinstance(data, bytes)
+    log.info('Message RawPayload: %s', [int(b) for b in data])
+
+
+def test_delete_mt_message(modem: NimoModem):
+    mt_states = modem.get_mt_message_states()
+    assert len(mt_states) > 0
+    message_name = mt_states[0].name
+    deleted = modem.delete_mt_message(message_name)
+    assert deleted
+    mt_states = modem.get_mt_message_states()
+    assert len(mt_states) == 0
+
+
+def test_get_set_gnss_mode(modem: NimoModem):
+    test_initialize(modem)
+    gnss_mode = modem.get_gnss_mode()
+    assert isinstance(gnss_mode, int)
+    gnss_mode_new = 1 if gnss_mode == 0 else 0
+    success = modem.set_gnss_mode(gnss_mode_new)
+    gnss_mode = modem.get_gnss_mode()
+    assert success and gnss_mode == gnss_mode_new
+    test_initialize(modem)
+
+
+def test_get_set_gnss_refresh(modem: NimoModem):
+    test_initialize(modem)
+    gnss_refresh = modem.get_gnss_refresh()
+    assert isinstance(gnss_refresh, int)
+    gnss_refresh_new = 1 if gnss_refresh == 0 else 0
+    success = modem.set_gnss_refresh(gnss_refresh_new)
+    gnss_refresh = modem.get_gnss_refresh()
+    assert success and gnss_refresh == gnss_refresh_new
+    test_initialize(modem)
+
+
+def test_get_nmea_data(modem: NimoModem):
+    nmea_data = modem.get_nmea_data(gsv=True)
+    assert isinstance(nmea_data, str)
+    assert all(t in nmea_data for t in ['RMC', 'GGA', 'GSA', 'GSV'])
+    assert len(nmea_data.split('\n')) >= 4
+
+
+def test_get_location(modem: NimoModem):
+    location = modem.get_location()
+    if location is not None:
+        assert isinstance(location, Location)
+        assert location.latitude != 90.0
+        assert location.longitude != 180.0
+
+
+def test_get_set_event_mask(modem: NimoModem):
+    test_initialize(modem)
+    event_mask = modem.get_event_mask()
+    assert isinstance(event_mask, int)
+    new_mask = (EventNotification.MESSAGE_MT_RECEIVED |
+                EventNotification.MESSAGE_MO_COMPLETE |
+                EventNotification.EVENT_TRACE_CACHED)
+    success = modem.set_event_mask(new_mask)
+    assert success and modem.get_event_mask() == new_mask
+    test_initialize(modem)
+
+
+def bits_in_bitmask(n: int):
+    while n:
+        b = n & (~n+1)
+        yield b
+        n ^= b
+
+
+def test_get_events_asserted(modem: NimoModem):
+    test_initialize(modem)
+    event_mask = EventNotification.GNSS_FIX_NEW
+    modem.set_event_mask(event_mask)
+    modem.set_gnss_refresh(1)
+    time.sleep(1)
+    asserted = modem.get_events_asserted_mask()
+    assert asserted & EventNotification.GNSS_FIX_NEW
+    for bit in bits_in_bitmask(asserted):
+        log.info('Asserted: %s', EventNotification(bit).name)
+    test_initialize(modem)
+
+
+def test_get_set_qurc_ctl(modem: NimoModem):
+    test_initialize(modem)
+    if modem._mfr != Manufacturer.QUECTEL:
+        with pytest.raises(ValueError):
+            modem.get_qurc_ctl()
+    else:
+        qurc_ctl = modem.get_qurc_ctl()
+        assert isinstance(qurc_ctl, int)
+
+
+def test_get_power_mode(modem: NimoModem):
+    """"""
+
+
+def test_set_power_mode(modem: NimoModem):
+    """"""
+
+
+def test_get_wakeup_period(modem: NimoModem):
+    """"""
+
+
+def test_set_wakeup_period(modem: NimoModem):
+    """"""
+
+
+def test_powerdown(modem: NimoModem):
+    """"""
+
+
+def test_get_qwakeupway(modem: NimoModem):
+    """"""
+
+
+def test_get_qworkmode(modem: NimoModem):
+    """"""
+
+
+def test_set_qworkmode(modem: NimoModem):
+    """"""
+
+
+def test_get_deepsleep_enable(modem: NimoModem):
+    """"""
+
+
+def test_set_deepsleep_enable(modem: NimoModem):
+    """"""

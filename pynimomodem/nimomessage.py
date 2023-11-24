@@ -1,5 +1,16 @@
+"""Class and methods for managing messages submitted/retrieved to a NIMO modem.
+"""
 import logging
-from .nimoconstants import MessagePriority, MessageState
+
+from .nimoconstants import (
+    MSG_MO_NAME_MAX_LEN,
+    MSG_MO_NAME_QMAX_LEN,
+    MessagePriority,
+    MessageState,
+)
+from .nimoutils import vlog
+
+VLOG_TAG = 'nimomessage'
 
 _log = logging.getLogger(__name__)
 
@@ -86,10 +97,12 @@ class NimoMessage:
     
     @property
     def length(self) -> int:
-        if len(self.payload) > 0:
-            length = len(self.payload)
-            if self._length != length:
-                self._length = length
+        if (self._length < len(self.payload) or
+            len(self.payload) > 2 and self._length != len(self.payload)):
+            # update to actual length
+            if vlog(VLOG_TAG):
+                _log.debug('Updating message length to align with payload')
+            self._length = len(self.payload)
         return self._length
     
     @length.setter
@@ -117,10 +130,36 @@ class NimoMessage:
 
 class MoMessage(NimoMessage):
     """A Mobile-Originated Message."""
+    @property
+    def name(self) -> str:
+        return self._message_name
+    
+    @name.setter
+    def name(self, message_name: str):
+        msg_mo_name_max_len = max(MSG_MO_NAME_MAX_LEN, MSG_MO_NAME_QMAX_LEN)
+        if (not isinstance(message_name, str) or
+            not 0 < len(message_name) <= msg_mo_name_max_len):
+            raise ValueError('Invalid message name')
+        self._message_name = message_name
     
 
 class MtMessage(NimoMessage):
     """A Mobile-Terminated message."""
+    @property
+    def bytes_delivered(self) -> int:
+        if self._bytes_delivered < self.length:
+            # bytes delivered not updated during parsing - update
+            self._bytes_delivered = self.length
+        return self._bytes_delivered
+
+    @bytes_delivered.setter
+    def bytes_delivered(self, value: int):
+        if not isinstance(value, int) or value < 0:
+            raise ValueError('Invalid bytes delivered')
+        if value > self.length:
+            _log.error('Bytes delivered mismatch with message length')
+            return
+        self._bytes_delivered = value
 
 
 class NimoMessageState:

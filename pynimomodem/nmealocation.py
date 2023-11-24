@@ -9,6 +9,7 @@ from .nimoconstants import NimoIntEnum
 from .nimoutils import vlog, iso_to_ts, ts_to_iso
 
 VLOG_TAG = 'nmealocation'
+TRACE_TAG = VLOG_TAG + 'trace'
 
 _log = logging.getLogger(__name__)
 
@@ -147,17 +148,17 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
                 _log.warn('No processing required for GSV sentence')
                 return
             if nmea_type == 'GSA' and location.vdop != 99:
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Skipping redundant GSA data')
                 return
-            if vlog(VLOG_TAG):
+            if vlog(TRACE_TAG):
                 _log.debug('Processing NMEA type: %s', nmea_type)
         elif i == 1:
             if nmea_type == 'RMC':
                 cache['fix_hour'] = field_data[0:2]
                 cache['fix_min'] = field_data[2:4]
                 cache['fix_sec'] = field_data[4:6]
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Fix time %s:%s:%s', cache['fix_hour'],
                                cache['fix_min'], cache['fix_sec'])
         elif i == 2:
@@ -166,7 +167,7 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
                     _log.warn('Fix Void')
             elif nmea_type == 'GSA':
                 location.fix_type = GnssFixType(int(field_data))
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Fix type: %s', location.fix_type.name)
         elif i == 3:
             if nmea_type == 'RMC':
@@ -176,7 +177,7 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
             if nmea_type == 'RMC':
                 if field_data == 'S':
                     location.latitude *= -1
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Latitude: %.5f', location.latitude)
         elif i == 5:
             if nmea_type == 'RMC':
@@ -186,29 +187,29 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
             if nmea_type == 'RMC':
                 if field_data == 'W':
                     location.longitude *= -1
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Longitude: %.5f', location.longitude)
             elif nmea_type == 'GGA':
                 location.fix_quality = GnssFixQuality(int(field_data))
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Fix quality: %s', location.fix_quality.name)
         elif i == 7:
             if nmea_type == 'RMC':
                 location.speed = float(field_data)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Speed: %.1f', location.speed)
             elif nmea_type == 'GGA':
                 location.satellites = int(field_data)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('GNSS satellites used: %d', location.satellites)
         elif i == 8:
             if nmea_type == 'RMC':
                 location.heading = float(field_data)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Heading: %.1f', location.heading)
             elif nmea_type == 'GGA':
                 location.hdop = round(float(field_data), 1)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('HDOP: %.1f', location.heading)
         elif i == 9:
             if nmea_type == 'RMC':
@@ -216,19 +217,19 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
                 fix_month = field_data[2:4]
                 fix_yy = int(field_data[4:])
                 fix_yy += 1900 if fix_yy >= 73 else 2000
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Fix date %d-%s-%s', fix_yy, fix_month, fix_day)
                 iso_time = (f'{fix_yy}-{fix_month}-{fix_day}T'
                             f'{cache["fix_hour"]}:{cache["fix_min"]}'
                             f':{cache["fix_sec"]}Z')
                 unix_timestamp = iso_to_ts(iso_time)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Fix time ISO 8601: %s | Unix: %d',
                                iso_time, unix_timestamp)
                 location.timestamp = unix_timestamp
             elif nmea_type == 'GGA':
                 location.altitude = float(field_data)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('Altitude: %.1f', location.altitude)
         elif i == 10:
             # RMC magnetic variation - ignore
@@ -241,13 +242,13 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
         elif i == 15:   # GSA PDOP - ignore (unused)
             if nmea_type == 'GSA':
                 location.pdop = round(float(field_data), 1)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('PDOP: %d', location.pdop)
         # elif i == 16:   # GSA HDOP - ignore (use GGA)
         elif i == 17:
             if nmea_type == 'GSA':
                 location.vdop = round(float(field_data), 1)
-                if vlog(VLOG_TAG):
+                if vlog(TRACE_TAG):
                     _log.debug('VDOP: %d', location.vdop)
 
 
@@ -270,6 +271,8 @@ def get_location_from_nmea_data(nmea_sentences: 'str|list[str]') -> Location:
         nmea_sentences = nmea_sentences.split('\n')
     for nmea_sentence in nmea_sentences:
         parse_nmea_to_location(location, nmea_sentence)
+    if vlog(VLOG_TAG):
+        _log.debug('Location: %s', repr(location))
     return location
 
 
