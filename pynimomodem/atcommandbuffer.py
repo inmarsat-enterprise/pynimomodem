@@ -40,6 +40,9 @@ class AtCommandBuffer:
         self.crc: bool = False
         if not isinstance(serial, Serial):
             raise ValueError('Invalid serial port')
+        if vlog(VLOG_TAG):
+            _log.debug('Connecting to %s (%d baud)',
+                       serial.name, serial.baudrate)
         self.serial = serial
         self._char_delay: float = 8 / serial.baudrate
         self._pending_command: str = None
@@ -77,7 +80,7 @@ class AtCommandBuffer:
                 _log.debug('Read from %s: %s',
                            self.serial.name, dprint(rx_data))
             else:
-                _log.debug('No data waiting on %s', self.serial.name)
+                _log.debug('No data waiting on serial buffer')
         return rx_data
     
     def send_at_command(self, at_command: str) -> None:
@@ -101,8 +104,7 @@ class AtCommandBuffer:
             self._pending_command = apply_crc(at_command)
         self._pending_command += '\r'
         if vlog(VLOG_TAG):
-            _log.debug('Sending on %s: %s',
-                       self.serial.name, dprint(self._pending_command))
+            _log.debug('Sending on serial: %s', dprint(self._pending_command))
         self.serial.write(self._pending_command.encode())
         self.serial.flush()   # ensure it gets sent
     
@@ -217,6 +219,7 @@ class AtCommandBuffer:
             else:
                 error = AtErrorCode.TIMEOUT
         elif parsing == AtParsingState.ERROR:
+            error = AtErrorCode.ERROR
             if not self.crc and crc_found:
                 _log.warning('CRC detected but not expected - setting flag')
                 self.crc = True
