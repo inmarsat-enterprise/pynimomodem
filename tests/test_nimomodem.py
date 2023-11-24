@@ -1,3 +1,5 @@
+"""Integration tests using a physical or simulated modem connected via serial.
+"""
 import logging
 import os
 import time
@@ -5,16 +7,21 @@ import time
 import pytest
 from serial import Serial
 
+from pynimomodem.nimoconstants import (
+    AtErrorCode,
+    EventNotification,
+    PowerMode,
+    WakeupPeriod,
+    WakeupWay,
+)
 from pynimomodem.nimomodem import (
     Location,
     Manufacturer,
     MessageState,
     NimoMessage,
     NimoModem,
+    NimoModemError,
     SatelliteAcquisitionDetail,
-)
-from pynimomodem.nimoconstants import (
-    EventNotification,
 )
 
 SERIAL_PORT = os.getenv('SERIAL_PORT', '/dev/ttyUSB0')
@@ -35,12 +42,33 @@ def test_await_boot(modem: NimoModem):
 
 
 def test_get_last_error_code(modem: NimoModem):
-    last_error_code = modem.get_last_error_code()
-    assert isinstance(last_error_code, int)
+    try:
+        modem._at_command_response('AT+FAKE?')
+    except NimoModemError:
+        assert modem.get_last_error_code() == AtErrorCode.UNKNOWN_COMMAND
+    try:
+        modem._at_command_response('ATI0')
+    except NimoModemError:
+        assert modem.get_last_error_code() == AtErrorCode.ERROR
+    assert True
 
 
 def test_initialize(modem: NimoModem):
     assert modem.initialize()
+
+
+def test_baudrate(modem: NimoModem):
+    if not modem.is_connected():
+        if not modem.retry_baudrate():
+            assert False
+    assert modem.is_connected()
+    baudrate = modem.baudrate
+    baudrate_new = 115200 if baudrate != 115200 else 9600
+    modem.baudrate = baudrate_new
+    assert modem.is_connected()
+    modem.baudrate = 9600
+    assert modem.is_connected()
+    test_initialize(modem)
 
 
 def test_crc(modem: NimoModem):
@@ -275,13 +303,13 @@ def test_get_set_gnss_mode(modem: NimoModem):
     test_initialize(modem)
 
 
-def test_get_set_gnss_refresh(modem: NimoModem):
+def test_get_set_gnss_continuous(modem: NimoModem):
     test_initialize(modem)
-    gnss_refresh = modem.get_gnss_refresh()
+    gnss_refresh = modem.get_gnss_continuous()
     assert isinstance(gnss_refresh, int)
     gnss_refresh_new = 1 if gnss_refresh == 0 else 0
-    success = modem.set_gnss_refresh(gnss_refresh_new)
-    gnss_refresh = modem.get_gnss_refresh()
+    success = modem.set_gnss_continuous(gnss_refresh_new)
+    gnss_refresh = modem.get_gnss_continuous()
     assert success and gnss_refresh == gnss_refresh_new
     test_initialize(modem)
 
@@ -324,7 +352,7 @@ def test_get_events_asserted(modem: NimoModem):
     test_initialize(modem)
     event_mask = EventNotification.GNSS_FIX_NEW
     modem.set_event_mask(event_mask)
-    modem.set_gnss_refresh(1)
+    modem.set_gnss_continuous(1)
     time.sleep(1)
     asserted = modem.get_events_asserted_mask()
     assert asserted & EventNotification.GNSS_FIX_NEW
@@ -337,47 +365,55 @@ def test_get_set_qurc_ctl(modem: NimoModem):
     test_initialize(modem)
     if modem._mfr != Manufacturer.QUECTEL:
         with pytest.raises(ValueError):
-            modem.get_qurc_ctl()
+            modem.get_urc_ctl()
     else:
-        qurc_ctl = modem.get_qurc_ctl()
+        qurc_ctl = modem.get_urc_ctl()
         assert isinstance(qurc_ctl, int)
+        qurc_ctl_new = 0
+        assert modem.set_urc_ctl(qurc_ctl_new)
+        assert modem.get_urc_ctl() == qurc_ctl_new
+        test_initialize(modem)
 
 
-def test_get_power_mode(modem: NimoModem):
-    """"""
+def test_get_set_power_mode(modem: NimoModem):
+    test_initialize(modem)
+    power_mode = modem.get_power_mode()
+    assert isinstance(power_mode, PowerMode)
+    power_mode_new = PowerMode.FIXED_BATTERY
+    assert modem.set_power_mode(power_mode_new)
+    assert modem.get_power_mode() == power_mode_new
+    test_initialize(modem)
 
 
-def test_set_power_mode(modem: NimoModem):
-    """"""
-
-
-def test_get_wakeup_period(modem: NimoModem):
-    """"""
-
-
-def test_set_wakeup_period(modem: NimoModem):
-    """"""
+def test_get_set_wakeup_period_way(modem: NimoModem):
+    test_initialize(modem)
+    wakeup_period = modem.get_wakeup_period()
+    assert isinstance(wakeup_period, WakeupPeriod)
+    wakeup_period_new = WakeupPeriod.SECONDS_30
+    if modem._mfr == Manufacturer.QUECTEL:
+        wakeup_way_new = WakeupWay.UART
+        assert modem.set_wakeup_period(wakeup_period_new, wakeup_way_new)
+        assert modem.get_wakeup_way() == wakeup_way_new
+    complete = False
+    start_time = time.time()
+    while not complete and time.time() - start_time < 30:
+        if modem.get_wakeup_period() == wakeup_period_new:
+            complete = True
+            break
+        time.sleep(3)
+    assert complete
+    test_initialize(modem)
 
 
 def test_powerdown(modem: NimoModem):
-    """"""
+    assert modem.power_down()
 
 
-def test_get_qwakeupway(modem: NimoModem):
-    """"""
+def test_get_set_workmode(modem: NimoModem):
+    workmode = modem.get_workmode()
+    assert isinstance(workmode, int)
 
 
-def test_get_qworkmode(modem: NimoModem):
-    """"""
-
-
-def test_set_qworkmode(modem: NimoModem):
-    """"""
-
-
-def test_get_deepsleep_enable(modem: NimoModem):
-    """"""
-
-
-def test_set_deepsleep_enable(modem: NimoModem):
-    """"""
+def test_get_set_deepsleep_enable(modem: NimoModem):
+    ds_enabled = modem.get_deepsleep_enable()
+    assert isinstance(ds_enabled, bool)

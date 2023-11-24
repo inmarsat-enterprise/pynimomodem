@@ -7,11 +7,11 @@ This module provides mapping of constants used within a NIMO modem.
 # from dataclasses import dataclass
 from enum import Enum, IntEnum, IntFlag
 
-
 MSG_MO_MAX_SIZE = 6400      # IsatData Pro
 MSG_MT_MAX_SIZE = 10000     # IsatData Pro (non-low power)
 MSG_MO_NAME_MAX_LEN = 8     # Max characters for name in Orbcomm modems
 MSG_MO_NAME_QMAX_LEN = 12   # Max characters for name in Quectel modems
+BAUDRATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
 
 
 class NimoIntEnum(IntEnum):
@@ -186,7 +186,7 @@ class WakeupPeriod(NimoIntEnum):
     mobile-terminated messages to be delivered by the network.
     
     """
-    SECONDS_5 = 0
+    NONE = 0   # 5 seconds
     SECONDS_30 = 1
     MINUTES_1 = 2
     MINUTES_3 = 3
@@ -199,10 +199,37 @@ class WakeupPeriod(NimoIntEnum):
     MINUTES_20 = 10
 
     def seconds(self):
+        if self.name == 'NONE':
+            return 5
         value = int(self.name.split('_'))[1]
         if self.name.startswith('MINUTES'):
             return value * 60
         return value
+
+
+class WakeupWay(NimoIntEnum):
+    """Quectel CC200A-LB wakeup methods."""
+    WAKEUP_PIN = 0
+    UART = 1
+
+
+class WorkMode(NimoIntEnum):
+    """Quectel CC200A-LB working modes."""
+    WORKING = 1
+    GNSS = 2
+    PERIODIC_SLEEP = 3
+
+
+class UrcControl(IntFlag):
+    """Control bits for Quectel Unsolicited Response Codes."""
+    GNSS_FIX_NEW =              0b00000001
+    MESSAGE_MT_RECEIVED =       0b00000010
+    MESSAGE_MO_COMPLETE =       0b00000100
+    NETWORK_REGISTERED =        0b00001000
+    WAKEUP_PERIOD_CHANGE =      0b00010000
+    UTC_TIME_SYNC =             0b00100000
+    GNSS_FIX_TIMEOUT =          0b01000000
+    NETWORK_PING_ACKNOWLEDGED = 0b10000000
 
 
 class GnssMode(NimoIntEnum):
@@ -276,17 +303,17 @@ class SignalQuality(NimoIntEnum):
 
 class EventNotification(IntFlag):
     """Bitmask enumerated values for NIMO modem events."""
-    GNSS_FIX_NEW = 0b000000000001
-    MESSAGE_MT_RECEIVED = 0b000000000010
-    MESSAGE_MO_COMPLETE = 0b000000000100
-    NETWORK_REGISTERED = 0b000000001000
-    MODEM_RESET_COMPLETE = 0b000000010000
-    JAMMING_ANTENNA_CHANGE = 0b000000100000
-    MODEM_RESET_PENDING = 0b000001000000
-    WAKEUP_PERIOD_CHANGE = 0b000010000000
-    UTC_TIME_SYNC = 0b000100000000
-    GNSS_FIX_TIMEOUT = 0b001000000000
-    EVENT_TRACE_CACHED = 0b010000000000
+    GNSS_FIX_NEW =              0b000000000001
+    MESSAGE_MT_RECEIVED =       0b000000000010
+    MESSAGE_MO_COMPLETE =       0b000000000100
+    NETWORK_REGISTERED =        0b000000001000
+    MODEM_RESET_COMPLETE =      0b000000010000
+    JAMMING_ANTENNA_CHANGE =    0b000000100000
+    MODEM_RESET_PENDING =       0b000001000000
+    WAKEUP_PERIOD_CHANGE =      0b000010000000
+    UTC_TIME_SYNC =             0b000100000000
+    GNSS_FIX_TIMEOUT =          0b001000000000
+    EVENT_TRACE_CACHED =        0b010000000000
     NETWORK_PING_ACKNOWLEDGED = 0b100000000000
 
 

@@ -1,28 +1,35 @@
+"""Class for a Non-IP Modem using Orbcomm network protocols.
+"""
+import base64
 import logging
 import time
-import base64
 from dataclasses import dataclass
 from enum import IntEnum
 from threading import Event
 
 from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer, Serial
 from .nimoconstants import (
+    BAUDRATES,
     MSG_MO_MAX_SIZE,
+    MSG_MO_NAME_MAX_LEN,
+    MSG_MO_NAME_QMAX_LEN,
     AtErrorCode,
     BeamState,
     ControlState,
+    DataFormat,
+    GnssMode,
+    GnssModeOrbcomm,
+    GnssModeQuectel,
+    MessagePriority,
+    MessageState,
+    PowerMode,
     SignalLevelRegional,
     SignalQuality,
-    DataFormat,
-    MessageState,
-    MSG_MO_NAME_MAX_LEN,
-    MSG_MO_NAME_QMAX_LEN,
-    MessagePriority,
-    GnssMode, GnssModeOrbcomm, GnssModeQuectel,
-    PowerMode,
     WakeupPeriod,
+    WakeupWay,
+    WorkMode,
 )
-from .nimomessage import MtMessage, NimoMessage, MoMessage
+from .nimomessage import MoMessage, MtMessage, NimoMessage
 from .nimoutils import iso_to_ts, vlog
 from .nmealocation import Location, get_location_from_nmea_data
 
@@ -32,6 +39,7 @@ _log = logging.getLogger(__name__)
 
 
 class Manufacturer(IntEnum):
+    """Supported NIMO modem implementations."""
     NONE = 0
     ORBCOMM = 1
     QUECTEL = 2
@@ -54,11 +62,6 @@ class SatelliteAcquisitionDetail:
     vcid: int = 0
 
 
-@dataclass
-class ModemRegister:
-    """Base class for a NIMO modem S-register."""
-
-
 class NimoModemError(Exception):
     """Base class for NIMO modem errors."""
 
@@ -71,6 +74,7 @@ class NimoModem:
     
     def __init__(self, serial: Serial) -> None:
         self._modem: AtCommandBuffer = AtCommandBuffer(serial)
+        self._baudrate: int = serial.baudrate
         self._modem_booted: bool = False
         self._mobile_id: str = ''
         self._manufacturer: Manufacturer = Manufacturer.NONE
@@ -129,6 +133,27 @@ class NimoModem:
         except NimoModemError:
             self._modem_booted = False
             return False
+    
+    @property
+    def baudrate(self) -> int:
+        """The baudrate of the serial connection."""
+        return self._modem.serial.baudrate
+    
+    @baudrate.setter
+    def baudrate(self, baudrate: int):
+        """Set the baud rate of the modem and adjust the serial rate."""
+        if baudrate not in [9600, 115200]:
+            raise ValueError('Invalid baudrate')
+        self._at_command_response(f'AT+IPR={baudrate}')
+        self._modem.serial.baudrate = baudrate
+    
+    def retry_baudrate(self) -> bool:
+        """"""
+        for baud in BAUDRATES:
+            self._modem.serial.baudrate = baud
+            if self.is_connected():
+                return True
+        return False
     
     def await_boot(self, boot_timeout: int = 10) -> bool:
         """Indicates if a boot string is received within a timeout window.
@@ -230,7 +255,7 @@ class NimoModem:
         """Get the manufacturer name."""
         if not self._manufacturer:
             try:
-                mfr = self._at_command_response('AT+GMI', '+GMI:')
+                mfr = self._at_command_response('ATI')
                 if 'quectel' in mfr.lower():
                     self._manufacturer = Manufacturer.QUECTEL
                 else:
@@ -239,7 +264,8 @@ class NimoModem:
                         _log.warning('Unsupported manufacturer %s', mfr)
                     self._manufacturer = Manufacturer.ORBCOMM
                 if vlog(VLOG_TAG):
-                    _log.debug('Cached manufacturer %s', self._manufacturer)
+                    _log.debug('Caching manufacturer: %s',
+                               self._manufacturer.name)
             except NimoModemError:
                 self._manufacturer = ''
                 _log.warning('Cleared cached manufacturer')
@@ -301,9 +327,13 @@ class NimoModem:
         Also referred to as SNR or C/N0 (dB-Hz)
         
         """
+        cmd = 'ATS90=3 S91=1 S92=1 S116?'
+        prefix = ''
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QSCN'
+            prefix = '+QSCN:'
         try:
-            cmd = 'ATS90=3 S91=1 S92=1 S116?'
-            return int(self._at_command_response(cmd)) / 100
+            return int(self._at_command_response(cmd, prefix)) / 100
         except NimoModemError:
             return 0
     
@@ -345,15 +375,17 @@ class NimoModem:
                 rssi = float(results[2]) / 100
                 vcid = results[3]
             elif self._mfr == Manufacturer.QUECTEL:
+                # Workaround Quectel 20230731 documentation error says +QEVNT:
+                result_str = result_str.replace('+QEVENT:', '').strip()
                 results = [int(x) for x in result_str.split(',')]
-                ctrl_state = ControlState(results[6+22])
-                beam_state = BeamState(results[6+23])
-                rssi = float(results[6+16]) / 100
-                vcid = results[6+1]
-            return SatelliteAcquisitionDetail(ctrl_state=ctrl_state,
-                                              beam_search_state=beam_state,
-                                              rssi=rssi,
-                                              vcid=vcid)
+                # <dataCount>,<signedBitmask>,<MTID>,<timestamp>,
+                #   <class>,<subclass>,<priority>,<data0>,...
+                data0 = 7   # list index where trace data starts
+                ctrl_state = ControlState(results[data0+22])
+                beam_state = BeamState(results[data0+23])
+                rssi = float(results[data0+16]) / 100
+                vcid = results[data0+1]
+            return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
         except NimoModemError:
             return None
     
@@ -718,20 +750,23 @@ class NimoModem:
         except NimoModemError:
             return False
     
-    def get_gnss_refresh(self) -> int:
+    def get_gnss_continuous(self) -> int:
         """Get the modem's GNSS continuous refresh interval in seconds."""
         cmd = 'ATS55?'
         prefix = ''
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QGNSSCW?'
+            prefix = '+QGNSSCW:'
         try:
             return int(self._at_command_response(cmd, prefix))
         except NimoModemError:
             return 0
     
-    def set_gnss_refresh(self, refresh_interval: int) -> bool:
+    def set_gnss_continuous(self, interval: int) -> bool:
         """Set the modem's GNSS continuous refresh interval in seconds.
         
         Args:
-            refresh_interval (int): Automatic update interval 0..30 seconds.
+            interval (int): Automatic update interval 0..30 seconds.
         
         Returns:
             `True` if successful.
@@ -740,9 +775,11 @@ class NimoModem:
             `ValueError` if invalid interval is specified.
         
         """
-        if refresh_interval not in range (0, 31):
+        if interval not in range (0, 31):
             raise ValueError('Invalid GNSS refresh interval')
-        cmd = f'ATS55={refresh_interval}'
+        cmd = f'ATS55={interval}'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f'AT+QGNSSCW={interval}'
         try:
             self._at_command_response(cmd)
             return True
@@ -833,59 +870,177 @@ class NimoModem:
         except NimoModemError:
             return 0
     
-    def get_qurc_ctl(self) -> int:
+    def get_urc_ctl(self) -> int:
         """Get the event list that trigger Unsolicited Report Codes."""
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')
+        cmd = 'AT+QURCCTL?'
+        prefix = '+QURCCTL:'
+        try:
+            response = self._at_command_response(cmd, prefix)
+            return int(response, 16)
+        except NimoModemError:
+            return 0
     
-    def set_qurc_ctl(self, qurc_mask: int) -> bool:
+    def set_urc_ctl(self, qurc_mask: int) -> bool:
         """Set the event list that trigger Unsolicited Report Codes."""
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')
+        cmd = f'AT+QURCCTL=0x{qurc_mask:04X}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
     def get_power_mode(self) -> PowerMode:
         """Get the modem's power mode configuration."""
         cmd = 'ATS50?'
+        prefix = ''
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QPMD?'
+            prefix = '+QPMD:'
+        try:
+            return PowerMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return PowerMode.MOBILE_POWERED
     
     def set_power_mode(self, power_mode: PowerMode) -> bool:
         """Set the modem's power mode configuration."""
+        if not PowerMode.is_valid(power_mode):
+            raise ValueError('Invalid Power Mode')
         cmd = f'ATS50={power_mode}'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f'AT+QPMD={power_mode}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
     def get_wakeup_period(self) -> WakeupPeriod:
         """Get the modem's wakeup period configuration."""
         cmd = 'ATS51?'
+        prefix = ''
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QWKUPCFG?'
+            prefix = '+QWKUPCFG:'
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                return WakeupPeriod(int(
+                    self._at_command_response(cmd, prefix).split(',')[0]))
+            return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WakeupPeriod.NONE
     
-    def set_wakeup_period(self, wakeup_period: WakeupPeriod) -> bool:
+    def set_wakeup_period(self,
+                          wakeup_period: WakeupPeriod,
+                          wakeup_way: 'WakeupWay|None' = None,
+                          ) -> bool:
         """Set the modem's wakeup period configuration.
         
         The configuration does not update until confimed by the network.
         
         """
+        if not WakeupPeriod.is_valid(wakeup_period):
+            raise ValueError('Invalid wakeup period')
         cmd = f'ATS51={wakeup_period}'
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                if wakeup_way is None:
+                    query = self._at_command_response('AT+QWKUPCFG?', '+QWKUPCFG:')
+                    wakeup_way = WakeupWay(int(query.split(',')[1]))
+                cmd = f'AT+QWKUPCFG={wakeup_period},{wakeup_way}'
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
-    def set_powerdown(self) -> bool:
-        """Prepare the modem for power-down."""
-    
-    def get_qwakeupway(self):
+    def get_wakeup_way(self) -> WakeupWay:
         """Get the modem wakeup method."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError('Operation not supported on this modem type.')
+        try:
+            cmd = 'AT+QWKUPCFG?'
+            prefix = '+QWKUPCFG:'
+            wakeup_way = self._at_command_response(cmd, prefix).split(',')[1]
+            return WakeupWay(int(wakeup_way))
+        except NimoModemError:
+            return WakeupWay.WAKEUP_PIN
     
-    def get_qworkmode(self):
+    def power_down(self) -> bool:
+        """Prepare the modem for power-down."""
+        cmd = 'AT%OFF'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'AT+QPOWD=2'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_workmode(self) -> WorkMode:
         """Get the modem working mode."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError('Operation not supported on this modem type.')
+        cmd = 'AT+QMOD?'
+        prefix = '+QMOD:'
+        try:
+            return WorkMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WorkMode.WORKING
     
-    def set_qworkmode(self, working_mode: int) -> bool:
+    def set_workmode(self, workmode: WorkMode) -> bool:
         """Set the modem working mode."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError('Operation not supported on this modem type.')
+        if not WorkMode.is_valid(workmode):
+            raise ValueError('Invalid workmode')
+        cmd = f'AT+QMOD={workmode}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
-    def get_deepsleep_enable(self):
+    def get_deepsleep_enable(self) -> bool:
         """Get the deepsleep configuration flag."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError('Operation not supported on this modem type.')
+        cmd = 'AT+QSCLK?'
+        prefix = '+QSCLK:'
+        try:
+            return bool(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return False
     
     def set_deepsleep_enable(self, enable: bool) -> bool:
         """Set the deepsleep configuration flag."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError('Operation not supported on this modem type.')
+        try:
+            self._at_command_response(f'AT+QSCLK={int(enable)}')
+            return True
+        except NimoModemError:
+            return False
     
-    def get_register(self, s_register_number: int) -> int:
+    def get_register(self, s_register_number: int) -> 'int|None':
         """Get a modem register value."""
+        cmd = f'ATS{s_register_number}?'
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError:
+            return None
     
     def set_register(self, s_register_number: int, value: int) -> bool:
         """Set a modem register value."""
+        cmd = f'ATS{s_register_number}={value}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
     def get_all_registers(self) -> dict:
         """Get a dictionary of modem register values."""
+        raise NotImplementedError
