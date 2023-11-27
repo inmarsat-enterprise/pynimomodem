@@ -17,6 +17,7 @@ from .nimoconstants import (
     BeamState,
     ControlState,
     DataFormat,
+    GeoBeam,
     GnssMode,
     GnssModeOrbcomm,
     GnssModeQuectel,
@@ -31,7 +32,12 @@ from .nimoconstants import (
 )
 from .nimomessage import MoMessage, MtMessage, NimoMessage
 from .nimoutils import iso_to_ts, vlog
-from .nmealocation import Location, get_location_from_nmea_data
+from .nmealocation import (
+    ModemLocation,
+    SatelliteLocation,
+    get_location_from_nmea_data,
+    get_satellite_location,
+)
 
 VLOG_TAG = 'nimomodem'
 
@@ -829,18 +835,57 @@ class NimoModem:
     
     def get_location(self,
                      stale_secs: int = 1,
-                     wait_secs: int = 35) -> 'Location|None':
+                     wait_secs: int = 35) -> 'ModemLocation|None':
         """Get the modem's location.
         
         Args:
             stale_secs (int): Maximum cached fix age to use in seconds.
             wait_secs (int): Maximum duration to wait for a fix in seconds.
         
+        Returns:
+            ModemLocation object if GNSS does not time out waiting for fix.
+        
         """
         nmea_data = self.get_nmea_data(stale_secs, wait_secs)
         if nmea_data:
             return get_location_from_nmea_data(nmea_data)
         return None
+    
+    def get_satellite_location(self,
+                               modem_location: ModemLocation = None,
+                               ) -> 'SatelliteLocation|None':
+        """Get the satellite's relative position as azimuth and elevation.
+        
+        Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
+        
+        Args:
+            modem_location (ModemLocation): Optional if known to speed up
+                response.
+        
+        Returns:
+            SatelliteLocation object (azimuth, elevation) if determinable.
+        
+        """
+        geobeam = None
+        if modem_location is None:
+            modem_location = self.get_location()
+        if modem_location is not None:
+            cmd = 'ATS90=3 S91=5 S92=1 S102?'
+            prefix = ''
+            if self._mfr == Manufacturer.QUECTEL:
+                cmd = 'AT+QEVNT=3,5'
+                prefix = '+QEVNT:'
+            try:
+                response = self._at_command_response(cmd, prefix)
+                if self._mfr == Manufacturer.QUECTEL:
+                    # workaround documentation error
+                    response = response.replace('+QEVENT:', '').strip()
+                    response = response.split(',')[9]
+                geobeam = GeoBeam(int(response))
+            except NimoModemError:
+                pass
+        satellite_loc = get_satellite_location(modem_location, geobeam)
+        return satellite_loc if satellite_loc.azimuth else None
     
     def get_event_mask(self) -> int:
         """Get the set of monitored events that trigger event notification."""

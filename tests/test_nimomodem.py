@@ -15,13 +15,14 @@ from pynimomodem.nimoconstants import (
     WakeupWay,
 )
 from pynimomodem.nimomodem import (
-    Location,
+    ModemLocation,
     Manufacturer,
     MessageState,
     NimoMessage,
     NimoModem,
     NimoModemError,
     SatelliteAcquisitionDetail,
+    SatelliteLocation,
 )
 
 SERIAL_PORT = os.getenv('SERIAL_PORT', '/dev/ttyUSB0')
@@ -324,9 +325,17 @@ def test_get_nmea_data(modem: NimoModem):
 def test_get_location(modem: NimoModem):
     location = modem.get_location()
     if location is not None:
-        assert isinstance(location, Location)
+        assert isinstance(location, ModemLocation)
         assert location.latitude != 90.0
         assert location.longitude != 180.0
+
+
+def test_get_satellite_location(modem: NimoModem):
+    satellite_location = modem.get_satellite_location()
+    if satellite_location:
+        assert isinstance(satellite_location, SatelliteLocation)
+        assert satellite_location.azimuth > 0.0
+        assert satellite_location.elevation > 0.0
 
 
 def test_get_set_event_mask(modem: NimoModem):
