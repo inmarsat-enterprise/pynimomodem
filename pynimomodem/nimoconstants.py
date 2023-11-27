@@ -12,6 +12,7 @@ MSG_MT_MAX_SIZE = 10000     # IsatData Pro (non-low power)
 MSG_MO_NAME_MAX_LEN = 8     # Max characters for name in Orbcomm modems
 MSG_MO_NAME_QMAX_LEN = 12   # Max characters for name in Quectel modems
 BAUDRATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
+GEOSTATIONARY_DISTANCE_M = 35786000
 
 
 class NimoIntEnum(IntEnum):
@@ -515,10 +516,29 @@ class GeoBeam(NimoIntEnum):
     APAC_RB17 = 57
     APAC_RB18 = 58
     APAC_RB19 = 59
-    MEAS_RB10 = 90
-    MEAS_RB11 = 91
-    MEAS_RB12 = 92
-    MEAS_RB15 = 93
+    # MEAS_RB10 = 90   # replaced by IOE
+    # MEAS_RB11 = 91   # replaced by IOE
+    # MEAS_RB12 = 92   # replaced by IOE
+    # MEAS_RB15 = 93   # replaced by IOE
+    IOE_RB1 = 101
+    IOE_RB2 = 102
+    IOE_RB3 = 103
+    IOE_RB4 = 104
+    IOE_RB5 = 105
+    IOE_RB6 = 106
+    IOE_RB7 = 107
+    IOE_RB8 = 108
+    IOE_RB9 = 109
+    IOE_RB10 = 110
+    IOE_RB11 = 111
+    IOE_RB12 = 112
+    IOE_RB13 = 113
+    IOE_RB14 = 114
+    IOE_RB15 = 115
+    IOE_RB16 = 116
+    IOE_RB17 = 117
+    IOE_RB18 = 118
+    IOE_RB19 = 119
 
     @property
     def satellite(self):
@@ -533,37 +553,10 @@ class GeoBeam(NimoIntEnum):
         return self.value
 
 
-class InmarsatSatellites(NimoFloatEnum):
-    """Maps the Inmarsat/Viasat active satellites/locations supporting NIMO."""
-    AMER = -98.0
-    AORWSC = -54.0
-    MEAS = 64.0
-    APAC = 143.5
-    EMEA = 24.9
-    
-    @classmethod
-    def closest(self, longitude: float, latitude: float = 0.0):
-        """Get the closest geostationary satellite to a given location."""
-        satellite_list = list(map(lambda x: x.value,
-                                  InmarsatSatellites._member_map_.values()))
-        value = min(satellite_list, key=lambda x:abs(x-longitude))
-        name = InmarsatSatellites(value).name
-        if name == 'AORWSC':   #: regional beam
-            if latitude >= 15.0 or latitude <= -45.0:
-                if longitude >= -27.0:
-                    return 'EMEA'
-                return 'AMER'
-        elif name == 'MEAS':   #: not all beams lit
-            if latitude <= -4.5:
-                if longitude >= 63.5:
-                    return 'APAC'
-                return 'EMEA'
-            elif latitude >= 40.9:
-                if longitude <= 45.0:
-                    return 'EMEA'
-                if longitude >= 82.5:
-                    return 'APAC'
-            elif longitude >= 63.5:
-                if latitude <= -4.0 or latitude >= 30.0:
-                    return 'APAC'
-        return name
+class GeoSatellite(NimoFloatEnum):
+    """Maps the Viasat/Inmarsat geostationary longitude supporting NIMO."""
+    AMER = -98.0   # Inmarsat 4F3
+    AORWSC = -54.0   # Inmarsat 3F5
+    EMEA = 24.9   # Inmarsat 4AF4 aka Alphasat XL
+    IOE = 63.5   # Inmarsat 6F1 previously IOR 3F1, MEAS 4F2
+    APAC = 143.5   # Inmarsat 4F2 previously 4F1
