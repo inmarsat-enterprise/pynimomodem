@@ -77,8 +77,7 @@ class AtCommandBuffer:
                 break
         if vlog(VLOG_TAG):
             if rx_data:
-                _log.debug('Read from %s: %s',
-                           self.serial.name, dprint(rx_data))
+                _log.debug('Read from serial: %s', dprint(rx_data))
             else:
                 _log.debug('No data waiting on serial buffer')
         return rx_data
@@ -96,6 +95,8 @@ class AtCommandBuffer:
             _log.debug('Waiting for prior command completion')
         self.ready.wait()
         self.ready.clear()
+        if 'ATS80?' in at_command:
+            _log.debug('Somebody is querying error state!')
         dump_buffer = self.read_rx_buffer()
         if dump_buffer:
             _log.warning('Dumping RX buffer: %s', dprint(dump_buffer))
@@ -237,19 +238,25 @@ class AtCommandBuffer:
                 else:
                     _log.warning('CRC expected but not found - reset flag')
                     self.crc = False
-            if vlog(VLOG_TAG):
-                _log.debug('Removing result code')
             to_remove = VRES_OK if self.verbose else RES_OK
             self._rx_buffer = self._rx_buffer.replace(to_remove, '')
+            if vlog(VLOG_TAG):
+                _log.debug('Removed result code (%s): %s',
+                           dprint(to_remove), dprint(self._rx_buffer))
             if prefix:
-                if vlog(VLOG_TAG):
-                    _log.debug('Removing prefix: %s', prefix)
                 self._rx_buffer = self._rx_buffer.replace(prefix, '', 1)
+                if vlog(VLOG_TAG):
+                    _log.debug('Removed prefix (%s): %s',
+                               dprint(prefix), dprint(self._rx_buffer))
             self._rx_buffer = self._rx_buffer.strip()
             if vlog(VLOG_TAG):
-                _log.debug('Consolidating line feeds')
+                _log.debug('Trimmed leading/trailing whitespace: %s',
+                           dprint(self._rx_buffer))
             self._rx_buffer = self._rx_buffer.replace('\r\n', '\n')
             self._rx_buffer = self._rx_buffer.replace('\n\n', '\n')
+            if vlog(VLOG_TAG):
+                _log.debug('Consolidated line feeds: %s',
+                           dprint(self._rx_buffer))
         # cleanup
         self._pending_command = ''
         self.ready.set()
@@ -304,10 +311,15 @@ class AtCommandBuffer:
     
     def _parsing_short(self, current: AtParsingState = None) -> AtParsingState:
         """Internal helper for parsing short code responses."""
+        if vlog(VLOG_TAG):
+            _log.debug('Check short response for: %s', dprint(self._rx_buffer))
+        if (not self._rx_buffer.endswith((RES_OK, RES_ERR)) or
+            (self.verbose and self._rx_buffer.startswith('\r\n'))):
+            # just reading too fast, wait for next character
+            return current
+        if self.verbose:
+            _log.warning('Clearing verbose flag due to short response match')
+            self.verbose = False
         if self._rx_buffer.endswith(RES_OK):
-            self.verbose = False
             return self._parsing_ok()
-        elif self._rx_buffer.endswith(RES_ERR):
-            self.verbose = False
-            return self._parsing_error()
-        return current
+        return self._parsing_error()
