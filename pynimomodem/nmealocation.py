@@ -1,12 +1,25 @@
-"""Utilities for validating and parsing NMEA-0183 data into a `Location` object.
+"""Classes and methods for location, elevation and azimuth for NIMO modems.
+
+* Parse NMEA-0183 data into a `Location` object.
+* Calculate azimuth and elevation to a geostationary satellite.
+
+Thanks for Azimuth/Elevation derived from code at:
+https://github.com/sq3tle/altazrange/tree/master
+
 """
-import logging
 import json
+import logging
+import math
 from copy import deepcopy
 from dataclasses import dataclass
 
-from .nimoconstants import NimoIntEnum
-from .nimoutils import vlog, iso_to_ts, ts_to_iso
+from .nimoconstants import (
+    GEOSTATIONARY_DISTANCE_M,
+    GeoBeam,
+    GeoSatellite,
+    NimoIntEnum,
+)
+from .nimoutils import iso_to_ts, ts_to_iso, vlog
 
 VLOG_TAG = 'nmealocation'
 TRACE_TAG = VLOG_TAG + 'trace'
@@ -15,12 +28,14 @@ _log = logging.getLogger(__name__)
 
 
 class GnssFixType(NimoIntEnum):
+    """Enumerated fix type from NMEA-0183 standard."""
     NONE = 1
     D2 = 2
     D3 = 3
 
 
 class GnssFixQuality(NimoIntEnum):
+    """Enumerated fix quality from NMEA-0183 standard."""
     INVALID = 0
     GPS_SPS = 1
     DGPS = 2
@@ -48,7 +63,7 @@ class GnssSatelliteInfo(object):
     snr: int
 
 
-class Location:
+class ModemLocation:
     """A set of location-based information derived from the modem's NMEA data.
     
     Uses 90.0/180.0 if latitude/longitude are unknown
@@ -115,6 +130,28 @@ class Location:
         return json.dumps(obj, skipkeys=True)
 
 
+@dataclass
+class SatelliteLocation:
+    """Represents a geostationary satellite location relative to a modem."""
+    latitude: float = 0.0
+    longitude: float = 180.0
+    altitude: float = GEOSTATIONARY_DISTANCE_M
+    azimuth: float = 0.0
+    elevation: float = 0.0
+
+
+@dataclass
+class _PointLocation:
+    """Location used for spherical coordinates (for azimuth/elevation)."""
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    radius: float = 0.0
+    nx: float = 0.0
+    ny: float = 0.0
+    nz: float = 0.0
+
+
 def validate_nmea(nmea_sentence: str) -> bool:
     """Validates a given NMEA-0183 sentence with CRC.
     
@@ -132,7 +169,7 @@ def validate_nmea(nmea_sentence: str) -> bool:
     return candidate == crc
 
 
-def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
+def parse_nmea_to_location(location: ModemLocation, nmea_sentence: str) -> None:
     """Parses a NMEA-0183 sentence to update a ModemLocation."""
     if vlog(VLOG_TAG):
         _log.debug('Parsing NMEA: %s', nmea_sentence)
@@ -252,29 +289,171 @@ def parse_nmea_to_location(location: Location, nmea_sentence: str) -> None:
                     _log.debug('VDOP: %d', location.vdop)
 
 
-def get_location_from_nmea_data(nmea_sentences: 'str|list[str]') -> Location:
+def get_location_from_nmea_data(nmea_data: 'str|list[str]') -> ModemLocation:
     """Derives a ModemLocation from a set of NMEA-0183 sentences.
     
     Args:
-        nmea_sentences (str): A set of NMEA-0183 sentences separated by `\n` or
-            a list of sentences.
+        nmea_data (str): A set of NMEA-0183 sentences separated by `\n` or
+            a `list` of NMEA sentences.
     
     Returns:
         `Location` object.
     
     """
-    location = Location()
-    if isinstance(nmea_sentences, list):
-            if not all(isinstance(x, str) for x in nmea_sentences):
+    location = ModemLocation()
+    if isinstance(nmea_data, list):
+            if not all(isinstance(x, str) for x in nmea_data):
                 raise ValueError('Invalid NMEA sentence list')
-    elif isinstance(nmea_sentences, str):
-        nmea_sentences = nmea_sentences.split('\n')
-    for nmea_sentence in nmea_sentences:
+    elif isinstance(nmea_data, str):
+        nmea_data = nmea_data.split('\n')
+    for nmea_sentence in nmea_data:
         parse_nmea_to_location(location, nmea_sentence)
     if vlog(VLOG_TAG):
         _log.debug('Location: %s', repr(location))
     return location
 
+
+def get_closest_satellite(latitude: float, longitude: float) -> GeoSatellite:
+    """Get the closest geostationary satellite to a given location."""
+    satellites = list(map(lambda x: x.value,GeoSatellite._member_map_.values()))
+    closest = GeoSatellite(min(satellites, key=lambda x:abs(x-longitude)))
+    if closest == GeoSatellite.AORWSC:   #: single regional beam only
+        if latitude >= 15.0 or latitude <= -45.0:
+            if longitude >= -27.0:
+                return GeoSatellite.EMEA
+            return GeoSatellite.AMER
+    # elif closest == GeoSatellite.MEAS:   #: not all beams lit
+    #     if latitude <= -4.5:
+    #         if longitude >= 63.5:
+    #             return GeoSatellite.APAC
+    #         return GeoSatellite.EMEA
+    #     elif latitude >= 40.9:
+    #         if longitude <= 45.0:
+    #             return GeoSatellite.EMEA
+    #         if longitude >= 82.5:
+    #             return GeoSatellite.APAC
+    #     elif longitude >= 63.5:
+    #         if latitude <= -4.0 or latitude >= 30.0:
+    #             return GeoSatellite.APAC
+    return closest
+
+
+def get_satellite_location(modem_location: ModemLocation,
+                           geobeam: 'GeoBeam|None' = None,
+                           ) -> SatelliteLocation:
+    """Derives the azimuth and elevation of the nearest satellite.
+    
+    If not provided the current GeoBeam, derives the closest satellite from
+    the location provided.
+    
+    Args:
+        modem_location (ModemLocation): The modem's Location object.
+        geobeam (GeoBeam): The GeoBeam, if known. If `None` it will be
+            assumed from fixed locations of satellites.
+    
+    Returns:
+        `SatelliteLocation` including azimuth, elevation from the modem.
+    
+    """
+    # internal helper functions
+    def location_to_point(latitude: float,
+                        longitude: float,
+                        altitude: float,
+                        ) -> _PointLocation:
+        """Converts lat/lon/alt to point location."""
+        lat_rad = latitude * math.pi / 180.0
+        lon_rad = longitude * math.pi / 180.0
+        radius = get_geographic_radius(lat_rad)
+        clat = get_geocentric_latitude(lat_rad)
+        cos_lon = math.cos(lon_rad)
+        sin_lon = math.sin(lon_rad)
+        cos_lat = math.cos(clat)
+        sin_lat = math.sin(clat)
+        x = radius * cos_lon * cos_lat
+        y = radius * sin_lon * cos_lat
+        z = radius * sin_lat
+        cos_glat = math.cos(lat_rad)
+        sin_glat = math.sin(lat_rad)
+        nx = cos_glat * cos_lon
+        ny = cos_glat * sin_lon
+        nz = sin_glat
+        x += altitude * nx
+        y += altitude * ny
+        z += altitude * nz
+        return _PointLocation(x, y, z, radius, nx, ny, nz)
+
+    def get_geographic_radius(lat_rad: float) -> float:
+        """Adjust radius for earth shape."""
+        equatorial = 6378137.0
+        polar = 6356752.3
+        cos = math.cos(lat_rad)
+        sin = math.sin(lat_rad)
+        t1 = equatorial**2 * cos
+        t2 = polar**2 * sin
+        t3 = equatorial * cos
+        t4 = polar * sin
+        return math.sqrt((t1 * t1 + t2 * t2) / (t3 * t3 + t4 * t4))
+
+    def get_geocentric_latitude(lat_rad: float) -> float:
+        """Derives the geocentric latitude."""
+        e2 = 0.00669437999014   # first eccentricity squared, constant
+        clat = math.atan((1.0 - e2) * math.tan(lat_rad))
+        return clat
+
+    def rotate_globe(b: SatelliteLocation, a: ModemLocation, b_radius: float):
+        """Rotate the globe for vector alignment."""
+        brp = location_to_point(b.latitude, b.longitude - a.longitude, b.altitude)
+        alat = get_geocentric_latitude(-a.latitude * math.pi / 180.0)
+        acos = math.cos(alat)
+        asin = math.sin(alat)
+        bx = (brp.x * acos) - (brp.z * asin)
+        by = brp.y
+        bz = (brp.x * asin) + (brp.z * acos)
+        return _PointLocation(bx, by, bz, b_radius, 0.0, 0.0, 0.0)
+
+    def normalize_vector(b: _PointLocation, a: _PointLocation):
+        """Normalize the difference between vectors."""
+        dx = b.x - a.x
+        dy = b.y - a.y
+        dz = b.z - a.z
+        dist2 = dx**2 + dy**2 +dz**2
+        if dist2 == 0:
+            return None
+        dist = math.sqrt(dist2)
+        return _PointLocation(dx/dist, dy/dist, dz/dist, 1.0, 0.0, 0.0, 0.0)
+
+    azimuth = None
+    elevation = None
+    if isinstance(geobeam, GeoBeam):
+        satellite_name = geobeam.name.split('_')[0]
+        satellite = GeoSatellite[satellite_name]
+    else:
+        satellite = get_closest_satellite(modem_location.latitude,
+                                          modem_location.longitude)
+    # modem and satellite Cartesian location
+    mc = modem_location
+    sc = SatelliteLocation(latitude=0.0, longitude=satellite.value, 
+                           altitude=GEOSTATIONARY_DISTANCE_M)
+    # modem and satellite Point location
+    mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
+    sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
+    ref_point = rotate_globe(sc, mc, sp.radius)
+    if ref_point.z**2 + ref_point.y**2 > 1.0e-6:
+        theta = math.atan2(ref_point.z, ref_point.y) * 180.0 / math.pi
+        azimuth = 90.0 - theta
+        if azimuth < 0.0:
+            azimuth += 360.0
+        if azimuth > 360.0:
+            azimuth -= 360.0
+        bma = normalize_vector(sp, mp)   # Bayesian model averaging
+        if isinstance(bma, _PointLocation):
+            elevation = (90.0 - (180.0 / math.pi) * math.acos(
+                bma.x * mp.nx + bma.y * mp.ny + bma.z * mp.nz))
+    sc.azimuth = round(azimuth, 1)
+    sc.elevation = round(elevation, 1)
+    return sc
+
+# Below is parked for potential future use
 
 # def _parse_gsv_to_location(location: Location, gsv_sentence: str) -> None:
 #     """Returns a Location object based on an NMEA sentences data set.
