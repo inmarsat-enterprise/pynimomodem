@@ -25,6 +25,13 @@ Example NIMO modems available:
 > Obsoletes/replaces the Inmarsat `idpmodem` project, when combined with the
 > [`pynimcodec`](github.com/inmarsat-enterprise/pynimcodec) library.
 
+## Installation
+
+Example using pip, on a Linux-based platform including `PySerial` dependency:
+```
+pip install 'pynimomodem[pyserial]'
+```
+
 ## Background
 
 ### Overview
