@@ -8,9 +8,10 @@ import logging
 import threading
 import time
 
+from serial import Serial
+
 from .constants import AtErrorCode, AtParsingState
 from .crcxmodem import apply_crc, validate_crc
-from .nimoserial import Serial
 from .nimoutils import dprint, vlog
 
 VLOG_TAG = 'atcommand'

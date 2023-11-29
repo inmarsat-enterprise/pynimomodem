@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>pynimomodem API documentation</title>
-<meta name="description" content="Library to interface with a Viasat-approved NIMO modem for satellite IoT." />
+<meta name="description" content="Library to interface with a Viasat-approved NIMO modem for satellite IoT …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,11 +23,16 @@
 </header>
 <section id="section-intro">
 <p>Library to interface with a Viasat-approved NIMO modem for satellite IoT.</p>
+<p>Depends on either Python/PySerial or Micropython/machine library.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;Library to interface with a Viasat-approved NIMO modem for satellite IoT.&#34;&#34;&#34;
+<pre><code class="python">&#34;&#34;&#34;Library to interface with a Viasat-approved NIMO modem for satellite IoT.
+
+Depends on either Python/PySerial or Micropython/machine library.
+
+&#34;&#34;&#34;
 
 from .constants import (
     EventNotification,
@@ -102,10 +107,6 @@ __all__ = [
 <dt><code class="name"><a title="pynimomodem.modem" href="modem.html">pynimomodem.modem</a></code></dt>
 <dd>
 <div class="desc"><p>Class for a Non-IP Modem using Orbcomm network protocols …</p></div>
-</dd>
-<dt><code class="name"><a title="pynimomodem.nimoserial" href="nimoserial.html">pynimomodem.nimoserial</a></code></dt>
-<dd>
-<div class="desc"><p>Adapter for PySerial methods to Micropython machine.UART methods …</p></div>
 </dd>
 <dt><code class="name"><a title="pynimomodem.nimoutils" href="nimoutils.html">pynimomodem.nimoutils</a></code></dt>
 <dd>
@@ -700,7 +701,7 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         
         &#34;&#34;&#34;
         try:
-            self._serial = Serial(serial_port, kwargs.get(&#39;baudrate&#39;, 9600))
+            self._serial = Serial(serial_port, **kwargs)
         except Exception as exc:
             raise NimoModemError(&#39;Unable to connect to modem&#39;) from exc
         self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
@@ -4088,7 +4089,6 @@ mobile-terminated messages to be delivered by the network.</p></div>
 <li><code><a title="pynimomodem.location" href="location.html">pynimomodem.location</a></code></li>
 <li><code><a title="pynimomodem.message" href="message.html">pynimomodem.message</a></code></li>
 <li><code><a title="pynimomodem.modem" href="modem.html">pynimomodem.modem</a></code></li>
-<li><code><a title="pynimomodem.nimoserial" href="nimoserial.html">pynimomodem.nimoserial</a></code></li>
 <li><code><a title="pynimomodem.nimoutils" href="nimoutils.html">pynimomodem.nimoutils</a></code></li>
 <li><code><a title="pynimomodem.s_registers" href="s_registers.html">pynimomodem.s_registers</a></code></li>
 </ul>

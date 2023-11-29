@@ -29,7 +29,7 @@ Example NIMO modems available:
 
 Example using pip, on a Linux-based platform including `PySerial` dependency:
 ```
-pip install 'pynimomodem[pyserial]'
+pip install 'pynimomodem'
 ```
 
 ## Background

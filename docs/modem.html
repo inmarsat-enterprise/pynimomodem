@@ -54,6 +54,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from threading import Event
 
+from serial import Serial
+
 from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer
 from .constants import (
     BAUDRATES,
@@ -85,7 +87,6 @@ from .location import (
     get_satellite_location,
 )
 from .message import MoMessage, MtMessage, NimoMessage
-from .nimoserial import Serial
 from .nimoutils import iso_to_ts, vlog
 
 VLOG_TAG = &#39;nimomodem&#39;
@@ -144,7 +145,7 @@ class NimoModem:
         
         &#34;&#34;&#34;
         try:
-            self._serial = Serial(serial_port, kwargs.get(&#39;baudrate&#39;, 9600))
+            self._serial = Serial(serial_port, **kwargs)
         except Exception as exc:
             raise NimoModemError(&#39;Unable to connect to modem&#39;) from exc
         self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
@@ -1281,7 +1282,7 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         
         &#34;&#34;&#34;
         try:
-            self._serial = Serial(serial_port, kwargs.get(&#39;baudrate&#39;, 9600))
+            self._serial = Serial(serial_port, **kwargs)
         except Exception as exc:
             raise NimoModemError(&#39;Unable to connect to modem&#39;) from exc
         self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)

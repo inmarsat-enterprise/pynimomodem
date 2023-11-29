@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pynimomodem"
-version = "0.2.0"
+version = "0.3.0"
 description = "A Python implementation of Viasat's NIMO modem interface project."
 authors = ["geoffbrucepayne <geoff.bruce-payne@inmarsat.com>"]
 license = "Apache2.0"
@@ -10,10 +10,7 @@ keywords = ["viasat", "inmarsat", "satellite", "iot", "idp", "ogx", "orbcomm"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pyserial = { version = "^3.5", optional = true }
-
-[tool.poetry.extras]
-pyserial = ["pyserial"]
+pyserial = "^3.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"

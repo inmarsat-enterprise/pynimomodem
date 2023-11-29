@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from threading import Event
 
+from serial import Serial
+
 from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer
 from .constants import (
     BAUDRATES,
@@ -48,7 +50,6 @@ from .location import (
     get_satellite_location,
 )
 from .message import MoMessage, MtMessage, NimoMessage
-from .nimoserial import Serial
 from .nimoutils import iso_to_ts, vlog
 
 VLOG_TAG = 'nimomodem'
