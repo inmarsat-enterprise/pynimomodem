@@ -12,6 +12,9 @@ pyserial = "^3.5"
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.3"
 pylint = "^3.0.2"
+micropython-rp2-pico_w-stubs = "^1.20.0"
+gpiozero = "^2.0"
+pigpio = "^1.78"
 
 [tool.pytest.ini_options]
 log_cli = true

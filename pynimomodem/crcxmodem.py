@@ -1,3 +1,4 @@
+"""Implementation of CCIT-16-CRC for use with NIMO modems."""
 import logging
 
 from .nimoutils import dprint, vlog

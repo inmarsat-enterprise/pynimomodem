@@ -13,7 +13,7 @@ import math
 from copy import deepcopy
 from dataclasses import dataclass
 
-from .nimoconstants import (
+from .constants import (
     GEOSTATIONARY_DISTANCE_M,
     GeoBeam,
     GeoSatellite,
@@ -133,6 +133,7 @@ class ModemLocation:
 @dataclass
 class SatelliteLocation:
     """Represents a geostationary satellite location relative to a modem."""
+    name: str = ''
     latitude: float = 0.0
     longitude: float = 180.0
     altitude: float = GEOSTATIONARY_DISTANCE_M
@@ -432,7 +433,8 @@ def get_satellite_location(modem_location: ModemLocation,
                                           modem_location.longitude)
     # modem and satellite Cartesian location
     mc = modem_location
-    sc = SatelliteLocation(latitude=0.0, longitude=satellite.value, 
+    sc = SatelliteLocation(name=satellite.name,
+                           longitude=satellite.value, 
                            altitude=GEOSTATIONARY_DISTANCE_M)
     # modem and satellite Point location
     mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)

@@ -4,11 +4,10 @@ import logging
 import threading
 import time
 
-from serial import Serial
-
+from .constants import AtErrorCode, AtParsingState
 from .crcxmodem import apply_crc, validate_crc
+from .nimoserial import Serial
 from .nimoutils import dprint, vlog
-from .nimoconstants import AtErrorCode, AtParsingState
 
 VLOG_TAG = 'atcommand'
 DEFAULT_AT_TIMEOUT = 3   # seconds
@@ -72,7 +71,7 @@ class AtCommandBuffer:
         start_time = time.time()
         while (time.time() - start_time < timeout or timeout == 0):
             while (self.serial.in_waiting > 0):
-                rx_data += self.serial.read().decode()
+                rx_data += self._read()
             if timeout == 0 or rx_data.endswith(read_until):
                 break
         if vlog(VLOG_TAG):
@@ -152,7 +151,7 @@ class AtCommandBuffer:
                     self._rx_buffer += peeked
                     peeked = ''
                 else:
-                    self._rx_buffer += self.serial.read().decode()
+                    self._rx_buffer += self._read()
                 last = self._rx_buffer[-1]
                 if last == '\n':
                     if self._rx_buffer.endswith(VRES_OK):
@@ -191,7 +190,7 @@ class AtCommandBuffer:
                         if self.serial.in_waiting == 0:
                             parsing = self._parsing_short(parsing)
                         else:
-                            peeked = self.serial.read().decode()
+                            peeked = self._read()
                             if peeked == '*':
                                 parsing = self._parsing_short()
                         if old_parsing != parsing:
@@ -268,31 +267,39 @@ class AtCommandBuffer:
         self._rx_buffer = ''
         return response
     
-    def get_urc(self) -> 'int|None':
+    def get_urc(self, prefix: str, read_until: str = '\r\n') -> 'int|None':
         """Get the (next) Unsolicited Response Code if present.
         
         Returns:
             An integer code if present, or `None`.
         
         """
+        if not isinstance(prefix, str) or not prefix:
+            raise ValueError('Invalid URC prefix')
         if vlog(VLOG_TAG) and not self.ready.is_set():
             _log.debug('Waiting for prior command/response completion')
         self.ready.wait()
         self.ready.clear()
         urc = None
         urc_buffer: str = ''
-        prefix = '+QURC:'
         while self.serial.in_waiting > 0:
-            urc_buffer += self.serial.read().decode()
-            last = urc_buffer[-1]
-            if last == '\n':
-                if urc_buffer.strip().startswith(prefix):
-                    urc = int(urc_buffer.replace(prefix, '').strip())
-                    break
+            urc_buffer += self._read()
+            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
+                urc = int(urc_buffer.replace(prefix, '').strip())
+                break
         if vlog(VLOG_TAG) and urc is not None:
             _log.debug('Found URC: %d', urc)
         self.ready.set()
         return urc
+    
+    def _read(self) -> str:
+        """Read an ASCII character or generate a warning."""
+        char = self.serial.read()
+        try:
+            return char.decode()
+        except UnicodeDecodeError as exc:
+            _log.error('Unable to decode [%d] (%s)', char, exc)
+            return ''
     
     def _parsing_ok(self) -> AtParsingState:
         """Internal helper for parsing valid response."""

@@ -1,3 +1,5 @@
+"""Various utilities/helpers for NIMO modem interaction and debugging.
+"""
 import os
 from datetime import datetime, timezone
 

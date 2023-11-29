@@ -5,16 +5,15 @@ import os
 import time
 
 import pytest
-from serial import Serial
 
-from pynimomodem.nimoconstants import (
+from pynimomodem.constants import (
     AtErrorCode,
     EventNotification,
     PowerMode,
     WakeupPeriod,
     WakeupWay,
 )
-from pynimomodem.nimomodem import (
+from pynimomodem.modem import (
     ModemLocation,
     Manufacturer,
     MessageState,
@@ -31,7 +30,7 @@ log = logging.getLogger(__name__)
 
 @pytest.fixture
 def modem() -> NimoModem:
-    return NimoModem(Serial(SERIAL_PORT))
+    return NimoModem(SERIAL_PORT)
 
 
 def test_is_connected(modem: NimoModem):
@@ -255,7 +254,7 @@ def test_cancel_message(modem: NimoModem):
     assert cancelled
 
 
-def test_get_mt_states(modem: NimoModem):
+def test_get_mt_message_states(modem: NimoModem):
     mt_states = modem.get_mt_message_states()
     assert isinstance(mt_states, list)
     for mt_state in mt_states:

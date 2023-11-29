@@ -231,6 +231,23 @@ class UrcControl(IntFlag):
     UTC_TIME_SYNC =             0b00100000
     GNSS_FIX_TIMEOUT =          0b01000000
     NETWORK_PING_ACKNOWLEDGED = 0b10000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -> 'list[EventNotification]':
+        """Parses a bitmask to return a list of events."""
+        return [item for item in cls if item.value & event_mask]
+
+
+class UrcCode(NimoIntEnum):
+    """Quectel URC code map."""
+    GPS_FIX = 0
+    RX_END = 1
+    TX_END = 2
+    REGED = 3
+    ITV_CHG = 4
+    TIME_UPD = 5
+    GPS_TMO = 6
+    PLG_RESP = 7
 
 
 class GnssMode(NimoIntEnum):
@@ -316,6 +333,11 @@ class EventNotification(IntFlag):
     GNSS_FIX_TIMEOUT =          0b001000000000
     EVENT_TRACE_CACHED =        0b010000000000
     NETWORK_PING_ACKNOWLEDGED = 0b100000000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -> 'list[EventNotification]':
+        """Parses a bitmask to return a list of events."""
+        return [item for item in cls if item.value & event_mask]
 
 
 class NetworkStatus(NimoIntEnum):

@@ -1,5 +1,5 @@
-from pynimomodem.nimoconstants import GeoBeam, GeoSatellite
-from pynimomodem.nmealocation import (
+from pynimomodem.constants import GeoBeam, GeoSatellite
+from pynimomodem.location import (
     ModemLocation,
     SatelliteLocation,
     get_closest_satellite,

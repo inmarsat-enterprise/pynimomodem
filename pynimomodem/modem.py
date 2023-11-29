@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from enum import IntEnum
 from threading import Event
 
-from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer, Serial
-from .nimoconstants import (
+from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer
+from .constants import (
     BAUDRATES,
     MSG_MO_MAX_SIZE,
     MSG_MO_NAME_MAX_LEN,
@@ -26,18 +26,20 @@ from .nimoconstants import (
     PowerMode,
     SignalLevelRegional,
     SignalQuality,
+    UrcCode,
     WakeupPeriod,
     WakeupWay,
     WorkMode,
 )
-from .nimomessage import MoMessage, MtMessage, NimoMessage
-from .nimoutils import iso_to_ts, vlog
-from .nmealocation import (
+from .location import (
     ModemLocation,
     SatelliteLocation,
     get_location_from_nmea_data,
     get_satellite_location,
 )
+from .message import MoMessage, MtMessage, NimoMessage
+from .nimoserial import Serial
+from .nimoutils import iso_to_ts, vlog
 
 VLOG_TAG = 'nimomodem'
 
@@ -78,9 +80,28 @@ class NimoModem:
     #              '_mfr_code', '_modem_booted', '_ready',
     #              )
     
-    def __init__(self, serial: Serial) -> None:
-        self._modem: AtCommandBuffer = AtCommandBuffer(serial)
-        self._baudrate: int = serial.baudrate
+    def __init__(self, serial_port: str, **kwargs) -> None:
+        """Instantiate the NimoModem object.
+        
+        For additional kwargs see PySerial API:
+        https://pyserial.readthedocs.io/en/latest/pyserial_api.html
+        
+        Args:
+            serial_port (str): The path to the modem's serial port.
+        
+        Keyword Args:
+            baudrate (int): The baud rate of the modem (default 9600)
+        
+        Raises:
+            `NimoModemError` if unable to connect to the serial port.
+        
+        """
+        try:
+            self._serial = Serial(serial_port, kwargs.get('baudrate', 9600))
+        except Exception as exc:
+            raise NimoModemError('Unable to connect to modem') from exc
+        self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
+        self._baudrate: int = self._serial.baudrate
         self._modem_booted: bool = False
         self._mobile_id: str = ''
         self._manufacturer: Manufacturer = Manufacturer.NONE
@@ -194,6 +215,9 @@ class NimoModem:
             return int(self._at_command_response('ATS80?'))
         except NimoModemError as exc:
             _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def initialize(self,
                    echo: bool = True,
@@ -275,7 +299,7 @@ class NimoModem:
             except NimoModemError:
                 self._manufacturer = ''
                 _log.warning('Cleared cached manufacturer')
-        return self._manufacturer
+        return self._manufacturer.name
     
     def get_firmware_version(self) -> str:
         """Get the modem's firmware version."""
@@ -324,8 +348,11 @@ class NimoModem:
             prefix = '+QREG:'
         try:
             return int(self._at_command_response(cmd, prefix))
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def get_rssi(self) -> float:
         """Get the current Received Signal Strength Indicator.
@@ -340,8 +367,11 @@ class NimoModem:
             prefix = '+QSCN:'
         try:
             return int(self._at_command_response(cmd, prefix)) / 100
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def get_signal_quality(self) -> SignalQuality:
         """Get a qualitative indicator from 0..5 of the satellite signal."""
@@ -531,6 +561,13 @@ class NimoModem:
     
     def get_mo_message_states(self, message_name: str = '') -> 'list[MoMessage]':
         """Get a list of mobile-originated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MoMessage` objects including state and metadata.
+        
         """
         cmd = 'AT%MGRS'
         prefix = '%MGRS:'
@@ -605,14 +642,23 @@ class NimoModem:
             _log.warning('Unhandled field index %d (%s) for manufacturer %s',
                          field_idx, 'MO' if is_mo else 'MT', mfr.name)
     
-    def get_mt_message_states(self) -> 'list[MtMessage]':
+    def get_mt_message_states(self, message_name: str = '') -> 'list[MtMessage]':
         """Get a list of mobile-terminated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MtMessage` objects including state and metadata.
+        
         """
-        cmd = 'AT%MGFN'
-        prefix = '%MGFN:'
+        cmd = 'AT%MGFN' if not message_name else 'AT%MGFS'
+        prefix = '%MGFN:' if not message_name else 'AT%MGFS:'
         if self._mfr == Manufacturer.QUECTEL:
-            cmd = 'AT+QRMGS'
-            prefix = '+QRMGS:'
+            cmd = 'AT+QRMGN' if not message_name else 'AT+QRMGS'
+            prefix = '+QRMGN:' if not message_name else '+QRMGS:'
+        if message_name and not self._is_simulator:
+            cmd += f'="{message_name}"'
         response_str = self._at_command_response(cmd, prefix)
         return self._parse_message_states(response_str, is_mo=False)
     
@@ -685,29 +731,6 @@ class NimoModem:
                         _log.warn('Message length mismatch')
         return message
     
-    def get_mt_state(self, message_name: str) -> MessageState:
-        """Check the state of a given Mobile-Terminated message.
-        
-        Args:
-            message_name (str): The message handle e.g. FM01.01.
-        
-        Returns:
-            `MessageState` an enumerated value.
-        
-        """
-        cmd = 'AT%MGFS'
-        prefix = '%MGFS:'
-        if self._mfr == Manufacturer.QUECTEL:
-            cmd = 'AT+QRMGS'
-            prefix = '+QRMGS:'
-        cmd += f'="{message_name}"'
-        response_str = self._at_command_response(cmd, prefix)
-        if response_str:
-            states = self._parse_message_states(response_str, is_mo=False)
-            if len(states) > 0:
-                return states[0].state
-        return MessageState.UNAVAILABLE
-    
     def delete_mt_message(self, message_name: str) -> bool:
         """Remove a mobile-terminated message from the modem's Rx queue."""
         cmd = 'AT%MGFM'
@@ -715,7 +738,8 @@ class NimoModem:
             cmd = 'AT+QRMGM'
         cmd += f'="{message_name}"'
         self._at_command_response(cmd)
-        if self.get_mt_state(message_name) == MessageState.RX_RETRIEVED:
+        check = self.get_mt_message_states(message_name)
+        if check and check[0].state == MessageState.RX_RETRIEVED:
             return True
         return False
     
@@ -765,8 +789,11 @@ class NimoModem:
             prefix = '+QGNSSCW:'
         try:
             return int(self._at_command_response(cmd, prefix))
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def set_gnss_continuous(self, interval: int) -> bool:
         """Set the modem's GNSS continuous refresh interval in seconds.
@@ -892,8 +919,11 @@ class NimoModem:
         cmd = 'ATS88?'
         try:
             return int(self._at_command_response(cmd))
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def set_event_mask(self, event_mask: int) -> bool:
         """Set monitored events that trigger event notification."""
@@ -912,8 +942,11 @@ class NimoModem:
         cmd = 'ATS89?'
         try:
             return int(self._at_command_response(cmd))
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return 0
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def get_urc_ctl(self) -> int:
         """Get the event list that trigger Unsolicited Report Codes."""
@@ -937,6 +970,21 @@ class NimoModem:
             return True
         except NimoModemError:
             return False
+    
+    def get_urc(self) -> 'UrcCode|None':
+        """Get the pending Unsolicited Result Code if one is present."""
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError('Modem does not support this feature')
+        eol = '\r\n' if self._modem.verbose else '\r'
+        result = self._modem.get_urc(prefix='+QURC:', read_until=eol)
+        if result:
+            try:
+                if '_' in result:   # long code
+                    return UrcCode[result]
+                return UrcCode(int(result))
+            except ValueError as exc:
+                _log.error('Parsing error: %s', exc)
+        return None
     
     def get_power_mode(self) -> PowerMode:
         """Get the modem's power mode configuration."""
@@ -1074,8 +1122,11 @@ class NimoModem:
         cmd = f'ATS{s_register_number}?'
         try:
             return int(self._at_command_response(cmd))
-        except NimoModemError:
+        except NimoModemError as exc:
+            _log.error(exc)
             return None
+        except ValueError as exc:
+            raise NimoModemError('Parsing error: %s', exc) from exc
     
     def set_register(self, s_register_number: int, value: int) -> bool:
         """Set a modem register value."""

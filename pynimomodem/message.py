@@ -2,7 +2,7 @@
 """
 import logging
 
-from .nimoconstants import (
+from .constants import (
     MSG_MO_NAME_MAX_LEN,
     MSG_MO_NAME_QMAX_LEN,
     MessagePriority,

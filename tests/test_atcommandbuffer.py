@@ -6,7 +6,7 @@ import pytest
 from serial import Serial
 
 from pynimomodem.atcommandbuffer import AtCommandBuffer
-from pynimomodem.nimoconstants import AtErrorCode
+from pynimomodem.constants import AtErrorCode
 
 SERIAL_PORT = os.getenv('SERIAL_PORT', '/dev/ttyUSB0')
 log = logging.getLogger(__name__)
