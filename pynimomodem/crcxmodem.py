@@ -1,4 +1,9 @@
-"""Implementation of CCIT-16-CRC for use with NIMO modems."""
+"""Implementation of CCIT-16-CRC for use with NIMO modems.
+
+This module enables CRC error checking on a serial AT command interface, useful
+for increasing robustness in electrically noisy environments or long cable runs.
+
+"""
 import logging
 
 from .nimoutils import dprint, vlog

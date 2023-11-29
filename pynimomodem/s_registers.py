@@ -1,8 +1,10 @@
 """IDP modem S-register definitions
 
-IDP modem S-register definitions useful for creating a digital twin of the modem.
+This module provides NIMO/IDP modem S-register definitions useful for
+creating a digital twin of the modem.
 Updated register map of default and configured values can be read from the modem
 using AT%SREG which returns a human-readable table.
+
 """
 # Tuples: (name[0], default[1], read-only[2], range[3], description[4], note[5])
 ORBCOMM_REGISTER_DEFINITIONS = [

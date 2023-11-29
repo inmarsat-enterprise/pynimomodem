@@ -1,4 +1,8 @@
 """AT command buffer parsing for a NIMO modem.
+
+This module provides a bidirectional buffer model for sendind and receiving
+AT commands on a serial link to a satellite modem following V.25 spec.
+
 """
 import logging
 import threading

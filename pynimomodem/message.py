@@ -1,4 +1,13 @@
 """Class and methods for managing messages submitted/retrieved to a NIMO modem.
+
+This module encapsulates the key concepts of operation for:
+
+* **Mobile-Originated** (aka From-Terminal, Return) messages
+* **Mobile-Terminated** (aka To-Terminal, Forward) messages
+* Codec key concepts using **SIN** (Service Identification Number) and
+**MIN** (Message Identification Number) as the first 2 bytes of message payload.
+* Local message metadata such as **state** and **priority**.
+
 """
 import logging
 
@@ -160,46 +169,3 @@ class MtMessage(NimoMessage):
             _log.error('Bytes delivered mismatch with message length')
             return
         self._bytes_delivered = value
-
-
-class NimoMessageState:
-    """State metadata for a message in the NIMO modem's queue.
-    
-    Attributes:
-        name (str): The message name in the modem queue.
-        state (MessageState): The state of the message.
-        length (int): The size of the data payload (including codec bytes)
-        bytes_delivered (int): Progress of the message completion.
-    
-    """
-    def __init__(self,
-                 name: str = '',
-                 state: int = 0,
-                 length: int = 0,
-                 bytes_delivered: int = 0) -> None:
-        self._message_name: str = ''
-        if name:
-            self.name = name
-        self._state: MessageState = state
-        self.length: int = length
-        self.bytes_delivered: int = bytes_delivered
-    
-    @property
-    def name(self) -> str:
-        return self._message_name
-    
-    @name.setter
-    def name(self, message_name: str):
-        if not isinstance(message_name, str) or len(message_name) == 0:
-            raise ValueError('Invalid message name')
-        self._message_name = message_name
-    
-    @property
-    def state(self) -> MessageState:
-        return self._state
-    
-    @state.setter
-    def state(self, value: MessageState):
-        if not MessageState.is_valid(value):
-            raise ValueError('Invalid MessagePriority')
-        self._state = MessageState(value)

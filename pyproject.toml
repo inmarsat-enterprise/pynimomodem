@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "A Python implementation of Viasat's NIMO modem interface project."
 authors = ["geoffbrucepayne <geoff.bruce-payne@inmarsat.com>"]
 license = "Apache2.0"
+repository = "https://github.com/inmarsat-enterprise/pynimomodem"
+readme = "README.md"
+keywords = ["viasat", "inmarsat", "satellite", "iot", "idp", "ogx", "orbcomm"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -15,6 +18,7 @@ pylint = "^3.0.2"
 micropython-rp2-pico_w-stubs = "^1.20.0"
 gpiozero = "^2.0"
 pigpio = "^1.78"
+pdoc3 = "^0.10.0"
 
 [tool.pytest.ini_options]
 log_cli = true

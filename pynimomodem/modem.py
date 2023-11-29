@@ -1,4 +1,14 @@
 """Class for a Non-IP Modem using Orbcomm network protocols.
+
+This module encapsulates specific AT commands from the following supported
+NIMO modem manufacturers:
+
+* **ORBCOMM**
+* **Quectel**
+
+Key concepts include modem properties, configuration, and satellite acquisition
+details including signal level.
+
 """
 import base64
 import logging

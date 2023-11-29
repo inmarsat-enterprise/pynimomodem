@@ -1,4 +1,9 @@
-"""Adapter for PySerial methods to Micropython machine.UART methods."""
+"""Adapter for PySerial methods to Micropython machine.UART methods.
+
+This module attempts to enable compatibility with microcontrollers running
+Micropython.
+
+"""
 try:
     from serial import Serial
 except ImportError:

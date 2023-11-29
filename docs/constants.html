@@ -1,0 +1,3795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pynimomodem.constants API documentation</title>
+<meta name="description" content="NIMO modem constants …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pynimomodem.constants</code></h1>
+</header>
+<section id="section-intro">
+<p>NIMO modem constants.</p>
+<p>This module provides mapping of constants used within a NIMO modem.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+&#34;&#34;&#34;NIMO modem constants.
+
+This module provides mapping of constants used within a NIMO modem.
+
+&#34;&#34;&#34;
+# from dataclasses import dataclass
+from enum import Enum, IntEnum, IntFlag
+
+MSG_MO_MAX_SIZE = 6400      # IsatData Pro
+MSG_MT_MAX_SIZE = 10000     # IsatData Pro (non-low power)
+MSG_MO_NAME_MAX_LEN = 8     # Max characters for name in Orbcomm modems
+MSG_MO_NAME_QMAX_LEN = 12   # Max characters for name in Quectel modems
+BAUDRATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
+GEOSTATIONARY_DISTANCE_M = 35786000
+
+
+class NimoIntEnum(IntEnum):
+    &#34;&#34;&#34;IntEnum class wrapper with is_valid method.&#34;&#34;&#34;
+    @classmethod
+    def is_valid(cls, value) -&gt; bool:
+        &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+        return value in set(item.value for item in cls)
+
+
+class NimoFloatEnum(Enum):
+    &#34;&#34;&#34;Enum class wrapper with is_valid method.&#34;&#34;&#34;
+    @classmethod
+    def is_valid(cls, value) -&gt; bool:
+        &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+        return value in set(item.value for item in cls)
+
+
+class AtParsingState(NimoIntEnum):
+    &#34;&#34;&#34;Maps AT command response parsing states.&#34;&#34;&#34;
+    ECHO = 0
+    RESPONSE = 1
+    CRC = 2
+    OK = 3
+    ERROR = 4
+
+
+class MessagePriority(NimoIntEnum):
+    &#34;&#34;&#34;Message priorities for NIMO modem messages.&#34;&#34;&#34;
+    NONE = 0
+    HIGH = 1
+    MEDH = 2
+    MEDL = 3
+    LOW = 4
+
+
+class DataFormat(NimoIntEnum):
+    &#34;&#34;&#34;Data formats used for submitting or extracting message data/payload.&#34;&#34;&#34;
+    TEXT = 1
+    HEX = 2
+    BASE64 = 3
+
+
+class ControlState(NimoIntEnum):
+    &#34;&#34;&#34;States of the NIMO modem internal network acquisition process.&#34;&#34;&#34;
+    STOPPED = 0
+    GNSS_WAIT = 1
+    SEARCH_START = 2
+    BEAM_SEARCH = 3
+    BEAM_FOUND = 4
+    BEAM_ACQUIRED = 5
+    BEAM_SWITCH = 6
+    REGISTERING = 7
+    RECEIVE_ONLY = 8
+    BB_DOWNLOAD = 9
+    ACTIVE = 10
+    BLOCKED = 11
+    CONFIRM_PREVIOUS_BEAM = 12
+    CONFIRM_REQUESTED_BEAM = 13
+    CONNECT_CONFIRMED_BEAM = 14
+
+
+class BeamState(NimoIntEnum):
+    &#34;&#34;&#34;States of the NIMO modem satellite beam internal selection process.&#34;&#34;&#34;
+    IDLE = 0
+    SEARCH_ANY_TRAFFIC = 1
+    SEARCH_LAST_TRAFFIC = 2
+    RESERVED = 3
+    SEARCH_NEW_TRAFFIC = 4
+    SEARCH_BULLETIN_BOARD = 5
+    DELAY_TRAFFIC_SEARCH = 6
+
+
+class MessageState(NimoIntEnum):
+    &#34;&#34;&#34;Message states of NIMO modem messages.&#34;&#34;&#34;
+    UNAVAILABLE = 0
+    RX_PENDING = 1
+    RX_COMPLETE = 2
+    RX_RETRIEVED = 3
+    TX_READY = 4
+    TX_SENDING = 5
+    TX_COMPLETE = 6
+    TX_FAILED = 7
+    TX_CANCELLED = 8
+
+
+class AtErrorCode(NimoIntEnum):
+    &#34;&#34;&#34;AT command error codes for NIMO modems.&#34;&#34;&#34;
+    # Standard / documented
+    OK = 0
+    ERROR = 4
+    INVALID_CRC = 100
+    UNKNOWN_COMMAND = 101
+    INVALID_COMMAND_PARAMETERS = 102
+    MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE = 103
+    RESERVED_104 = 104
+    SYSTEM_ERROR = 105
+    QUEUE_INSUFFICIENT_RESOURCES = 106
+    DUPLICATE_MESSAGE_NAME = 107
+    GNSS_TIMEOUT = 108
+    MESSAGE_UNAVAILABLE = 109
+    RESERVED_110 = 110
+    RESERVED_111 = 111
+    READ_ONLY_PARAMETER = 112
+    # Extensions for additional situations
+    TIMEOUT = 255
+    CRC_CONFIG_MISMATCH = 254
+    UNABLE_TO_DELETE = 253
+
+
+class PowerMode(NimoIntEnum):
+    &#34;&#34;&#34;The Power Mode setting of the NIMO modem.
+    
+    Implies various internal state machine settings for balancing power
+    consumption against speed of recovery from line of sight blockages.
+    
+    &#34;&#34;&#34;
+    MOBILE_POWERED = 0
+    FIXED_POWERED = 1
+    MOBILE_BATTERY = 2
+    FIXED_BATTERY = 3
+    MOBILE_MINIMAL = 4
+    MOBILE_PARKED = 5
+
+    def gnss_refresh_hours(self):
+        &#34;&#34;&#34;The minimum GNSS refresh interval [hours].&#34;&#34;&#34;
+        if self.value == 0:
+            return 3
+        if self.value == 1:
+            return 24
+        if self.value == 2:
+            return 6
+        if self.value == 3:
+            return 14 * 24
+        if self.value == 4:
+            return 12
+        if self.value == 5:
+            return 24
+    
+    def transmit_lifetime_seconds(self):
+        &#34;&#34;&#34;The maximum duration of a message in the transmit queue [seconds].&#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 3 * 3600
+        return  3 * 60
+    
+    def beam_search_interval_seconds(self):
+        &#34;&#34;&#34;The minimum time between background beam searches [seconds].&#34;&#34;&#34;
+        if self.value in [0, 2, 4]:
+            return 20 * 60
+        return 60 * 60
+
+    def short_term_blockage_seconds(self):
+        &#34;&#34;&#34;The time in blockage before initiating a beam search [seconds].&#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 5 * 60
+        if self.value in [2, 3, 4]:
+            return 20 * 60
+        return 15 * 60
+    
+    def beam_search_maximum_seconds(self):
+        &#34;&#34;&#34;The maximum backoff interval between searches when blocked [seconds].
+        &#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 0
+        return 1600 * 60
+
+
+class WakeupPeriod(NimoIntEnum):
+    &#34;&#34;&#34;The Wakeup Period setting of a NIMO modem.
+    
+    Determines how often the modem wakes up to listen briefly for potential
+    mobile-terminated messages to be delivered by the network.
+    
+    &#34;&#34;&#34;
+    NONE = 0   # 5 seconds
+    SECONDS_30 = 1
+    MINUTES_1 = 2
+    MINUTES_3 = 3
+    MINUTES_10 = 4
+    MINUTES_30 = 5
+    MINUTES_60 = 6
+    MINUTES_2 = 7
+    MINUTES_5 = 8
+    MINUTES_15 = 9
+    MINUTES_20 = 10
+
+    def seconds(self):
+        if self.name == &#39;NONE&#39;:
+            return 5
+        value = int(self.name.split(&#39;_&#39;))[1]
+        if self.name.startswith(&#39;MINUTES&#39;):
+            return value * 60
+        return value
+
+
+class WakeupWay(NimoIntEnum):
+    &#34;&#34;&#34;Quectel CC200A-LB wakeup methods.&#34;&#34;&#34;
+    WAKEUP_PIN = 0
+    UART = 1
+
+
+class WorkMode(NimoIntEnum):
+    &#34;&#34;&#34;Quectel CC200A-LB working modes.&#34;&#34;&#34;
+    WORKING = 1
+    GNSS = 2
+    PERIODIC_SLEEP = 3
+
+
+class UrcControl(IntFlag):
+    &#34;&#34;&#34;Control bits for Quectel Unsolicited Response Codes.&#34;&#34;&#34;
+    GNSS_FIX_NEW =              0b00000001
+    MESSAGE_MT_RECEIVED =       0b00000010
+    MESSAGE_MO_COMPLETE =       0b00000100
+    NETWORK_REGISTERED =        0b00001000
+    WAKEUP_PERIOD_CHANGE =      0b00010000
+    UTC_TIME_SYNC =             0b00100000
+    GNSS_FIX_TIMEOUT =          0b01000000
+    NETWORK_PING_ACKNOWLEDGED = 0b10000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+        &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+        return [item for item in cls if item.value &amp; event_mask]
+
+
+class UrcCode(NimoIntEnum):
+    &#34;&#34;&#34;Quectel URC code map.&#34;&#34;&#34;
+    GPS_FIX = 0
+    RX_END = 1
+    TX_END = 2
+    REGED = 3
+    ITV_CHG = 4
+    TIME_UPD = 5
+    GPS_TMO = 6
+    PLG_RESP = 7
+
+
+class GnssMode(NimoIntEnum):
+    &#34;&#34;&#34;Base class for manufacturer-specific variants.&#34;&#34;&#34;
+
+
+class GnssModeOrbcomm(GnssMode):
+    &#34;&#34;&#34;The operating mode setting for the built-in GNSS in a NIMO modem.&#34;&#34;&#34;
+    GPS = 0
+    GLONASS = 1
+    BEIDOU = 2
+    GALILEO = 3
+    GPS_GLONASS = 10
+    GPS_BEIDOU = 11
+    GLONASS_BEIDOU = 12
+    GPS_GALILEO = 13
+    GLONASS_GALILEO = 14
+    BEIDOU_GALILEO = 15
+
+
+class GnssModeQuectel(GnssMode):
+    GPS = 0
+    GPS_BDS = 1
+    GPS_GLONASS = 2
+    GPS_GALILEO = 3
+    GPS_GLONASS_GALILEO_BDS = 4
+
+
+class GnssDynamicPlatformModel(NimoIntEnum):
+    &#34;&#34;&#34;The dynamic acquisition and tracking model used by the modem&#39;s GNSS.
+    
+    SUPPORTED ON SELECT MODEMS ONLY. CONSULT MANUFACTURER PRIOR TO USE.
+    
+    &#34;&#34;&#34;
+    PORTABLE = 0
+    STATIONARY = 2
+    PEDESTRIAN = 3
+    AUTOMOTIVE = 4
+    SEA = 5
+    AIR_1G = 6
+    AIR_2G = 7
+    AIR_4G = 8
+
+
+class SignalLevelRegional(NimoFloatEnum):
+    &#34;&#34;&#34;Qualitative descriptors for SNR/CN0 values for a NIMO Regional Beam.
+    
+    BARS_n: *n* is a scale from 0..5 to be used as greaterThan threshold
+    NONE, MARGINAL, GOOD: a scale to be used as greaterOrEqual threshold
+
+    &#34;&#34;&#34;
+    BARS_0 = 0
+    BARS_1 = 37.0
+    BARS_2 = 39.0
+    BARS_3 = 41.0
+    BARS_4 = 43.0
+    BARS_5 = 45.5
+    INVALID = 55.0
+
+
+class SignalQuality(NimoIntEnum):
+    &#34;&#34;&#34;Qualitative descriptor corresponding to a SignalLevel&#34;&#34;&#34;
+    NONE = 0
+    WEAK = 1
+    LOW = 2
+    MID = 3
+    GOOD = 4
+    STRONG = 5
+    WARNING = 6
+
+
+class EventNotification(IntFlag):
+    &#34;&#34;&#34;Bitmask enumerated values for NIMO modem events.&#34;&#34;&#34;
+    GNSS_FIX_NEW =              0b000000000001
+    MESSAGE_MT_RECEIVED =       0b000000000010
+    MESSAGE_MO_COMPLETE =       0b000000000100
+    NETWORK_REGISTERED =        0b000000001000
+    MODEM_RESET_COMPLETE =      0b000000010000
+    JAMMING_ANTENNA_CHANGE =    0b000000100000
+    MODEM_RESET_PENDING =       0b000001000000
+    WAKEUP_PERIOD_CHANGE =      0b000010000000
+    UTC_TIME_SYNC =             0b000100000000
+    GNSS_FIX_TIMEOUT =          0b001000000000
+    EVENT_TRACE_CACHED =        0b010000000000
+    NETWORK_PING_ACKNOWLEDGED = 0b100000000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+        &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+        return [item for item in cls if item.value &amp; event_mask]
+
+
+class NetworkStatus(NimoIntEnum):
+    &#34;&#34;&#34;Simplified state of network acquisition and tracking.&#34;&#34;&#34;
+    UNKNOWN = 0
+    RX_STOPPED = 1
+    RX_SEARCHING = 2
+    RX_ACQUIRING = 3
+    RX_ONLY_NOT_REGISTERED = 4
+    OK = 5
+    SUSPENDED = 6
+    MUTED = 7
+    BLOCKED = 8
+
+
+class EventTraceClass(NimoIntEnum):
+    &#34;&#34;&#34;Event Trace categories for the NIMO modem.&#34;&#34;&#34;
+    HARDWARE_FAULT = 1
+    SYSTEM = 2
+    SATELLITE = 3
+    GNSS = 4
+    MESSAGE = 5
+
+
+class EventTraceSubclass(NimoIntEnum):
+    &#34;&#34;&#34;Base class for trace subclasses&#34;&#34;&#34;
+
+
+class EventTraceSystem(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem System events.&#34;&#34;&#34;
+    RESET = 1
+    LOW_POWER = 2
+    SYSTEM_STATS = 3
+    SATCOM_STATS = 4
+
+
+class EventTraceSatellite(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem Satellite events.&#34;&#34;&#34;
+    RX_STATUS = 1
+    TX_STATUS = 2
+    BEAM_CONNECT = 3
+    BEAM_SEARCH_RESULT = 4
+    GEO_ADJUST = 5
+    EVENT_LOG = 6
+    RX_METRICS_SUBFRAME = 16
+    RX_METRICS_MINUTE = 17
+    RX_METRICS_HOUR = 18
+    RX_METRICS_DAY = 19
+    TX_METRICS_SUBFRAME = 20
+    TX_METRICS_MINUTE = 21
+    TX_METRICS_HOUR = 22
+    TX_METRICS_DAY = 23
+
+
+class EventTraceGnss(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem GNSS events.&#34;&#34;&#34;
+    FIX_STATS = 1
+    DOPPLER = 4
+
+
+class EventTraceMessage(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem Message events.&#34;&#34;&#34;
+    RECEIVE_STATS = 1
+    TRANSMIT_STATS = 2
+    TRANSMIT_UTILITY = 3
+
+
+class EventTrace:
+    def __init__(self,
+                 trace_class: EventTraceClass,
+                 trace_subclass: EventTraceSubclass,
+                 data: &#39;tuple[str, str|dict|IntEnum]&#39;) -&gt; None:
+        &#34;&#34;&#34;Defines an event trace.
+        
+        Args:
+            trace_class: The enumerated class
+            trace_subclass: The enumerated subclass dependent on the class
+            data: The set of (name, meta) where meta defines either a
+                data type (e.g. `uint`) or a mapping (`dict` or `IntEnum`)
+        &#34;&#34;&#34;
+        self.trace_class: EventTraceClass = trace_class
+        self.trace_subclass: EventTraceSubclass = trace_subclass
+        self.data: &#39;tuple[str, str|dict|IntEnum]&#39; = data
+
+
+EVENT_TRACE_SATELLITE_GENERAL = EventTrace(
+    trace_class=EventTraceClass.SATELLITE,
+    trace_subclass=EventTraceSatellite.RX_STATUS,
+    data=(
+        (&#39;subframe_number&#39;, &#39;uint&#39;),
+        (&#39;traffic_vcid&#39;, &#39;uint&#39;),
+        (&#39;configuration_id&#39;, &#39;uint&#39;),
+        (&#39;beam_number&#39;, &#39;uint&#39;),
+        (&#39;reserved04&#39;, &#39;uint&#39;),
+        (&#39;tx_access_sip&#39;, &#39;uint&#39;),
+        (&#39;tx_access_operator&#39;, &#39;uint&#39;),
+        (&#39;tx_access_user&#39;, &#39;uint&#39;),
+        (&#39;tx_suspend_flags&#39;, {
+            0x1: &#39;BEAM_REGISTRATION&#39;,
+            0x2: &#39;BEAM_SWITCH&#39;,
+            0x4: &#39;RESERVED&#39;,
+            0x8: &#39;BLOCKED&#39;,
+        }),
+        (&#39;tx_messages_active&#39;, &#39;uint&#39;),
+        (&#39;tx_messages_total&#39;, &#39;uint&#39;),
+        (&#39;tx_packets_active&#39;, &#39;uint&#39;),
+        (&#39;tx_state&#39;, {
+            0: &#39;ACTIVE&#39;,
+            1: &#39;SUSPENDING&#39;,
+            2: &#39;SUSPENDED_PENDING_GNSS&#39;}),
+        (&#39;active_rx_messages&#39;, &#39;uint&#39;),
+        (&#39;beamswitch_averaging_window&#39;, &#39;uint&#39;),
+        (&#39;beamswitch_averaging_count&#39;, &#39;uint&#39;),
+        (&#39;c_n_x100&#39;, &#39;uint&#39;),
+        (&#39;beamsample_threshold&#39;, &#39;uint&#39;),
+        (&#39;beamsample_timer&#39;, &#39;uint&#39;),
+        (&#39;flags&#39;, {
+            0x1: &#39;REGISTERED&#39;,
+            0x2: &#39;SENDING_BEAM_REGISTRATION&#39;,
+            0x10: &#39;BEAM_SEARCH&#39;,
+            0x20: &#39;BEAM_SAMPLE_REQUIRED&#39;,
+            0x40: &#39;BEAM_SWITCH_PENDING&#39;,
+            0x100: &#39;GNSS_VALID&#39;,
+            0x200: &#39;GNSS_REQUIRED&#39;,
+            0x400: &#39;GNSS_PENDING&#39;,
+        }),
+        (&#39;gnss_state_timer&#39;, &#39;uint&#39;),
+        (&#39;reserved21&#39;, &#39;uint&#39;),
+        (&#39;satellite_control_state&#39;, ControlState),
+        (&#39;beam_search_state&#39;, BeamState),
+    )
+)
+
+
+EVENT_TRACES = (
+    EVENT_TRACE_SATELLITE_GENERAL,
+)
+
+
+class GeoBeam(NimoIntEnum):
+    &#34;&#34;&#34;Geographic Beam identifiers mapped to readable names.&#34;&#34;&#34;
+    GLOBAL_BB = 0
+    AMER_RB1 = 1
+    AMER_RB2 = 2
+    AMER_RB3 = 3
+    AMER_RB4 = 4
+    AMER_RB5 = 5
+    AMER_RB6 = 6
+    AMER_RB7 = 7
+    AMER_RB8 = 8
+    AMER_RB9 = 9
+    AMER_RB10 = 10
+    AMER_RB11 = 11
+    AMER_RB12 = 12
+    AMER_RB13 = 13
+    AMER_RB14 = 14
+    AMER_RB15 = 15
+    AMER_RB16 = 16
+    AMER_RB17 = 17
+    AMER_RB18 = 18
+    AMER_RB19 = 19
+    AORW_SC = 61
+    EMEA_RB1 = 21
+    EMEA_RB2 = 22
+    EMEA_RB3 = 23
+    EMEA_RB4 = 24
+    EMEA_RB5 = 25
+    EMEA_RB6 = 26
+    EMEA_RB7 = 27
+    EMEA_RB8 = 28
+    EMEA_RB9 = 29
+    EMEA_RB10 = 30
+    EMEA_RB11 = 31
+    EMEA_RB12 = 32
+    EMEA_RB13 = 33
+    EMEA_RB14 = 34
+    EMEA_RB15 = 35
+    EMEA_RB16 = 36
+    EMEA_RB17 = 37
+    EMEA_RB18 = 38
+    EMEA_RB19 = 39
+    APAC_RB1 = 41
+    APAC_RB2 = 42
+    APAC_RB3 = 43
+    APAC_RB4 = 44
+    APAC_RB5 = 45
+    APAC_RB6 = 46
+    APAC_RB7 = 47
+    APAC_RB8 = 48
+    APAC_RB9 = 49
+    APAC_RB10 = 50
+    APAC_RB11 = 51
+    APAC_RB12 = 52
+    APAC_RB13 = 53
+    APAC_RB14 = 54
+    APAC_RB15 = 55
+    APAC_RB16 = 56
+    APAC_RB17 = 57
+    APAC_RB18 = 58
+    APAC_RB19 = 59
+    # MEAS_RB10 = 90   # replaced by IOE
+    # MEAS_RB11 = 91   # replaced by IOE
+    # MEAS_RB12 = 92   # replaced by IOE
+    # MEAS_RB15 = 93   # replaced by IOE
+    IOE_RB1 = 101
+    IOE_RB2 = 102
+    IOE_RB3 = 103
+    IOE_RB4 = 104
+    IOE_RB5 = 105
+    IOE_RB6 = 106
+    IOE_RB7 = 107
+    IOE_RB8 = 108
+    IOE_RB9 = 109
+    IOE_RB10 = 110
+    IOE_RB11 = 111
+    IOE_RB12 = 112
+    IOE_RB13 = 113
+    IOE_RB14 = 114
+    IOE_RB15 = 115
+    IOE_RB16 = 116
+    IOE_RB17 = 117
+    IOE_RB18 = 118
+    IOE_RB19 = 119
+
+    @property
+    def satellite(self):
+        return self.name.split(&#39;_&#39;)[0]
+
+    @property
+    def beam(self):
+        return self.name.split(&#39;_&#39;)[1]
+    
+    @property
+    def id(self):
+        return self.value
+
+
+class GeoSatellite(NimoFloatEnum):
+    &#34;&#34;&#34;Maps the Viasat/Inmarsat geostationary longitude supporting NIMO.&#34;&#34;&#34;
+    AMER = -98.0   # Inmarsat 4F3
+    AORWSC = -54.0   # Inmarsat 3F5
+    EMEA = 24.9   # Inmarsat 4AF4 aka Alphasat XL
+    IOE = 63.5   # Inmarsat 6F1 previously IOR 3F1, MEAS 4F2
+    APAC = 143.5   # Inmarsat 4F2 previously 4F1</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pynimomodem.constants.AtErrorCode"><code class="flex name class">
+<span>class <span class="ident">AtErrorCode</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>AT command error codes for NIMO modems.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AtErrorCode(NimoIntEnum):
+    &#34;&#34;&#34;AT command error codes for NIMO modems.&#34;&#34;&#34;
+    # Standard / documented
+    OK = 0
+    ERROR = 4
+    INVALID_CRC = 100
+    UNKNOWN_COMMAND = 101
+    INVALID_COMMAND_PARAMETERS = 102
+    MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE = 103
+    RESERVED_104 = 104
+    SYSTEM_ERROR = 105
+    QUEUE_INSUFFICIENT_RESOURCES = 106
+    DUPLICATE_MESSAGE_NAME = 107
+    GNSS_TIMEOUT = 108
+    MESSAGE_UNAVAILABLE = 109
+    RESERVED_110 = 110
+    RESERVED_111 = 111
+    READ_ONLY_PARAMETER = 112
+    # Extensions for additional situations
+    TIMEOUT = 255
+    CRC_CONFIG_MISMATCH = 254
+    UNABLE_TO_DELETE = 253</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.AtErrorCode.CRC_CONFIG_MISMATCH"><code class="name">var <span class="ident">CRC_CONFIG_MISMATCH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME"><code class="name">var <span class="ident">DUPLICATE_MESSAGE_NAME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.ERROR"><code class="name">var <span class="ident">ERROR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT"><code class="name">var <span class="ident">GNSS_TIMEOUT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS"><code class="name">var <span class="ident">INVALID_COMMAND_PARAMETERS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.INVALID_CRC"><code class="name">var <span class="ident">INVALID_CRC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE"><code class="name">var <span class="ident">MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE"><code class="name">var <span class="ident">MESSAGE_UNAVAILABLE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.OK"><code class="name">var <span class="ident">OK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES"><code class="name">var <span class="ident">QUEUE_INSUFFICIENT_RESOURCES</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.READ_ONLY_PARAMETER"><code class="name">var <span class="ident">READ_ONLY_PARAMETER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.RESERVED_104"><code class="name">var <span class="ident">RESERVED_104</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.RESERVED_110"><code class="name">var <span class="ident">RESERVED_110</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.RESERVED_111"><code class="name">var <span class="ident">RESERVED_111</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.SYSTEM_ERROR"><code class="name">var <span class="ident">SYSTEM_ERROR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.TIMEOUT"><code class="name">var <span class="ident">TIMEOUT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.UNABLE_TO_DELETE"><code class="name">var <span class="ident">UNABLE_TO_DELETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.UNKNOWN_COMMAND"><code class="name">var <span class="ident">UNKNOWN_COMMAND</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.AtParsingState"><code class="flex name class">
+<span>class <span class="ident">AtParsingState</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Maps AT command response parsing states.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AtParsingState(NimoIntEnum):
+    &#34;&#34;&#34;Maps AT command response parsing states.&#34;&#34;&#34;
+    ECHO = 0
+    RESPONSE = 1
+    CRC = 2
+    OK = 3
+    ERROR = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.AtParsingState.CRC"><code class="name">var <span class="ident">CRC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtParsingState.ECHO"><code class="name">var <span class="ident">ECHO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtParsingState.ERROR"><code class="name">var <span class="ident">ERROR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtParsingState.OK"><code class="name">var <span class="ident">OK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtParsingState.RESPONSE"><code class="name">var <span class="ident">RESPONSE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.BeamState"><code class="flex name class">
+<span>class <span class="ident">BeamState</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>States of the NIMO modem satellite beam internal selection process.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BeamState(NimoIntEnum):
+    &#34;&#34;&#34;States of the NIMO modem satellite beam internal selection process.&#34;&#34;&#34;
+    IDLE = 0
+    SEARCH_ANY_TRAFFIC = 1
+    SEARCH_LAST_TRAFFIC = 2
+    RESERVED = 3
+    SEARCH_NEW_TRAFFIC = 4
+    SEARCH_BULLETIN_BOARD = 5
+    DELAY_TRAFFIC_SEARCH = 6</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.BeamState.DELAY_TRAFFIC_SEARCH"><code class="name">var <span class="ident">DELAY_TRAFFIC_SEARCH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.IDLE"><code class="name">var <span class="ident">IDLE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.RESERVED"><code class="name">var <span class="ident">RESERVED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.SEARCH_ANY_TRAFFIC"><code class="name">var <span class="ident">SEARCH_ANY_TRAFFIC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.SEARCH_BULLETIN_BOARD"><code class="name">var <span class="ident">SEARCH_BULLETIN_BOARD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.SEARCH_LAST_TRAFFIC"><code class="name">var <span class="ident">SEARCH_LAST_TRAFFIC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.BeamState.SEARCH_NEW_TRAFFIC"><code class="name">var <span class="ident">SEARCH_NEW_TRAFFIC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.ControlState"><code class="flex name class">
+<span>class <span class="ident">ControlState</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>States of the NIMO modem internal network acquisition process.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ControlState(NimoIntEnum):
+    &#34;&#34;&#34;States of the NIMO modem internal network acquisition process.&#34;&#34;&#34;
+    STOPPED = 0
+    GNSS_WAIT = 1
+    SEARCH_START = 2
+    BEAM_SEARCH = 3
+    BEAM_FOUND = 4
+    BEAM_ACQUIRED = 5
+    BEAM_SWITCH = 6
+    REGISTERING = 7
+    RECEIVE_ONLY = 8
+    BB_DOWNLOAD = 9
+    ACTIVE = 10
+    BLOCKED = 11
+    CONFIRM_PREVIOUS_BEAM = 12
+    CONFIRM_REQUESTED_BEAM = 13
+    CONNECT_CONFIRMED_BEAM = 14</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.ControlState.ACTIVE"><code class="name">var <span class="ident">ACTIVE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BB_DOWNLOAD"><code class="name">var <span class="ident">BB_DOWNLOAD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BEAM_ACQUIRED"><code class="name">var <span class="ident">BEAM_ACQUIRED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BEAM_FOUND"><code class="name">var <span class="ident">BEAM_FOUND</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BEAM_SEARCH"><code class="name">var <span class="ident">BEAM_SEARCH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BEAM_SWITCH"><code class="name">var <span class="ident">BEAM_SWITCH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.BLOCKED"><code class="name">var <span class="ident">BLOCKED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.CONFIRM_PREVIOUS_BEAM"><code class="name">var <span class="ident">CONFIRM_PREVIOUS_BEAM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.CONFIRM_REQUESTED_BEAM"><code class="name">var <span class="ident">CONFIRM_REQUESTED_BEAM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.CONNECT_CONFIRMED_BEAM"><code class="name">var <span class="ident">CONNECT_CONFIRMED_BEAM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.GNSS_WAIT"><code class="name">var <span class="ident">GNSS_WAIT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.RECEIVE_ONLY"><code class="name">var <span class="ident">RECEIVE_ONLY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.REGISTERING"><code class="name">var <span class="ident">REGISTERING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.SEARCH_START"><code class="name">var <span class="ident">SEARCH_START</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.ControlState.STOPPED"><code class="name">var <span class="ident">STOPPED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.DataFormat"><code class="flex name class">
+<span>class <span class="ident">DataFormat</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Data formats used for submitting or extracting message data/payload.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataFormat(NimoIntEnum):
+    &#34;&#34;&#34;Data formats used for submitting or extracting message data/payload.&#34;&#34;&#34;
+    TEXT = 1
+    HEX = 2
+    BASE64 = 3</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.DataFormat.BASE64"><code class="name">var <span class="ident">BASE64</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.DataFormat.HEX"><code class="name">var <span class="ident">HEX</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.DataFormat.TEXT"><code class="name">var <span class="ident">TEXT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventNotification"><code class="flex name class">
+<span>class <span class="ident">EventNotification</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Bitmask enumerated values for NIMO modem events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventNotification(IntFlag):
+    &#34;&#34;&#34;Bitmask enumerated values for NIMO modem events.&#34;&#34;&#34;
+    GNSS_FIX_NEW =              0b000000000001
+    MESSAGE_MT_RECEIVED =       0b000000000010
+    MESSAGE_MO_COMPLETE =       0b000000000100
+    NETWORK_REGISTERED =        0b000000001000
+    MODEM_RESET_COMPLETE =      0b000000010000
+    JAMMING_ANTENNA_CHANGE =    0b000000100000
+    MODEM_RESET_PENDING =       0b000001000000
+    WAKEUP_PERIOD_CHANGE =      0b000010000000
+    UTC_TIME_SYNC =             0b000100000000
+    GNSS_FIX_TIMEOUT =          0b001000000000
+    EVENT_TRACE_CACHED =        0b010000000000
+    NETWORK_PING_ACKNOWLEDGED = 0b100000000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+        &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+        return [item for item in cls if item.value &amp; event_mask]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntFlag</li>
+<li>builtins.int</li>
+<li>enum.Flag</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventNotification.EVENT_TRACE_CACHED"><code class="name">var <span class="ident">EVENT_TRACE_CACHED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.GNSS_FIX_NEW"><code class="name">var <span class="ident">GNSS_FIX_NEW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.GNSS_FIX_TIMEOUT"><code class="name">var <span class="ident">GNSS_FIX_TIMEOUT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.JAMMING_ANTENNA_CHANGE"><code class="name">var <span class="ident">JAMMING_ANTENNA_CHANGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.MESSAGE_MO_COMPLETE"><code class="name">var <span class="ident">MESSAGE_MO_COMPLETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.MESSAGE_MT_RECEIVED"><code class="name">var <span class="ident">MESSAGE_MT_RECEIVED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.MODEM_RESET_COMPLETE"><code class="name">var <span class="ident">MODEM_RESET_COMPLETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.MODEM_RESET_PENDING"><code class="name">var <span class="ident">MODEM_RESET_PENDING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.NETWORK_PING_ACKNOWLEDGED"><code class="name">var <span class="ident">NETWORK_PING_ACKNOWLEDGED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.NETWORK_REGISTERED"><code class="name">var <span class="ident">NETWORK_REGISTERED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.UTC_TIME_SYNC"><code class="name">var <span class="ident">UTC_TIME_SYNC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventNotification.WAKEUP_PERIOD_CHANGE"><code class="name">var <span class="ident">WAKEUP_PERIOD_CHANGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="pynimomodem.constants.EventNotification.get_events"><code class="name flex">
+<span>def <span class="ident">get_events</span></span>(<span>event_mask: int) ‑> list[<a title="pynimomodem.constants.EventNotification" href="#pynimomodem.constants.EventNotification">EventNotification</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses a bitmask to return a list of events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+    &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+    return [item for item in cls if item.value &amp; event_mask]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.constants.EventTrace"><code class="flex name class">
+<span>class <span class="ident">EventTrace</span></span>
+<span>(</span><span>trace_class: <a title="pynimomodem.constants.EventTraceClass" href="#pynimomodem.constants.EventTraceClass">EventTraceClass</a>, trace_subclass: <a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a>, data: tuple[str, str|dict|IntEnum])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Defines an event trace.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>trace_class</code></strong></dt>
+<dd>The enumerated class</dd>
+<dt><strong><code>trace_subclass</code></strong></dt>
+<dd>The enumerated subclass dependent on the class</dd>
+<dt><strong><code>data</code></strong></dt>
+<dd>The set of (name, meta) where meta defines either a
+data type (e.g. <code>uint</code>) or a mapping (<code>dict</code> or <code>IntEnum</code>)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTrace:
+    def __init__(self,
+                 trace_class: EventTraceClass,
+                 trace_subclass: EventTraceSubclass,
+                 data: &#39;tuple[str, str|dict|IntEnum]&#39;) -&gt; None:
+        &#34;&#34;&#34;Defines an event trace.
+        
+        Args:
+            trace_class: The enumerated class
+            trace_subclass: The enumerated subclass dependent on the class
+            data: The set of (name, meta) where meta defines either a
+                data type (e.g. `uint`) or a mapping (`dict` or `IntEnum`)
+        &#34;&#34;&#34;
+        self.trace_class: EventTraceClass = trace_class
+        self.trace_subclass: EventTraceSubclass = trace_subclass
+        self.data: &#39;tuple[str, str|dict|IntEnum]&#39; = data</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.EventTraceClass"><code class="flex name class">
+<span>class <span class="ident">EventTraceClass</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Trace categories for the NIMO modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceClass(NimoIntEnum):
+    &#34;&#34;&#34;Event Trace categories for the NIMO modem.&#34;&#34;&#34;
+    HARDWARE_FAULT = 1
+    SYSTEM = 2
+    SATELLITE = 3
+    GNSS = 4
+    MESSAGE = 5</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventTraceClass.GNSS"><code class="name">var <span class="ident">GNSS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceClass.HARDWARE_FAULT"><code class="name">var <span class="ident">HARDWARE_FAULT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceClass.MESSAGE"><code class="name">var <span class="ident">MESSAGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceClass.SATELLITE"><code class="name">var <span class="ident">SATELLITE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceClass.SYSTEM"><code class="name">var <span class="ident">SYSTEM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventTraceGnss"><code class="flex name class">
+<span>class <span class="ident">EventTraceGnss</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Trace subcategories for NIMO modem GNSS events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceGnss(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem GNSS events.&#34;&#34;&#34;
+    FIX_STATS = 1
+    DOPPLER = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventTraceGnss.DOPPLER"><code class="name">var <span class="ident">DOPPLER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceGnss.FIX_STATS"><code class="name">var <span class="ident">FIX_STATS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.EventTraceSubclass.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventTraceMessage"><code class="flex name class">
+<span>class <span class="ident">EventTraceMessage</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Trace subcategories for NIMO modem Message events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceMessage(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem Message events.&#34;&#34;&#34;
+    RECEIVE_STATS = 1
+    TRANSMIT_STATS = 2
+    TRANSMIT_UTILITY = 3</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventTraceMessage.RECEIVE_STATS"><code class="name">var <span class="ident">RECEIVE_STATS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceMessage.TRANSMIT_STATS"><code class="name">var <span class="ident">TRANSMIT_STATS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceMessage.TRANSMIT_UTILITY"><code class="name">var <span class="ident">TRANSMIT_UTILITY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.EventTraceSubclass.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite"><code class="flex name class">
+<span>class <span class="ident">EventTraceSatellite</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Trace subcategories for NIMO modem Satellite events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceSatellite(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem Satellite events.&#34;&#34;&#34;
+    RX_STATUS = 1
+    TX_STATUS = 2
+    BEAM_CONNECT = 3
+    BEAM_SEARCH_RESULT = 4
+    GEO_ADJUST = 5
+    EVENT_LOG = 6
+    RX_METRICS_SUBFRAME = 16
+    RX_METRICS_MINUTE = 17
+    RX_METRICS_HOUR = 18
+    RX_METRICS_DAY = 19
+    TX_METRICS_SUBFRAME = 20
+    TX_METRICS_MINUTE = 21
+    TX_METRICS_HOUR = 22
+    TX_METRICS_DAY = 23</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventTraceSatellite.BEAM_CONNECT"><code class="name">var <span class="ident">BEAM_CONNECT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.BEAM_SEARCH_RESULT"><code class="name">var <span class="ident">BEAM_SEARCH_RESULT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.EVENT_LOG"><code class="name">var <span class="ident">EVENT_LOG</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.GEO_ADJUST"><code class="name">var <span class="ident">GEO_ADJUST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.RX_METRICS_DAY"><code class="name">var <span class="ident">RX_METRICS_DAY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.RX_METRICS_HOUR"><code class="name">var <span class="ident">RX_METRICS_HOUR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.RX_METRICS_MINUTE"><code class="name">var <span class="ident">RX_METRICS_MINUTE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.RX_METRICS_SUBFRAME"><code class="name">var <span class="ident">RX_METRICS_SUBFRAME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.RX_STATUS"><code class="name">var <span class="ident">RX_STATUS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.TX_METRICS_DAY"><code class="name">var <span class="ident">TX_METRICS_DAY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.TX_METRICS_HOUR"><code class="name">var <span class="ident">TX_METRICS_HOUR</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.TX_METRICS_MINUTE"><code class="name">var <span class="ident">TX_METRICS_MINUTE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.TX_METRICS_SUBFRAME"><code class="name">var <span class="ident">TX_METRICS_SUBFRAME</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSatellite.TX_STATUS"><code class="name">var <span class="ident">TX_STATUS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.EventTraceSubclass.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSubclass"><code class="flex name class">
+<span>class <span class="ident">EventTraceSubclass</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for trace subclasses</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceSubclass(NimoIntEnum):
+    &#34;&#34;&#34;Base class for trace subclasses&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.EventTraceGnss" href="#pynimomodem.constants.EventTraceGnss">EventTraceGnss</a></li>
+<li><a title="pynimomodem.constants.EventTraceMessage" href="#pynimomodem.constants.EventTraceMessage">EventTraceMessage</a></li>
+<li><a title="pynimomodem.constants.EventTraceSatellite" href="#pynimomodem.constants.EventTraceSatellite">EventTraceSatellite</a></li>
+<li><a title="pynimomodem.constants.EventTraceSystem" href="#pynimomodem.constants.EventTraceSystem">EventTraceSystem</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSystem"><code class="flex name class">
+<span>class <span class="ident">EventTraceSystem</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event Trace subcategories for NIMO modem System events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EventTraceSystem(EventTraceSubclass):
+    &#34;&#34;&#34;Event Trace subcategories for NIMO modem System events.&#34;&#34;&#34;
+    RESET = 1
+    LOW_POWER = 2
+    SYSTEM_STATS = 3
+    SATCOM_STATS = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.EventTraceSystem.LOW_POWER"><code class="name">var <span class="ident">LOW_POWER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSystem.RESET"><code class="name">var <span class="ident">RESET</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSystem.SATCOM_STATS"><code class="name">var <span class="ident">SATCOM_STATS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.EventTraceSystem.SYSTEM_STATS"><code class="name">var <span class="ident">SYSTEM_STATS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.EventTraceSubclass.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam"><code class="flex name class">
+<span>class <span class="ident">GeoBeam</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Geographic Beam identifiers mapped to readable names.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GeoBeam(NimoIntEnum):
+    &#34;&#34;&#34;Geographic Beam identifiers mapped to readable names.&#34;&#34;&#34;
+    GLOBAL_BB = 0
+    AMER_RB1 = 1
+    AMER_RB2 = 2
+    AMER_RB3 = 3
+    AMER_RB4 = 4
+    AMER_RB5 = 5
+    AMER_RB6 = 6
+    AMER_RB7 = 7
+    AMER_RB8 = 8
+    AMER_RB9 = 9
+    AMER_RB10 = 10
+    AMER_RB11 = 11
+    AMER_RB12 = 12
+    AMER_RB13 = 13
+    AMER_RB14 = 14
+    AMER_RB15 = 15
+    AMER_RB16 = 16
+    AMER_RB17 = 17
+    AMER_RB18 = 18
+    AMER_RB19 = 19
+    AORW_SC = 61
+    EMEA_RB1 = 21
+    EMEA_RB2 = 22
+    EMEA_RB3 = 23
+    EMEA_RB4 = 24
+    EMEA_RB5 = 25
+    EMEA_RB6 = 26
+    EMEA_RB7 = 27
+    EMEA_RB8 = 28
+    EMEA_RB9 = 29
+    EMEA_RB10 = 30
+    EMEA_RB11 = 31
+    EMEA_RB12 = 32
+    EMEA_RB13 = 33
+    EMEA_RB14 = 34
+    EMEA_RB15 = 35
+    EMEA_RB16 = 36
+    EMEA_RB17 = 37
+    EMEA_RB18 = 38
+    EMEA_RB19 = 39
+    APAC_RB1 = 41
+    APAC_RB2 = 42
+    APAC_RB3 = 43
+    APAC_RB4 = 44
+    APAC_RB5 = 45
+    APAC_RB6 = 46
+    APAC_RB7 = 47
+    APAC_RB8 = 48
+    APAC_RB9 = 49
+    APAC_RB10 = 50
+    APAC_RB11 = 51
+    APAC_RB12 = 52
+    APAC_RB13 = 53
+    APAC_RB14 = 54
+    APAC_RB15 = 55
+    APAC_RB16 = 56
+    APAC_RB17 = 57
+    APAC_RB18 = 58
+    APAC_RB19 = 59
+    # MEAS_RB10 = 90   # replaced by IOE
+    # MEAS_RB11 = 91   # replaced by IOE
+    # MEAS_RB12 = 92   # replaced by IOE
+    # MEAS_RB15 = 93   # replaced by IOE
+    IOE_RB1 = 101
+    IOE_RB2 = 102
+    IOE_RB3 = 103
+    IOE_RB4 = 104
+    IOE_RB5 = 105
+    IOE_RB6 = 106
+    IOE_RB7 = 107
+    IOE_RB8 = 108
+    IOE_RB9 = 109
+    IOE_RB10 = 110
+    IOE_RB11 = 111
+    IOE_RB12 = 112
+    IOE_RB13 = 113
+    IOE_RB14 = 114
+    IOE_RB15 = 115
+    IOE_RB16 = 116
+    IOE_RB17 = 117
+    IOE_RB18 = 118
+    IOE_RB19 = 119
+
+    @property
+    def satellite(self):
+        return self.name.split(&#39;_&#39;)[0]
+
+    @property
+    def beam(self):
+        return self.name.split(&#39;_&#39;)[1]
+    
+    @property
+    def id(self):
+        return self.value</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB1"><code class="name">var <span class="ident">AMER_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB10"><code class="name">var <span class="ident">AMER_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB11"><code class="name">var <span class="ident">AMER_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB12"><code class="name">var <span class="ident">AMER_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB13"><code class="name">var <span class="ident">AMER_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB14"><code class="name">var <span class="ident">AMER_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB15"><code class="name">var <span class="ident">AMER_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB16"><code class="name">var <span class="ident">AMER_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB17"><code class="name">var <span class="ident">AMER_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB18"><code class="name">var <span class="ident">AMER_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB19"><code class="name">var <span class="ident">AMER_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB2"><code class="name">var <span class="ident">AMER_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB3"><code class="name">var <span class="ident">AMER_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB4"><code class="name">var <span class="ident">AMER_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB5"><code class="name">var <span class="ident">AMER_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB6"><code class="name">var <span class="ident">AMER_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB7"><code class="name">var <span class="ident">AMER_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB8"><code class="name">var <span class="ident">AMER_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AMER_RB9"><code class="name">var <span class="ident">AMER_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.AORW_SC"><code class="name">var <span class="ident">AORW_SC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB1"><code class="name">var <span class="ident">APAC_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB10"><code class="name">var <span class="ident">APAC_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB11"><code class="name">var <span class="ident">APAC_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB12"><code class="name">var <span class="ident">APAC_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB13"><code class="name">var <span class="ident">APAC_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB14"><code class="name">var <span class="ident">APAC_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB15"><code class="name">var <span class="ident">APAC_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB16"><code class="name">var <span class="ident">APAC_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB17"><code class="name">var <span class="ident">APAC_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB18"><code class="name">var <span class="ident">APAC_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB19"><code class="name">var <span class="ident">APAC_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB2"><code class="name">var <span class="ident">APAC_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB3"><code class="name">var <span class="ident">APAC_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB4"><code class="name">var <span class="ident">APAC_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB5"><code class="name">var <span class="ident">APAC_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB6"><code class="name">var <span class="ident">APAC_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB7"><code class="name">var <span class="ident">APAC_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB8"><code class="name">var <span class="ident">APAC_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.APAC_RB9"><code class="name">var <span class="ident">APAC_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB1"><code class="name">var <span class="ident">EMEA_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB10"><code class="name">var <span class="ident">EMEA_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB11"><code class="name">var <span class="ident">EMEA_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB12"><code class="name">var <span class="ident">EMEA_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB13"><code class="name">var <span class="ident">EMEA_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB14"><code class="name">var <span class="ident">EMEA_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB15"><code class="name">var <span class="ident">EMEA_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB16"><code class="name">var <span class="ident">EMEA_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB17"><code class="name">var <span class="ident">EMEA_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB18"><code class="name">var <span class="ident">EMEA_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB19"><code class="name">var <span class="ident">EMEA_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB2"><code class="name">var <span class="ident">EMEA_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB3"><code class="name">var <span class="ident">EMEA_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB4"><code class="name">var <span class="ident">EMEA_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB5"><code class="name">var <span class="ident">EMEA_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB6"><code class="name">var <span class="ident">EMEA_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB7"><code class="name">var <span class="ident">EMEA_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB8"><code class="name">var <span class="ident">EMEA_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.EMEA_RB9"><code class="name">var <span class="ident">EMEA_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.GLOBAL_BB"><code class="name">var <span class="ident">GLOBAL_BB</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB1"><code class="name">var <span class="ident">IOE_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB10"><code class="name">var <span class="ident">IOE_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB11"><code class="name">var <span class="ident">IOE_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB12"><code class="name">var <span class="ident">IOE_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB13"><code class="name">var <span class="ident">IOE_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB14"><code class="name">var <span class="ident">IOE_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB15"><code class="name">var <span class="ident">IOE_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB16"><code class="name">var <span class="ident">IOE_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB17"><code class="name">var <span class="ident">IOE_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB18"><code class="name">var <span class="ident">IOE_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB19"><code class="name">var <span class="ident">IOE_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB2"><code class="name">var <span class="ident">IOE_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB3"><code class="name">var <span class="ident">IOE_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB4"><code class="name">var <span class="ident">IOE_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB5"><code class="name">var <span class="ident">IOE_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB6"><code class="name">var <span class="ident">IOE_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB7"><code class="name">var <span class="ident">IOE_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB8"><code class="name">var <span class="ident">IOE_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.IOE_RB9"><code class="name">var <span class="ident">IOE_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GeoBeam.beam"><code class="name">var <span class="ident">beam</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def beam(self):
+    return self.name.split(&#39;_&#39;)[1]</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def id(self):
+    return self.value</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.GeoBeam.satellite"><code class="name">var <span class="ident">satellite</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def satellite(self):
+    return self.name.split(&#39;_&#39;)[0]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GeoSatellite"><code class="flex name class">
+<span>class <span class="ident">GeoSatellite</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Maps the Viasat/Inmarsat geostationary longitude supporting NIMO.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GeoSatellite(NimoFloatEnum):
+    &#34;&#34;&#34;Maps the Viasat/Inmarsat geostationary longitude supporting NIMO.&#34;&#34;&#34;
+    AMER = -98.0   # Inmarsat 4F3
+    AORWSC = -54.0   # Inmarsat 3F5
+    EMEA = 24.9   # Inmarsat 4AF4 aka Alphasat XL
+    IOE = 63.5   # Inmarsat 6F1 previously IOR 3F1, MEAS 4F2
+    APAC = 143.5   # Inmarsat 4F2 previously 4F1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoFloatEnum" href="#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GeoSatellite.AMER"><code class="name">var <span class="ident">AMER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoSatellite.AORWSC"><code class="name">var <span class="ident">AORWSC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoSatellite.APAC"><code class="name">var <span class="ident">APAC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoSatellite.EMEA"><code class="name">var <span class="ident">EMEA</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GeoSatellite.IOE"><code class="name">var <span class="ident">IOE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoFloatEnum" href="#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoFloatEnum.is_valid" href="#pynimomodem.constants.NimoFloatEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel"><code class="flex name class">
+<span>class <span class="ident">GnssDynamicPlatformModel</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The dynamic acquisition and tracking model used by the modem's GNSS.</p>
+<p>SUPPORTED ON SELECT MODEMS ONLY. CONSULT MANUFACTURER PRIOR TO USE.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssDynamicPlatformModel(NimoIntEnum):
+    &#34;&#34;&#34;The dynamic acquisition and tracking model used by the modem&#39;s GNSS.
+    
+    SUPPORTED ON SELECT MODEMS ONLY. CONSULT MANUFACTURER PRIOR TO USE.
+    
+    &#34;&#34;&#34;
+    PORTABLE = 0
+    STATIONARY = 2
+    PEDESTRIAN = 3
+    AUTOMOTIVE = 4
+    SEA = 5
+    AIR_1G = 6
+    AIR_2G = 7
+    AIR_4G = 8</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.AIR_1G"><code class="name">var <span class="ident">AIR_1G</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.AIR_2G"><code class="name">var <span class="ident">AIR_2G</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.AIR_4G"><code class="name">var <span class="ident">AIR_4G</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.AUTOMOTIVE"><code class="name">var <span class="ident">AUTOMOTIVE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.PEDESTRIAN"><code class="name">var <span class="ident">PEDESTRIAN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.PORTABLE"><code class="name">var <span class="ident">PORTABLE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.SEA"><code class="name">var <span class="ident">SEA</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssDynamicPlatformModel.STATIONARY"><code class="name">var <span class="ident">STATIONARY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GnssMode"><code class="flex name class">
+<span>class <span class="ident">GnssMode</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for manufacturer-specific variants.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssMode(NimoIntEnum):
+    &#34;&#34;&#34;Base class for manufacturer-specific variants.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GnssModeOrbcomm" href="#pynimomodem.constants.GnssModeOrbcomm">GnssModeOrbcomm</a></li>
+<li><a title="pynimomodem.constants.GnssModeQuectel" href="#pynimomodem.constants.GnssModeQuectel">GnssModeQuectel</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm"><code class="flex name class">
+<span>class <span class="ident">GnssModeOrbcomm</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The operating mode setting for the built-in GNSS in a NIMO modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssModeOrbcomm(GnssMode):
+    &#34;&#34;&#34;The operating mode setting for the built-in GNSS in a NIMO modem.&#34;&#34;&#34;
+    GPS = 0
+    GLONASS = 1
+    BEIDOU = 2
+    GALILEO = 3
+    GPS_GLONASS = 10
+    GPS_BEIDOU = 11
+    GLONASS_BEIDOU = 12
+    GPS_GALILEO = 13
+    GLONASS_GALILEO = 14
+    BEIDOU_GALILEO = 15</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.BEIDOU"><code class="name">var <span class="ident">BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.BEIDOU_GALILEO"><code class="name">var <span class="ident">BEIDOU_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GALILEO"><code class="name">var <span class="ident">GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GLONASS"><code class="name">var <span class="ident">GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GLONASS_BEIDOU"><code class="name">var <span class="ident">GLONASS_BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GLONASS_GALILEO"><code class="name">var <span class="ident">GLONASS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GPS"><code class="name">var <span class="ident">GPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GPS_BEIDOU"><code class="name">var <span class="ident">GPS_BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GPS_GALILEO"><code class="name">var <span class="ident">GPS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeOrbcomm.GPS_GLONASS"><code class="name">var <span class="ident">GPS_GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.GnssMode.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.GnssModeQuectel"><code class="flex name class">
+<span>class <span class="ident">GnssModeQuectel</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssModeQuectel(GnssMode):
+    GPS = 0
+    GPS_BDS = 1
+    GPS_GLONASS = 2
+    GPS_GALILEO = 3
+    GPS_GLONASS_GALILEO_BDS = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.GnssModeQuectel.GPS"><code class="name">var <span class="ident">GPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeQuectel.GPS_BDS"><code class="name">var <span class="ident">GPS_BDS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeQuectel.GPS_GALILEO"><code class="name">var <span class="ident">GPS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeQuectel.GPS_GLONASS"><code class="name">var <span class="ident">GPS_GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS"><code class="name">var <span class="ident">GPS_GLONASS_GALILEO_BDS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.GnssMode.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.MessagePriority"><code class="flex name class">
+<span>class <span class="ident">MessagePriority</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Message priorities for NIMO modem messages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MessagePriority(NimoIntEnum):
+    &#34;&#34;&#34;Message priorities for NIMO modem messages.&#34;&#34;&#34;
+    NONE = 0
+    HIGH = 1
+    MEDH = 2
+    MEDL = 3
+    LOW = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.MessagePriority.HIGH"><code class="name">var <span class="ident">HIGH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessagePriority.LOW"><code class="name">var <span class="ident">LOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessagePriority.MEDH"><code class="name">var <span class="ident">MEDH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessagePriority.MEDL"><code class="name">var <span class="ident">MEDL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessagePriority.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.MessageState"><code class="flex name class">
+<span>class <span class="ident">MessageState</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Message states of NIMO modem messages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MessageState(NimoIntEnum):
+    &#34;&#34;&#34;Message states of NIMO modem messages.&#34;&#34;&#34;
+    UNAVAILABLE = 0
+    RX_PENDING = 1
+    RX_COMPLETE = 2
+    RX_RETRIEVED = 3
+    TX_READY = 4
+    TX_SENDING = 5
+    TX_COMPLETE = 6
+    TX_FAILED = 7
+    TX_CANCELLED = 8</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.MessageState.RX_COMPLETE"><code class="name">var <span class="ident">RX_COMPLETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.RX_PENDING"><code class="name">var <span class="ident">RX_PENDING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.RX_RETRIEVED"><code class="name">var <span class="ident">RX_RETRIEVED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.TX_CANCELLED"><code class="name">var <span class="ident">TX_CANCELLED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.TX_COMPLETE"><code class="name">var <span class="ident">TX_COMPLETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.TX_FAILED"><code class="name">var <span class="ident">TX_FAILED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.TX_READY"><code class="name">var <span class="ident">TX_READY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.TX_SENDING"><code class="name">var <span class="ident">TX_SENDING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.MessageState.UNAVAILABLE"><code class="name">var <span class="ident">UNAVAILABLE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus"><code class="flex name class">
+<span>class <span class="ident">NetworkStatus</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Simplified state of network acquisition and tracking.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NetworkStatus(NimoIntEnum):
+    &#34;&#34;&#34;Simplified state of network acquisition and tracking.&#34;&#34;&#34;
+    UNKNOWN = 0
+    RX_STOPPED = 1
+    RX_SEARCHING = 2
+    RX_ACQUIRING = 3
+    RX_ONLY_NOT_REGISTERED = 4
+    OK = 5
+    SUSPENDED = 6
+    MUTED = 7
+    BLOCKED = 8</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.NetworkStatus.BLOCKED"><code class="name">var <span class="ident">BLOCKED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.MUTED"><code class="name">var <span class="ident">MUTED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.OK"><code class="name">var <span class="ident">OK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.RX_ACQUIRING"><code class="name">var <span class="ident">RX_ACQUIRING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.RX_ONLY_NOT_REGISTERED"><code class="name">var <span class="ident">RX_ONLY_NOT_REGISTERED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.RX_SEARCHING"><code class="name">var <span class="ident">RX_SEARCHING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.RX_STOPPED"><code class="name">var <span class="ident">RX_STOPPED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.SUSPENDED"><code class="name">var <span class="ident">SUSPENDED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.NetworkStatus.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.NimoFloatEnum"><code class="flex name class">
+<span>class <span class="ident">NimoFloatEnum</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enum class wrapper with is_valid method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NimoFloatEnum(Enum):
+    &#34;&#34;&#34;Enum class wrapper with is_valid method.&#34;&#34;&#34;
+    @classmethod
+    def is_valid(cls, value) -&gt; bool:
+        &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+        return value in set(item.value for item in cls)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GeoSatellite" href="#pynimomodem.constants.GeoSatellite">GeoSatellite</a></li>
+<li><a title="pynimomodem.constants.SignalLevelRegional" href="#pynimomodem.constants.SignalLevelRegional">SignalLevelRegional</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="pynimomodem.constants.NimoFloatEnum.is_valid"><code class="name flex">
+<span>def <span class="ident">is_valid</span></span>(<span>value) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>True if the value exists in the enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def is_valid(cls, value) -&gt; bool:
+    &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+    return value in set(item.value for item in cls)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.constants.NimoIntEnum"><code class="flex name class">
+<span>class <span class="ident">NimoIntEnum</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>IntEnum class wrapper with is_valid method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NimoIntEnum(IntEnum):
+    &#34;&#34;&#34;IntEnum class wrapper with is_valid method.&#34;&#34;&#34;
+    @classmethod
+    def is_valid(cls, value) -&gt; bool:
+        &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+        return value in set(item.value for item in cls)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.AtErrorCode" href="#pynimomodem.constants.AtErrorCode">AtErrorCode</a></li>
+<li><a title="pynimomodem.constants.AtParsingState" href="#pynimomodem.constants.AtParsingState">AtParsingState</a></li>
+<li><a title="pynimomodem.constants.BeamState" href="#pynimomodem.constants.BeamState">BeamState</a></li>
+<li><a title="pynimomodem.constants.ControlState" href="#pynimomodem.constants.ControlState">ControlState</a></li>
+<li><a title="pynimomodem.constants.DataFormat" href="#pynimomodem.constants.DataFormat">DataFormat</a></li>
+<li><a title="pynimomodem.constants.EventTraceClass" href="#pynimomodem.constants.EventTraceClass">EventTraceClass</a></li>
+<li><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></li>
+<li><a title="pynimomodem.constants.GeoBeam" href="#pynimomodem.constants.GeoBeam">GeoBeam</a></li>
+<li><a title="pynimomodem.constants.GnssDynamicPlatformModel" href="#pynimomodem.constants.GnssDynamicPlatformModel">GnssDynamicPlatformModel</a></li>
+<li><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></li>
+<li><a title="pynimomodem.constants.MessagePriority" href="#pynimomodem.constants.MessagePriority">MessagePriority</a></li>
+<li><a title="pynimomodem.constants.MessageState" href="#pynimomodem.constants.MessageState">MessageState</a></li>
+<li><a title="pynimomodem.constants.NetworkStatus" href="#pynimomodem.constants.NetworkStatus">NetworkStatus</a></li>
+<li><a title="pynimomodem.constants.PowerMode" href="#pynimomodem.constants.PowerMode">PowerMode</a></li>
+<li><a title="pynimomodem.constants.SignalQuality" href="#pynimomodem.constants.SignalQuality">SignalQuality</a></li>
+<li><a title="pynimomodem.constants.UrcCode" href="#pynimomodem.constants.UrcCode">UrcCode</a></li>
+<li><a title="pynimomodem.constants.WakeupPeriod" href="#pynimomodem.constants.WakeupPeriod">WakeupPeriod</a></li>
+<li><a title="pynimomodem.constants.WakeupWay" href="#pynimomodem.constants.WakeupWay">WakeupWay</a></li>
+<li><a title="pynimomodem.constants.WorkMode" href="#pynimomodem.constants.WorkMode">WorkMode</a></li>
+<li><a title="pynimomodem.location.GnssFixQuality" href="location.html#pynimomodem.location.GnssFixQuality">GnssFixQuality</a></li>
+<li><a title="pynimomodem.location.GnssFixType" href="location.html#pynimomodem.location.GnssFixType">GnssFixType</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="pynimomodem.constants.NimoIntEnum.is_valid"><code class="name flex">
+<span>def <span class="ident">is_valid</span></span>(<span>value) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>True if the value exists in the enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def is_valid(cls, value) -&gt; bool:
+    &#34;&#34;&#34;True if the value exists in the enumeration.&#34;&#34;&#34;
+    return value in set(item.value for item in cls)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.constants.PowerMode"><code class="flex name class">
+<span>class <span class="ident">PowerMode</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The Power Mode setting of the NIMO modem.</p>
+<p>Implies various internal state machine settings for balancing power
+consumption against speed of recovery from line of sight blockages.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PowerMode(NimoIntEnum):
+    &#34;&#34;&#34;The Power Mode setting of the NIMO modem.
+    
+    Implies various internal state machine settings for balancing power
+    consumption against speed of recovery from line of sight blockages.
+    
+    &#34;&#34;&#34;
+    MOBILE_POWERED = 0
+    FIXED_POWERED = 1
+    MOBILE_BATTERY = 2
+    FIXED_BATTERY = 3
+    MOBILE_MINIMAL = 4
+    MOBILE_PARKED = 5
+
+    def gnss_refresh_hours(self):
+        &#34;&#34;&#34;The minimum GNSS refresh interval [hours].&#34;&#34;&#34;
+        if self.value == 0:
+            return 3
+        if self.value == 1:
+            return 24
+        if self.value == 2:
+            return 6
+        if self.value == 3:
+            return 14 * 24
+        if self.value == 4:
+            return 12
+        if self.value == 5:
+            return 24
+    
+    def transmit_lifetime_seconds(self):
+        &#34;&#34;&#34;The maximum duration of a message in the transmit queue [seconds].&#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 3 * 3600
+        return  3 * 60
+    
+    def beam_search_interval_seconds(self):
+        &#34;&#34;&#34;The minimum time between background beam searches [seconds].&#34;&#34;&#34;
+        if self.value in [0, 2, 4]:
+            return 20 * 60
+        return 60 * 60
+
+    def short_term_blockage_seconds(self):
+        &#34;&#34;&#34;The time in blockage before initiating a beam search [seconds].&#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 5 * 60
+        if self.value in [2, 3, 4]:
+            return 20 * 60
+        return 15 * 60
+    
+    def beam_search_maximum_seconds(self):
+        &#34;&#34;&#34;The maximum backoff interval between searches when blocked [seconds].
+        &#34;&#34;&#34;
+        if self.value in [0, 1]:
+            return 0
+        return 1600 * 60</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.PowerMode.FIXED_BATTERY"><code class="name">var <span class="ident">FIXED_BATTERY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.FIXED_POWERED"><code class="name">var <span class="ident">FIXED_POWERED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.MOBILE_BATTERY"><code class="name">var <span class="ident">MOBILE_BATTERY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.MOBILE_MINIMAL"><code class="name">var <span class="ident">MOBILE_MINIMAL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.MOBILE_PARKED"><code class="name">var <span class="ident">MOBILE_PARKED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.MOBILE_POWERED"><code class="name">var <span class="ident">MOBILE_POWERED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pynimomodem.constants.PowerMode.beam_search_interval_seconds"><code class="name flex">
+<span>def <span class="ident">beam_search_interval_seconds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The minimum time between background beam searches [seconds].</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def beam_search_interval_seconds(self):
+    &#34;&#34;&#34;The minimum time between background beam searches [seconds].&#34;&#34;&#34;
+    if self.value in [0, 2, 4]:
+        return 20 * 60
+    return 60 * 60</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.beam_search_maximum_seconds"><code class="name flex">
+<span>def <span class="ident">beam_search_maximum_seconds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The maximum backoff interval between searches when blocked [seconds].</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def beam_search_maximum_seconds(self):
+    &#34;&#34;&#34;The maximum backoff interval between searches when blocked [seconds].
+    &#34;&#34;&#34;
+    if self.value in [0, 1]:
+        return 0
+    return 1600 * 60</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.gnss_refresh_hours"><code class="name flex">
+<span>def <span class="ident">gnss_refresh_hours</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The minimum GNSS refresh interval [hours].</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gnss_refresh_hours(self):
+    &#34;&#34;&#34;The minimum GNSS refresh interval [hours].&#34;&#34;&#34;
+    if self.value == 0:
+        return 3
+    if self.value == 1:
+        return 24
+    if self.value == 2:
+        return 6
+    if self.value == 3:
+        return 14 * 24
+    if self.value == 4:
+        return 12
+    if self.value == 5:
+        return 24</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.short_term_blockage_seconds"><code class="name flex">
+<span>def <span class="ident">short_term_blockage_seconds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The time in blockage before initiating a beam search [seconds].</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def short_term_blockage_seconds(self):
+    &#34;&#34;&#34;The time in blockage before initiating a beam search [seconds].&#34;&#34;&#34;
+    if self.value in [0, 1]:
+        return 5 * 60
+    if self.value in [2, 3, 4]:
+        return 20 * 60
+    return 15 * 60</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.constants.PowerMode.transmit_lifetime_seconds"><code class="name flex">
+<span>def <span class="ident">transmit_lifetime_seconds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The maximum duration of a message in the transmit queue [seconds].</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def transmit_lifetime_seconds(self):
+    &#34;&#34;&#34;The maximum duration of a message in the transmit queue [seconds].&#34;&#34;&#34;
+    if self.value in [0, 1]:
+        return 3 * 3600
+    return  3 * 60</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional"><code class="flex name class">
+<span>class <span class="ident">SignalLevelRegional</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Qualitative descriptors for SNR/CN0 values for a NIMO Regional Beam.</p>
+<p>BARS_n: <em>n</em> is a scale from 0..5 to be used as greaterThan threshold
+NONE, MARGINAL, GOOD: a scale to be used as greaterOrEqual threshold</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SignalLevelRegional(NimoFloatEnum):
+    &#34;&#34;&#34;Qualitative descriptors for SNR/CN0 values for a NIMO Regional Beam.
+    
+    BARS_n: *n* is a scale from 0..5 to be used as greaterThan threshold
+    NONE, MARGINAL, GOOD: a scale to be used as greaterOrEqual threshold
+
+    &#34;&#34;&#34;
+    BARS_0 = 0
+    BARS_1 = 37.0
+    BARS_2 = 39.0
+    BARS_3 = 41.0
+    BARS_4 = 43.0
+    BARS_5 = 45.5
+    INVALID = 55.0</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoFloatEnum" href="#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_0"><code class="name">var <span class="ident">BARS_0</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_1"><code class="name">var <span class="ident">BARS_1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_2"><code class="name">var <span class="ident">BARS_2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_3"><code class="name">var <span class="ident">BARS_3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_4"><code class="name">var <span class="ident">BARS_4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.BARS_5"><code class="name">var <span class="ident">BARS_5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalLevelRegional.INVALID"><code class="name">var <span class="ident">INVALID</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoFloatEnum" href="#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoFloatEnum.is_valid" href="#pynimomodem.constants.NimoFloatEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality"><code class="flex name class">
+<span>class <span class="ident">SignalQuality</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Qualitative descriptor corresponding to a SignalLevel</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SignalQuality(NimoIntEnum):
+    &#34;&#34;&#34;Qualitative descriptor corresponding to a SignalLevel&#34;&#34;&#34;
+    NONE = 0
+    WEAK = 1
+    LOW = 2
+    MID = 3
+    GOOD = 4
+    STRONG = 5
+    WARNING = 6</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.SignalQuality.GOOD"><code class="name">var <span class="ident">GOOD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.LOW"><code class="name">var <span class="ident">LOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.MID"><code class="name">var <span class="ident">MID</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.STRONG"><code class="name">var <span class="ident">STRONG</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.WARNING"><code class="name">var <span class="ident">WARNING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.SignalQuality.WEAK"><code class="name">var <span class="ident">WEAK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.UrcCode"><code class="flex name class">
+<span>class <span class="ident">UrcCode</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Quectel URC code map.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UrcCode(NimoIntEnum):
+    &#34;&#34;&#34;Quectel URC code map.&#34;&#34;&#34;
+    GPS_FIX = 0
+    RX_END = 1
+    TX_END = 2
+    REGED = 3
+    ITV_CHG = 4
+    TIME_UPD = 5
+    GPS_TMO = 6
+    PLG_RESP = 7</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.UrcCode.GPS_FIX"><code class="name">var <span class="ident">GPS_FIX</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.GPS_TMO"><code class="name">var <span class="ident">GPS_TMO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.ITV_CHG"><code class="name">var <span class="ident">ITV_CHG</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.PLG_RESP"><code class="name">var <span class="ident">PLG_RESP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.REGED"><code class="name">var <span class="ident">REGED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.RX_END"><code class="name">var <span class="ident">RX_END</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.TIME_UPD"><code class="name">var <span class="ident">TIME_UPD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcCode.TX_END"><code class="name">var <span class="ident">TX_END</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.UrcControl"><code class="flex name class">
+<span>class <span class="ident">UrcControl</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Control bits for Quectel Unsolicited Response Codes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class UrcControl(IntFlag):
+    &#34;&#34;&#34;Control bits for Quectel Unsolicited Response Codes.&#34;&#34;&#34;
+    GNSS_FIX_NEW =              0b00000001
+    MESSAGE_MT_RECEIVED =       0b00000010
+    MESSAGE_MO_COMPLETE =       0b00000100
+    NETWORK_REGISTERED =        0b00001000
+    WAKEUP_PERIOD_CHANGE =      0b00010000
+    UTC_TIME_SYNC =             0b00100000
+    GNSS_FIX_TIMEOUT =          0b01000000
+    NETWORK_PING_ACKNOWLEDGED = 0b10000000
+    
+    @classmethod
+    def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+        &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+        return [item for item in cls if item.value &amp; event_mask]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntFlag</li>
+<li>builtins.int</li>
+<li>enum.Flag</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.UrcControl.GNSS_FIX_NEW"><code class="name">var <span class="ident">GNSS_FIX_NEW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.GNSS_FIX_TIMEOUT"><code class="name">var <span class="ident">GNSS_FIX_TIMEOUT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.MESSAGE_MO_COMPLETE"><code class="name">var <span class="ident">MESSAGE_MO_COMPLETE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.MESSAGE_MT_RECEIVED"><code class="name">var <span class="ident">MESSAGE_MT_RECEIVED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.NETWORK_PING_ACKNOWLEDGED"><code class="name">var <span class="ident">NETWORK_PING_ACKNOWLEDGED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.NETWORK_REGISTERED"><code class="name">var <span class="ident">NETWORK_REGISTERED</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.UTC_TIME_SYNC"><code class="name">var <span class="ident">UTC_TIME_SYNC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.UrcControl.WAKEUP_PERIOD_CHANGE"><code class="name">var <span class="ident">WAKEUP_PERIOD_CHANGE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="pynimomodem.constants.UrcControl.get_events"><code class="name flex">
+<span>def <span class="ident">get_events</span></span>(<span>event_mask: int) ‑> list[<a title="pynimomodem.constants.EventNotification" href="#pynimomodem.constants.EventNotification">EventNotification</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses a bitmask to return a list of events.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
+    &#34;&#34;&#34;Parses a bitmask to return a list of events.&#34;&#34;&#34;
+    return [item for item in cls if item.value &amp; event_mask]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod"><code class="flex name class">
+<span>class <span class="ident">WakeupPeriod</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The Wakeup Period setting of a NIMO modem.</p>
+<p>Determines how often the modem wakes up to listen briefly for potential
+mobile-terminated messages to be delivered by the network.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WakeupPeriod(NimoIntEnum):
+    &#34;&#34;&#34;The Wakeup Period setting of a NIMO modem.
+    
+    Determines how often the modem wakes up to listen briefly for potential
+    mobile-terminated messages to be delivered by the network.
+    
+    &#34;&#34;&#34;
+    NONE = 0   # 5 seconds
+    SECONDS_30 = 1
+    MINUTES_1 = 2
+    MINUTES_3 = 3
+    MINUTES_10 = 4
+    MINUTES_30 = 5
+    MINUTES_60 = 6
+    MINUTES_2 = 7
+    MINUTES_5 = 8
+    MINUTES_15 = 9
+    MINUTES_20 = 10
+
+    def seconds(self):
+        if self.name == &#39;NONE&#39;:
+            return 5
+        value = int(self.name.split(&#39;_&#39;))[1]
+        if self.name.startswith(&#39;MINUTES&#39;):
+            return value * 60
+        return value</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_1"><code class="name">var <span class="ident">MINUTES_1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_10"><code class="name">var <span class="ident">MINUTES_10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_15"><code class="name">var <span class="ident">MINUTES_15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_2"><code class="name">var <span class="ident">MINUTES_2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_20"><code class="name">var <span class="ident">MINUTES_20</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_3"><code class="name">var <span class="ident">MINUTES_3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_30"><code class="name">var <span class="ident">MINUTES_30</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_5"><code class="name">var <span class="ident">MINUTES_5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.MINUTES_60"><code class="name">var <span class="ident">MINUTES_60</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupPeriod.SECONDS_30"><code class="name">var <span class="ident">SECONDS_30</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pynimomodem.constants.WakeupPeriod.seconds"><code class="name flex">
+<span>def <span class="ident">seconds</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def seconds(self):
+    if self.name == &#39;NONE&#39;:
+        return 5
+    value = int(self.name.split(&#39;_&#39;))[1]
+    if self.name.startswith(&#39;MINUTES&#39;):
+        return value * 60
+    return value</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.WakeupWay"><code class="flex name class">
+<span>class <span class="ident">WakeupWay</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Quectel CC200A-LB wakeup methods.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WakeupWay(NimoIntEnum):
+    &#34;&#34;&#34;Quectel CC200A-LB wakeup methods.&#34;&#34;&#34;
+    WAKEUP_PIN = 0
+    UART = 1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.WakeupWay.UART"><code class="name">var <span class="ident">UART</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WakeupWay.WAKEUP_PIN"><code class="name">var <span class="ident">WAKEUP_PIN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.constants.WorkMode"><code class="flex name class">
+<span>class <span class="ident">WorkMode</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Quectel CC200A-LB working modes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WorkMode(NimoIntEnum):
+    &#34;&#34;&#34;Quectel CC200A-LB working modes.&#34;&#34;&#34;
+    WORKING = 1
+    GNSS = 2
+    PERIODIC_SLEEP = 3</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.constants.WorkMode.GNSS"><code class="name">var <span class="ident">GNSS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WorkMode.PERIODIC_SLEEP"><code class="name">var <span class="ident">PERIODIC_SLEEP</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.WorkMode.WORKING"><code class="name">var <span class="ident">WORKING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pynimomodem" href="index.html">pynimomodem</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pynimomodem.constants.AtErrorCode" href="#pynimomodem.constants.AtErrorCode">AtErrorCode</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.AtErrorCode.CRC_CONFIG_MISMATCH" href="#pynimomodem.constants.AtErrorCode.CRC_CONFIG_MISMATCH">CRC_CONFIG_MISMATCH</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME" href="#pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME">DUPLICATE_MESSAGE_NAME</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.ERROR" href="#pynimomodem.constants.AtErrorCode.ERROR">ERROR</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT" href="#pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT">GNSS_TIMEOUT</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS" href="#pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS">INVALID_COMMAND_PARAMETERS</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_CRC" href="#pynimomodem.constants.AtErrorCode.INVALID_CRC">INVALID_CRC</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE" href="#pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE">MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE" href="#pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE">MESSAGE_UNAVAILABLE</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.OK" href="#pynimomodem.constants.AtErrorCode.OK">OK</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES" href="#pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES">QUEUE_INSUFFICIENT_RESOURCES</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.READ_ONLY_PARAMETER" href="#pynimomodem.constants.AtErrorCode.READ_ONLY_PARAMETER">READ_ONLY_PARAMETER</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_104" href="#pynimomodem.constants.AtErrorCode.RESERVED_104">RESERVED_104</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_110" href="#pynimomodem.constants.AtErrorCode.RESERVED_110">RESERVED_110</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_111" href="#pynimomodem.constants.AtErrorCode.RESERVED_111">RESERVED_111</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.SYSTEM_ERROR" href="#pynimomodem.constants.AtErrorCode.SYSTEM_ERROR">SYSTEM_ERROR</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.TIMEOUT" href="#pynimomodem.constants.AtErrorCode.TIMEOUT">TIMEOUT</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.UNABLE_TO_DELETE" href="#pynimomodem.constants.AtErrorCode.UNABLE_TO_DELETE">UNABLE_TO_DELETE</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.UNKNOWN_COMMAND" href="#pynimomodem.constants.AtErrorCode.UNKNOWN_COMMAND">UNKNOWN_COMMAND</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.AtParsingState" href="#pynimomodem.constants.AtParsingState">AtParsingState</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.AtParsingState.CRC" href="#pynimomodem.constants.AtParsingState.CRC">CRC</a></code></li>
+<li><code><a title="pynimomodem.constants.AtParsingState.ECHO" href="#pynimomodem.constants.AtParsingState.ECHO">ECHO</a></code></li>
+<li><code><a title="pynimomodem.constants.AtParsingState.ERROR" href="#pynimomodem.constants.AtParsingState.ERROR">ERROR</a></code></li>
+<li><code><a title="pynimomodem.constants.AtParsingState.OK" href="#pynimomodem.constants.AtParsingState.OK">OK</a></code></li>
+<li><code><a title="pynimomodem.constants.AtParsingState.RESPONSE" href="#pynimomodem.constants.AtParsingState.RESPONSE">RESPONSE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.BeamState" href="#pynimomodem.constants.BeamState">BeamState</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.BeamState.DELAY_TRAFFIC_SEARCH" href="#pynimomodem.constants.BeamState.DELAY_TRAFFIC_SEARCH">DELAY_TRAFFIC_SEARCH</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.IDLE" href="#pynimomodem.constants.BeamState.IDLE">IDLE</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.RESERVED" href="#pynimomodem.constants.BeamState.RESERVED">RESERVED</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.SEARCH_ANY_TRAFFIC" href="#pynimomodem.constants.BeamState.SEARCH_ANY_TRAFFIC">SEARCH_ANY_TRAFFIC</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.SEARCH_BULLETIN_BOARD" href="#pynimomodem.constants.BeamState.SEARCH_BULLETIN_BOARD">SEARCH_BULLETIN_BOARD</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.SEARCH_LAST_TRAFFIC" href="#pynimomodem.constants.BeamState.SEARCH_LAST_TRAFFIC">SEARCH_LAST_TRAFFIC</a></code></li>
+<li><code><a title="pynimomodem.constants.BeamState.SEARCH_NEW_TRAFFIC" href="#pynimomodem.constants.BeamState.SEARCH_NEW_TRAFFIC">SEARCH_NEW_TRAFFIC</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.ControlState" href="#pynimomodem.constants.ControlState">ControlState</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.ControlState.ACTIVE" href="#pynimomodem.constants.ControlState.ACTIVE">ACTIVE</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BB_DOWNLOAD" href="#pynimomodem.constants.ControlState.BB_DOWNLOAD">BB_DOWNLOAD</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BEAM_ACQUIRED" href="#pynimomodem.constants.ControlState.BEAM_ACQUIRED">BEAM_ACQUIRED</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BEAM_FOUND" href="#pynimomodem.constants.ControlState.BEAM_FOUND">BEAM_FOUND</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BEAM_SEARCH" href="#pynimomodem.constants.ControlState.BEAM_SEARCH">BEAM_SEARCH</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BEAM_SWITCH" href="#pynimomodem.constants.ControlState.BEAM_SWITCH">BEAM_SWITCH</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.BLOCKED" href="#pynimomodem.constants.ControlState.BLOCKED">BLOCKED</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.CONFIRM_PREVIOUS_BEAM" href="#pynimomodem.constants.ControlState.CONFIRM_PREVIOUS_BEAM">CONFIRM_PREVIOUS_BEAM</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.CONFIRM_REQUESTED_BEAM" href="#pynimomodem.constants.ControlState.CONFIRM_REQUESTED_BEAM">CONFIRM_REQUESTED_BEAM</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.CONNECT_CONFIRMED_BEAM" href="#pynimomodem.constants.ControlState.CONNECT_CONFIRMED_BEAM">CONNECT_CONFIRMED_BEAM</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.GNSS_WAIT" href="#pynimomodem.constants.ControlState.GNSS_WAIT">GNSS_WAIT</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.RECEIVE_ONLY" href="#pynimomodem.constants.ControlState.RECEIVE_ONLY">RECEIVE_ONLY</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.REGISTERING" href="#pynimomodem.constants.ControlState.REGISTERING">REGISTERING</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.SEARCH_START" href="#pynimomodem.constants.ControlState.SEARCH_START">SEARCH_START</a></code></li>
+<li><code><a title="pynimomodem.constants.ControlState.STOPPED" href="#pynimomodem.constants.ControlState.STOPPED">STOPPED</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.DataFormat" href="#pynimomodem.constants.DataFormat">DataFormat</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.DataFormat.BASE64" href="#pynimomodem.constants.DataFormat.BASE64">BASE64</a></code></li>
+<li><code><a title="pynimomodem.constants.DataFormat.HEX" href="#pynimomodem.constants.DataFormat.HEX">HEX</a></code></li>
+<li><code><a title="pynimomodem.constants.DataFormat.TEXT" href="#pynimomodem.constants.DataFormat.TEXT">TEXT</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventNotification" href="#pynimomodem.constants.EventNotification">EventNotification</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.EventNotification.EVENT_TRACE_CACHED" href="#pynimomodem.constants.EventNotification.EVENT_TRACE_CACHED">EVENT_TRACE_CACHED</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.GNSS_FIX_NEW" href="#pynimomodem.constants.EventNotification.GNSS_FIX_NEW">GNSS_FIX_NEW</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.GNSS_FIX_TIMEOUT" href="#pynimomodem.constants.EventNotification.GNSS_FIX_TIMEOUT">GNSS_FIX_TIMEOUT</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.JAMMING_ANTENNA_CHANGE" href="#pynimomodem.constants.EventNotification.JAMMING_ANTENNA_CHANGE">JAMMING_ANTENNA_CHANGE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.MESSAGE_MO_COMPLETE" href="#pynimomodem.constants.EventNotification.MESSAGE_MO_COMPLETE">MESSAGE_MO_COMPLETE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.MESSAGE_MT_RECEIVED" href="#pynimomodem.constants.EventNotification.MESSAGE_MT_RECEIVED">MESSAGE_MT_RECEIVED</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.MODEM_RESET_COMPLETE" href="#pynimomodem.constants.EventNotification.MODEM_RESET_COMPLETE">MODEM_RESET_COMPLETE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.MODEM_RESET_PENDING" href="#pynimomodem.constants.EventNotification.MODEM_RESET_PENDING">MODEM_RESET_PENDING</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.NETWORK_PING_ACKNOWLEDGED" href="#pynimomodem.constants.EventNotification.NETWORK_PING_ACKNOWLEDGED">NETWORK_PING_ACKNOWLEDGED</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.NETWORK_REGISTERED" href="#pynimomodem.constants.EventNotification.NETWORK_REGISTERED">NETWORK_REGISTERED</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.UTC_TIME_SYNC" href="#pynimomodem.constants.EventNotification.UTC_TIME_SYNC">UTC_TIME_SYNC</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.WAKEUP_PERIOD_CHANGE" href="#pynimomodem.constants.EventNotification.WAKEUP_PERIOD_CHANGE">WAKEUP_PERIOD_CHANGE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventNotification.get_events" href="#pynimomodem.constants.EventNotification.get_events">get_events</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTrace" href="#pynimomodem.constants.EventTrace">EventTrace</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceClass" href="#pynimomodem.constants.EventTraceClass">EventTraceClass</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.EventTraceClass.GNSS" href="#pynimomodem.constants.EventTraceClass.GNSS">GNSS</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceClass.HARDWARE_FAULT" href="#pynimomodem.constants.EventTraceClass.HARDWARE_FAULT">HARDWARE_FAULT</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceClass.MESSAGE" href="#pynimomodem.constants.EventTraceClass.MESSAGE">MESSAGE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceClass.SATELLITE" href="#pynimomodem.constants.EventTraceClass.SATELLITE">SATELLITE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceClass.SYSTEM" href="#pynimomodem.constants.EventTraceClass.SYSTEM">SYSTEM</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceGnss" href="#pynimomodem.constants.EventTraceGnss">EventTraceGnss</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.EventTraceGnss.DOPPLER" href="#pynimomodem.constants.EventTraceGnss.DOPPLER">DOPPLER</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceGnss.FIX_STATS" href="#pynimomodem.constants.EventTraceGnss.FIX_STATS">FIX_STATS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceMessage" href="#pynimomodem.constants.EventTraceMessage">EventTraceMessage</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.EventTraceMessage.RECEIVE_STATS" href="#pynimomodem.constants.EventTraceMessage.RECEIVE_STATS">RECEIVE_STATS</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceMessage.TRANSMIT_STATS" href="#pynimomodem.constants.EventTraceMessage.TRANSMIT_STATS">TRANSMIT_STATS</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceMessage.TRANSMIT_UTILITY" href="#pynimomodem.constants.EventTraceMessage.TRANSMIT_UTILITY">TRANSMIT_UTILITY</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceSatellite" href="#pynimomodem.constants.EventTraceSatellite">EventTraceSatellite</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.BEAM_CONNECT" href="#pynimomodem.constants.EventTraceSatellite.BEAM_CONNECT">BEAM_CONNECT</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.BEAM_SEARCH_RESULT" href="#pynimomodem.constants.EventTraceSatellite.BEAM_SEARCH_RESULT">BEAM_SEARCH_RESULT</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.EVENT_LOG" href="#pynimomodem.constants.EventTraceSatellite.EVENT_LOG">EVENT_LOG</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.GEO_ADJUST" href="#pynimomodem.constants.EventTraceSatellite.GEO_ADJUST">GEO_ADJUST</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.RX_METRICS_DAY" href="#pynimomodem.constants.EventTraceSatellite.RX_METRICS_DAY">RX_METRICS_DAY</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.RX_METRICS_HOUR" href="#pynimomodem.constants.EventTraceSatellite.RX_METRICS_HOUR">RX_METRICS_HOUR</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.RX_METRICS_MINUTE" href="#pynimomodem.constants.EventTraceSatellite.RX_METRICS_MINUTE">RX_METRICS_MINUTE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.RX_METRICS_SUBFRAME" href="#pynimomodem.constants.EventTraceSatellite.RX_METRICS_SUBFRAME">RX_METRICS_SUBFRAME</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.RX_STATUS" href="#pynimomodem.constants.EventTraceSatellite.RX_STATUS">RX_STATUS</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.TX_METRICS_DAY" href="#pynimomodem.constants.EventTraceSatellite.TX_METRICS_DAY">TX_METRICS_DAY</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.TX_METRICS_HOUR" href="#pynimomodem.constants.EventTraceSatellite.TX_METRICS_HOUR">TX_METRICS_HOUR</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.TX_METRICS_MINUTE" href="#pynimomodem.constants.EventTraceSatellite.TX_METRICS_MINUTE">TX_METRICS_MINUTE</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.TX_METRICS_SUBFRAME" href="#pynimomodem.constants.EventTraceSatellite.TX_METRICS_SUBFRAME">TX_METRICS_SUBFRAME</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSatellite.TX_STATUS" href="#pynimomodem.constants.EventTraceSatellite.TX_STATUS">TX_STATUS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceSubclass" href="#pynimomodem.constants.EventTraceSubclass">EventTraceSubclass</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.EventTraceSystem" href="#pynimomodem.constants.EventTraceSystem">EventTraceSystem</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.EventTraceSystem.LOW_POWER" href="#pynimomodem.constants.EventTraceSystem.LOW_POWER">LOW_POWER</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSystem.RESET" href="#pynimomodem.constants.EventTraceSystem.RESET">RESET</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSystem.SATCOM_STATS" href="#pynimomodem.constants.EventTraceSystem.SATCOM_STATS">SATCOM_STATS</a></code></li>
+<li><code><a title="pynimomodem.constants.EventTraceSystem.SYSTEM_STATS" href="#pynimomodem.constants.EventTraceSystem.SYSTEM_STATS">SYSTEM_STATS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GeoBeam" href="#pynimomodem.constants.GeoBeam">GeoBeam</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB1" href="#pynimomodem.constants.GeoBeam.AMER_RB1">AMER_RB1</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB10" href="#pynimomodem.constants.GeoBeam.AMER_RB10">AMER_RB10</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB11" href="#pynimomodem.constants.GeoBeam.AMER_RB11">AMER_RB11</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB12" href="#pynimomodem.constants.GeoBeam.AMER_RB12">AMER_RB12</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB13" href="#pynimomodem.constants.GeoBeam.AMER_RB13">AMER_RB13</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB14" href="#pynimomodem.constants.GeoBeam.AMER_RB14">AMER_RB14</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB15" href="#pynimomodem.constants.GeoBeam.AMER_RB15">AMER_RB15</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB16" href="#pynimomodem.constants.GeoBeam.AMER_RB16">AMER_RB16</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB17" href="#pynimomodem.constants.GeoBeam.AMER_RB17">AMER_RB17</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB18" href="#pynimomodem.constants.GeoBeam.AMER_RB18">AMER_RB18</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB19" href="#pynimomodem.constants.GeoBeam.AMER_RB19">AMER_RB19</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB2" href="#pynimomodem.constants.GeoBeam.AMER_RB2">AMER_RB2</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB3" href="#pynimomodem.constants.GeoBeam.AMER_RB3">AMER_RB3</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB4" href="#pynimomodem.constants.GeoBeam.AMER_RB4">AMER_RB4</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB5" href="#pynimomodem.constants.GeoBeam.AMER_RB5">AMER_RB5</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB6" href="#pynimomodem.constants.GeoBeam.AMER_RB6">AMER_RB6</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB7" href="#pynimomodem.constants.GeoBeam.AMER_RB7">AMER_RB7</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB8" href="#pynimomodem.constants.GeoBeam.AMER_RB8">AMER_RB8</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AMER_RB9" href="#pynimomodem.constants.GeoBeam.AMER_RB9">AMER_RB9</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.AORW_SC" href="#pynimomodem.constants.GeoBeam.AORW_SC">AORW_SC</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB1" href="#pynimomodem.constants.GeoBeam.APAC_RB1">APAC_RB1</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB10" href="#pynimomodem.constants.GeoBeam.APAC_RB10">APAC_RB10</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB11" href="#pynimomodem.constants.GeoBeam.APAC_RB11">APAC_RB11</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB12" href="#pynimomodem.constants.GeoBeam.APAC_RB12">APAC_RB12</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB13" href="#pynimomodem.constants.GeoBeam.APAC_RB13">APAC_RB13</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB14" href="#pynimomodem.constants.GeoBeam.APAC_RB14">APAC_RB14</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB15" href="#pynimomodem.constants.GeoBeam.APAC_RB15">APAC_RB15</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB16" href="#pynimomodem.constants.GeoBeam.APAC_RB16">APAC_RB16</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB17" href="#pynimomodem.constants.GeoBeam.APAC_RB17">APAC_RB17</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB18" href="#pynimomodem.constants.GeoBeam.APAC_RB18">APAC_RB18</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB19" href="#pynimomodem.constants.GeoBeam.APAC_RB19">APAC_RB19</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB2" href="#pynimomodem.constants.GeoBeam.APAC_RB2">APAC_RB2</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB3" href="#pynimomodem.constants.GeoBeam.APAC_RB3">APAC_RB3</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB4" href="#pynimomodem.constants.GeoBeam.APAC_RB4">APAC_RB4</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB5" href="#pynimomodem.constants.GeoBeam.APAC_RB5">APAC_RB5</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB6" href="#pynimomodem.constants.GeoBeam.APAC_RB6">APAC_RB6</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB7" href="#pynimomodem.constants.GeoBeam.APAC_RB7">APAC_RB7</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB8" href="#pynimomodem.constants.GeoBeam.APAC_RB8">APAC_RB8</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.APAC_RB9" href="#pynimomodem.constants.GeoBeam.APAC_RB9">APAC_RB9</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB1" href="#pynimomodem.constants.GeoBeam.EMEA_RB1">EMEA_RB1</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB10" href="#pynimomodem.constants.GeoBeam.EMEA_RB10">EMEA_RB10</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB11" href="#pynimomodem.constants.GeoBeam.EMEA_RB11">EMEA_RB11</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB12" href="#pynimomodem.constants.GeoBeam.EMEA_RB12">EMEA_RB12</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB13" href="#pynimomodem.constants.GeoBeam.EMEA_RB13">EMEA_RB13</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB14" href="#pynimomodem.constants.GeoBeam.EMEA_RB14">EMEA_RB14</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB15" href="#pynimomodem.constants.GeoBeam.EMEA_RB15">EMEA_RB15</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB16" href="#pynimomodem.constants.GeoBeam.EMEA_RB16">EMEA_RB16</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB17" href="#pynimomodem.constants.GeoBeam.EMEA_RB17">EMEA_RB17</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB18" href="#pynimomodem.constants.GeoBeam.EMEA_RB18">EMEA_RB18</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB19" href="#pynimomodem.constants.GeoBeam.EMEA_RB19">EMEA_RB19</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB2" href="#pynimomodem.constants.GeoBeam.EMEA_RB2">EMEA_RB2</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB3" href="#pynimomodem.constants.GeoBeam.EMEA_RB3">EMEA_RB3</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB4" href="#pynimomodem.constants.GeoBeam.EMEA_RB4">EMEA_RB4</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB5" href="#pynimomodem.constants.GeoBeam.EMEA_RB5">EMEA_RB5</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB6" href="#pynimomodem.constants.GeoBeam.EMEA_RB6">EMEA_RB6</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB7" href="#pynimomodem.constants.GeoBeam.EMEA_RB7">EMEA_RB7</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB8" href="#pynimomodem.constants.GeoBeam.EMEA_RB8">EMEA_RB8</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.EMEA_RB9" href="#pynimomodem.constants.GeoBeam.EMEA_RB9">EMEA_RB9</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.GLOBAL_BB" href="#pynimomodem.constants.GeoBeam.GLOBAL_BB">GLOBAL_BB</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB1" href="#pynimomodem.constants.GeoBeam.IOE_RB1">IOE_RB1</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB10" href="#pynimomodem.constants.GeoBeam.IOE_RB10">IOE_RB10</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB11" href="#pynimomodem.constants.GeoBeam.IOE_RB11">IOE_RB11</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB12" href="#pynimomodem.constants.GeoBeam.IOE_RB12">IOE_RB12</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB13" href="#pynimomodem.constants.GeoBeam.IOE_RB13">IOE_RB13</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB14" href="#pynimomodem.constants.GeoBeam.IOE_RB14">IOE_RB14</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB15" href="#pynimomodem.constants.GeoBeam.IOE_RB15">IOE_RB15</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB16" href="#pynimomodem.constants.GeoBeam.IOE_RB16">IOE_RB16</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB17" href="#pynimomodem.constants.GeoBeam.IOE_RB17">IOE_RB17</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB18" href="#pynimomodem.constants.GeoBeam.IOE_RB18">IOE_RB18</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB19" href="#pynimomodem.constants.GeoBeam.IOE_RB19">IOE_RB19</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB2" href="#pynimomodem.constants.GeoBeam.IOE_RB2">IOE_RB2</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB3" href="#pynimomodem.constants.GeoBeam.IOE_RB3">IOE_RB3</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB4" href="#pynimomodem.constants.GeoBeam.IOE_RB4">IOE_RB4</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB5" href="#pynimomodem.constants.GeoBeam.IOE_RB5">IOE_RB5</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB6" href="#pynimomodem.constants.GeoBeam.IOE_RB6">IOE_RB6</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB7" href="#pynimomodem.constants.GeoBeam.IOE_RB7">IOE_RB7</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB8" href="#pynimomodem.constants.GeoBeam.IOE_RB8">IOE_RB8</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.IOE_RB9" href="#pynimomodem.constants.GeoBeam.IOE_RB9">IOE_RB9</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.beam" href="#pynimomodem.constants.GeoBeam.beam">beam</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.id" href="#pynimomodem.constants.GeoBeam.id">id</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoBeam.satellite" href="#pynimomodem.constants.GeoBeam.satellite">satellite</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GeoSatellite" href="#pynimomodem.constants.GeoSatellite">GeoSatellite</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.GeoSatellite.AMER" href="#pynimomodem.constants.GeoSatellite.AMER">AMER</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoSatellite.AORWSC" href="#pynimomodem.constants.GeoSatellite.AORWSC">AORWSC</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoSatellite.APAC" href="#pynimomodem.constants.GeoSatellite.APAC">APAC</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoSatellite.EMEA" href="#pynimomodem.constants.GeoSatellite.EMEA">EMEA</a></code></li>
+<li><code><a title="pynimomodem.constants.GeoSatellite.IOE" href="#pynimomodem.constants.GeoSatellite.IOE">IOE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GnssDynamicPlatformModel" href="#pynimomodem.constants.GnssDynamicPlatformModel">GnssDynamicPlatformModel</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.AIR_1G" href="#pynimomodem.constants.GnssDynamicPlatformModel.AIR_1G">AIR_1G</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.AIR_2G" href="#pynimomodem.constants.GnssDynamicPlatformModel.AIR_2G">AIR_2G</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.AIR_4G" href="#pynimomodem.constants.GnssDynamicPlatformModel.AIR_4G">AIR_4G</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.AUTOMOTIVE" href="#pynimomodem.constants.GnssDynamicPlatformModel.AUTOMOTIVE">AUTOMOTIVE</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.PEDESTRIAN" href="#pynimomodem.constants.GnssDynamicPlatformModel.PEDESTRIAN">PEDESTRIAN</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.PORTABLE" href="#pynimomodem.constants.GnssDynamicPlatformModel.PORTABLE">PORTABLE</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.SEA" href="#pynimomodem.constants.GnssDynamicPlatformModel.SEA">SEA</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssDynamicPlatformModel.STATIONARY" href="#pynimomodem.constants.GnssDynamicPlatformModel.STATIONARY">STATIONARY</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GnssMode" href="#pynimomodem.constants.GnssMode">GnssMode</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GnssModeOrbcomm" href="#pynimomodem.constants.GnssModeOrbcomm">GnssModeOrbcomm</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.BEIDOU" href="#pynimomodem.constants.GnssModeOrbcomm.BEIDOU">BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.BEIDOU_GALILEO" href="#pynimomodem.constants.GnssModeOrbcomm.BEIDOU_GALILEO">BEIDOU_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GALILEO" href="#pynimomodem.constants.GnssModeOrbcomm.GALILEO">GALILEO</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GLONASS" href="#pynimomodem.constants.GnssModeOrbcomm.GLONASS">GLONASS</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GLONASS_BEIDOU" href="#pynimomodem.constants.GnssModeOrbcomm.GLONASS_BEIDOU">GLONASS_BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GLONASS_GALILEO" href="#pynimomodem.constants.GnssModeOrbcomm.GLONASS_GALILEO">GLONASS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GPS" href="#pynimomodem.constants.GnssModeOrbcomm.GPS">GPS</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GPS_BEIDOU" href="#pynimomodem.constants.GnssModeOrbcomm.GPS_BEIDOU">GPS_BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GPS_GALILEO" href="#pynimomodem.constants.GnssModeOrbcomm.GPS_GALILEO">GPS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeOrbcomm.GPS_GLONASS" href="#pynimomodem.constants.GnssModeOrbcomm.GPS_GLONASS">GPS_GLONASS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.GnssModeQuectel" href="#pynimomodem.constants.GnssModeQuectel">GnssModeQuectel</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.GnssModeQuectel.GPS" href="#pynimomodem.constants.GnssModeQuectel.GPS">GPS</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeQuectel.GPS_BDS" href="#pynimomodem.constants.GnssModeQuectel.GPS_BDS">GPS_BDS</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeQuectel.GPS_GALILEO" href="#pynimomodem.constants.GnssModeQuectel.GPS_GALILEO">GPS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeQuectel.GPS_GLONASS" href="#pynimomodem.constants.GnssModeQuectel.GPS_GLONASS">GPS_GLONASS</a></code></li>
+<li><code><a title="pynimomodem.constants.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS" href="#pynimomodem.constants.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS">GPS_GLONASS_GALILEO_BDS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.MessagePriority" href="#pynimomodem.constants.MessagePriority">MessagePriority</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.MessagePriority.HIGH" href="#pynimomodem.constants.MessagePriority.HIGH">HIGH</a></code></li>
+<li><code><a title="pynimomodem.constants.MessagePriority.LOW" href="#pynimomodem.constants.MessagePriority.LOW">LOW</a></code></li>
+<li><code><a title="pynimomodem.constants.MessagePriority.MEDH" href="#pynimomodem.constants.MessagePriority.MEDH">MEDH</a></code></li>
+<li><code><a title="pynimomodem.constants.MessagePriority.MEDL" href="#pynimomodem.constants.MessagePriority.MEDL">MEDL</a></code></li>
+<li><code><a title="pynimomodem.constants.MessagePriority.NONE" href="#pynimomodem.constants.MessagePriority.NONE">NONE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.MessageState" href="#pynimomodem.constants.MessageState">MessageState</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.MessageState.RX_COMPLETE" href="#pynimomodem.constants.MessageState.RX_COMPLETE">RX_COMPLETE</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.RX_PENDING" href="#pynimomodem.constants.MessageState.RX_PENDING">RX_PENDING</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.RX_RETRIEVED" href="#pynimomodem.constants.MessageState.RX_RETRIEVED">RX_RETRIEVED</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.TX_CANCELLED" href="#pynimomodem.constants.MessageState.TX_CANCELLED">TX_CANCELLED</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.TX_COMPLETE" href="#pynimomodem.constants.MessageState.TX_COMPLETE">TX_COMPLETE</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.TX_FAILED" href="#pynimomodem.constants.MessageState.TX_FAILED">TX_FAILED</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.TX_READY" href="#pynimomodem.constants.MessageState.TX_READY">TX_READY</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.TX_SENDING" href="#pynimomodem.constants.MessageState.TX_SENDING">TX_SENDING</a></code></li>
+<li><code><a title="pynimomodem.constants.MessageState.UNAVAILABLE" href="#pynimomodem.constants.MessageState.UNAVAILABLE">UNAVAILABLE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.NetworkStatus" href="#pynimomodem.constants.NetworkStatus">NetworkStatus</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.NetworkStatus.BLOCKED" href="#pynimomodem.constants.NetworkStatus.BLOCKED">BLOCKED</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.MUTED" href="#pynimomodem.constants.NetworkStatus.MUTED">MUTED</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.OK" href="#pynimomodem.constants.NetworkStatus.OK">OK</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.RX_ACQUIRING" href="#pynimomodem.constants.NetworkStatus.RX_ACQUIRING">RX_ACQUIRING</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.RX_ONLY_NOT_REGISTERED" href="#pynimomodem.constants.NetworkStatus.RX_ONLY_NOT_REGISTERED">RX_ONLY_NOT_REGISTERED</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.RX_SEARCHING" href="#pynimomodem.constants.NetworkStatus.RX_SEARCHING">RX_SEARCHING</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.RX_STOPPED" href="#pynimomodem.constants.NetworkStatus.RX_STOPPED">RX_STOPPED</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.SUSPENDED" href="#pynimomodem.constants.NetworkStatus.SUSPENDED">SUSPENDED</a></code></li>
+<li><code><a title="pynimomodem.constants.NetworkStatus.UNKNOWN" href="#pynimomodem.constants.NetworkStatus.UNKNOWN">UNKNOWN</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.NimoFloatEnum" href="#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.NimoFloatEnum.is_valid" href="#pynimomodem.constants.NimoFloatEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.NimoIntEnum" href="#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.PowerMode" href="#pynimomodem.constants.PowerMode">PowerMode</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.PowerMode.FIXED_BATTERY" href="#pynimomodem.constants.PowerMode.FIXED_BATTERY">FIXED_BATTERY</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.FIXED_POWERED" href="#pynimomodem.constants.PowerMode.FIXED_POWERED">FIXED_POWERED</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.MOBILE_BATTERY" href="#pynimomodem.constants.PowerMode.MOBILE_BATTERY">MOBILE_BATTERY</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.MOBILE_MINIMAL" href="#pynimomodem.constants.PowerMode.MOBILE_MINIMAL">MOBILE_MINIMAL</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.MOBILE_PARKED" href="#pynimomodem.constants.PowerMode.MOBILE_PARKED">MOBILE_PARKED</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.MOBILE_POWERED" href="#pynimomodem.constants.PowerMode.MOBILE_POWERED">MOBILE_POWERED</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.beam_search_interval_seconds" href="#pynimomodem.constants.PowerMode.beam_search_interval_seconds">beam_search_interval_seconds</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.beam_search_maximum_seconds" href="#pynimomodem.constants.PowerMode.beam_search_maximum_seconds">beam_search_maximum_seconds</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.gnss_refresh_hours" href="#pynimomodem.constants.PowerMode.gnss_refresh_hours">gnss_refresh_hours</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.short_term_blockage_seconds" href="#pynimomodem.constants.PowerMode.short_term_blockage_seconds">short_term_blockage_seconds</a></code></li>
+<li><code><a title="pynimomodem.constants.PowerMode.transmit_lifetime_seconds" href="#pynimomodem.constants.PowerMode.transmit_lifetime_seconds">transmit_lifetime_seconds</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.SignalLevelRegional" href="#pynimomodem.constants.SignalLevelRegional">SignalLevelRegional</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_0" href="#pynimomodem.constants.SignalLevelRegional.BARS_0">BARS_0</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_1" href="#pynimomodem.constants.SignalLevelRegional.BARS_1">BARS_1</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_2" href="#pynimomodem.constants.SignalLevelRegional.BARS_2">BARS_2</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_3" href="#pynimomodem.constants.SignalLevelRegional.BARS_3">BARS_3</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_4" href="#pynimomodem.constants.SignalLevelRegional.BARS_4">BARS_4</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.BARS_5" href="#pynimomodem.constants.SignalLevelRegional.BARS_5">BARS_5</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalLevelRegional.INVALID" href="#pynimomodem.constants.SignalLevelRegional.INVALID">INVALID</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.SignalQuality" href="#pynimomodem.constants.SignalQuality">SignalQuality</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.SignalQuality.GOOD" href="#pynimomodem.constants.SignalQuality.GOOD">GOOD</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.LOW" href="#pynimomodem.constants.SignalQuality.LOW">LOW</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.MID" href="#pynimomodem.constants.SignalQuality.MID">MID</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.NONE" href="#pynimomodem.constants.SignalQuality.NONE">NONE</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.STRONG" href="#pynimomodem.constants.SignalQuality.STRONG">STRONG</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.WARNING" href="#pynimomodem.constants.SignalQuality.WARNING">WARNING</a></code></li>
+<li><code><a title="pynimomodem.constants.SignalQuality.WEAK" href="#pynimomodem.constants.SignalQuality.WEAK">WEAK</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.UrcCode" href="#pynimomodem.constants.UrcCode">UrcCode</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.UrcCode.GPS_FIX" href="#pynimomodem.constants.UrcCode.GPS_FIX">GPS_FIX</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.GPS_TMO" href="#pynimomodem.constants.UrcCode.GPS_TMO">GPS_TMO</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.ITV_CHG" href="#pynimomodem.constants.UrcCode.ITV_CHG">ITV_CHG</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.PLG_RESP" href="#pynimomodem.constants.UrcCode.PLG_RESP">PLG_RESP</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.REGED" href="#pynimomodem.constants.UrcCode.REGED">REGED</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.RX_END" href="#pynimomodem.constants.UrcCode.RX_END">RX_END</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.TIME_UPD" href="#pynimomodem.constants.UrcCode.TIME_UPD">TIME_UPD</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcCode.TX_END" href="#pynimomodem.constants.UrcCode.TX_END">TX_END</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.UrcControl" href="#pynimomodem.constants.UrcControl">UrcControl</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.UrcControl.GNSS_FIX_NEW" href="#pynimomodem.constants.UrcControl.GNSS_FIX_NEW">GNSS_FIX_NEW</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.GNSS_FIX_TIMEOUT" href="#pynimomodem.constants.UrcControl.GNSS_FIX_TIMEOUT">GNSS_FIX_TIMEOUT</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.MESSAGE_MO_COMPLETE" href="#pynimomodem.constants.UrcControl.MESSAGE_MO_COMPLETE">MESSAGE_MO_COMPLETE</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.MESSAGE_MT_RECEIVED" href="#pynimomodem.constants.UrcControl.MESSAGE_MT_RECEIVED">MESSAGE_MT_RECEIVED</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.NETWORK_PING_ACKNOWLEDGED" href="#pynimomodem.constants.UrcControl.NETWORK_PING_ACKNOWLEDGED">NETWORK_PING_ACKNOWLEDGED</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.NETWORK_REGISTERED" href="#pynimomodem.constants.UrcControl.NETWORK_REGISTERED">NETWORK_REGISTERED</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.UTC_TIME_SYNC" href="#pynimomodem.constants.UrcControl.UTC_TIME_SYNC">UTC_TIME_SYNC</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.WAKEUP_PERIOD_CHANGE" href="#pynimomodem.constants.UrcControl.WAKEUP_PERIOD_CHANGE">WAKEUP_PERIOD_CHANGE</a></code></li>
+<li><code><a title="pynimomodem.constants.UrcControl.get_events" href="#pynimomodem.constants.UrcControl.get_events">get_events</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.WakeupPeriod" href="#pynimomodem.constants.WakeupPeriod">WakeupPeriod</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_1" href="#pynimomodem.constants.WakeupPeriod.MINUTES_1">MINUTES_1</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_10" href="#pynimomodem.constants.WakeupPeriod.MINUTES_10">MINUTES_10</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_15" href="#pynimomodem.constants.WakeupPeriod.MINUTES_15">MINUTES_15</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_2" href="#pynimomodem.constants.WakeupPeriod.MINUTES_2">MINUTES_2</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_20" href="#pynimomodem.constants.WakeupPeriod.MINUTES_20">MINUTES_20</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_3" href="#pynimomodem.constants.WakeupPeriod.MINUTES_3">MINUTES_3</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_30" href="#pynimomodem.constants.WakeupPeriod.MINUTES_30">MINUTES_30</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_5" href="#pynimomodem.constants.WakeupPeriod.MINUTES_5">MINUTES_5</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.MINUTES_60" href="#pynimomodem.constants.WakeupPeriod.MINUTES_60">MINUTES_60</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.NONE" href="#pynimomodem.constants.WakeupPeriod.NONE">NONE</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.SECONDS_30" href="#pynimomodem.constants.WakeupPeriod.SECONDS_30">SECONDS_30</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupPeriod.seconds" href="#pynimomodem.constants.WakeupPeriod.seconds">seconds</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.WakeupWay" href="#pynimomodem.constants.WakeupWay">WakeupWay</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.WakeupWay.UART" href="#pynimomodem.constants.WakeupWay.UART">UART</a></code></li>
+<li><code><a title="pynimomodem.constants.WakeupWay.WAKEUP_PIN" href="#pynimomodem.constants.WakeupWay.WAKEUP_PIN">WAKEUP_PIN</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.constants.WorkMode" href="#pynimomodem.constants.WorkMode">WorkMode</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.constants.WorkMode.GNSS" href="#pynimomodem.constants.WorkMode.GNSS">GNSS</a></code></li>
+<li><code><a title="pynimomodem.constants.WorkMode.PERIODIC_SLEEP" href="#pynimomodem.constants.WorkMode.PERIODIC_SLEEP">PERIODIC_SLEEP</a></code></li>
+<li><code><a title="pynimomodem.constants.WorkMode.WORKING" href="#pynimomodem.constants.WorkMode.WORKING">WORKING</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

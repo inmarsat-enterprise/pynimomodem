@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pynimomodem.location API documentation</title>
+<meta name="description" content="Classes and methods for location, elevation and azimuth for NIMO modems …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pynimomodem.location</code></h1>
+</header>
+<section id="section-intro">
+<p>Classes and methods for location, elevation and azimuth for NIMO modems.</p>
+<p>This module:
+* Parses NMEA-0183 data into a <code><a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a></code> object.
+* Calculates azimuth and elevation to a geostationary <code><a title="pynimomodem.location.SatelliteLocation" href="#pynimomodem.location.SatelliteLocation">SatelliteLocation</a></code>.</p>
+<p>Thanks for Azimuth/Elevation derived from code at:
+<a href="https://github.com/sq3tle/altazrange/tree/master">https://github.com/sq3tle/altazrange/tree/master</a></p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Classes and methods for location, elevation and azimuth for NIMO modems.
+
+This module:
+* Parses NMEA-0183 data into a `ModemLocation` object.
+* Calculates azimuth and elevation to a geostationary `SatelliteLocation`.
+
+Thanks for Azimuth/Elevation derived from code at:
+https://github.com/sq3tle/altazrange/tree/master
+
+&#34;&#34;&#34;
+import json
+import logging
+import math
+from copy import deepcopy
+from dataclasses import dataclass
+
+from .constants import (
+    GEOSTATIONARY_DISTANCE_M,
+    GeoBeam,
+    GeoSatellite,
+    NimoIntEnum,
+)
+from .nimoutils import iso_to_ts, ts_to_iso, vlog
+
+VLOG_TAG = &#39;nmealocation&#39;
+TRACE_TAG = VLOG_TAG + &#39;trace&#39;
+
+_log = logging.getLogger(__name__)
+
+
+class GnssFixType(NimoIntEnum):
+    &#34;&#34;&#34;Enumerated fix type from NMEA-0183 standard.&#34;&#34;&#34;
+    NONE = 1
+    D2 = 2
+    D3 = 3
+
+
+class GnssFixQuality(NimoIntEnum):
+    &#34;&#34;&#34;Enumerated fix quality from NMEA-0183 standard.&#34;&#34;&#34;
+    INVALID = 0
+    GPS_SPS = 1
+    DGPS = 2
+    PPS = 3
+    RTK = 4
+    FLOAT_RTK = 5
+    EST_DEAD_RECKONING = 6
+    MANUAL = 7
+    SIMULATION = 8
+
+
+@dataclass
+class GnssSatelliteInfo(object):
+    &#34;&#34;&#34;Information specific to a GNSS satellite.
+    
+    Attributes:
+        prn: The PRN code (Pseudo-Random Number sequence)
+        elevation: The satellite elevation
+        azimuth: The satellite azimuth
+        snr: The satellite Signal-to-Noise Ratio
+    &#34;&#34;&#34;
+    prn: int
+    elevation: int
+    azimuth: int
+    snr: int
+
+
+class ModemLocation:
+    &#34;&#34;&#34;A set of location-based information derived from the modem&#39;s NMEA data.
+    
+    Uses 90.0/180.0 if latitude/longitude are unknown
+
+    Attributes:
+        latitude (float): decimal degrees
+        longitude (float): decimal degrees
+        altitude (float): in metres
+        speed (float): in knots
+        heading (float): in degrees
+        timestamp (int): in seconds since 1970-01-01T00:00:00Z
+        satellites (int): in view at time of fix
+        fix_type (GnssFixType): 1=None, 2=2D or 3=3D
+        fix_quality (GnssFixQuality): Enumerated lookup value
+        pdop (float): Probability Dilution of Precision
+        hdop (float): Horizontal Dilution of Precision
+        vdop (float): Vertical Dilution of Precision
+        time_iso (str): ISO 8601 formatted timestamp
+
+    &#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        &#34;&#34;&#34;Initializes a Location with default latitude/longitude 90/180.&#34;&#34;&#34;
+        self.latitude = float(kwargs.get(&#39;latitude&#39;, 90.0))
+        self.longitude = float(kwargs.get(&#39;longitude&#39;, 180.0))
+        self.altitude = float(kwargs.get(&#39;altitude&#39;, 0.0))   # metres
+        self.speed = float(kwargs.get(&#39;speed&#39;, 0.0))  # knots
+        self.heading = float(kwargs.get(&#39;heading&#39;, 0.0))   # degrees
+        self.timestamp = int(kwargs.get(&#39;timestamp&#39;, 0))   # seconds (unix)
+        self.satellites = int(kwargs.get(&#39;satellites&#39;, 0))
+        self.fix_type = GnssFixType(int(kwargs.get(&#39;fix_type&#39;, 1)))
+        self.fix_quality = GnssFixQuality(int(kwargs.get(&#39;fix_quality&#39;, 0)))
+        self.pdop = float(kwargs.get(&#39;pdop&#39;, 99))
+        self.hdop = float(kwargs.get(&#39;hdop&#39;, 99))
+        self.vdop = float(kwargs.get(&#39;vdop&#39;, 99))
+        # self.satellites_info: &#39;list[GnssSatelliteInfo]&#39; = kwargs.get(
+        #     &#39;satellites_info&#39;, []
+        # )
+
+    @property
+    def time_iso(self) -&gt; str:
+        return f&#39;{ts_to_iso(self.timestamp)}&#39;
+
+    # def _update_satellites_info(self,
+    #                             satellites_info: &#39;list[GnssSatelliteInfo]&#39;):
+    #     &#34;&#34;&#34;Populates satellite information based on NMEA GSV data.&#34;&#34;&#34;
+    #     for satellite_info in satellites_info:
+    #         if isinstance(satellite_info, GnssSatelliteInfo):
+    #             new = True
+    #             for i, info in enumerate(self.satellites_info):
+    #                 if info.prn == satellite_info.prn:
+    #                     new = False
+    #                     self.satellites_info[i] = satellite_info
+    #                     break
+    #             if new:
+    #                 self.satellites_info.append(satellite_info)
+
+    def __repr__(self) -&gt; str:
+        obj = deepcopy(self.__dict__)
+        for k, v in obj.items():
+            if k in [&#39;latitude&#39;, &#39;longitude&#39;]:
+                obj[k] = round(v, 5)
+            elif isinstance(v, float):
+                obj[k] = round(v, 1)
+        return json.dumps(obj, skipkeys=True)
+
+
+@dataclass
+class SatelliteLocation:
+    &#34;&#34;&#34;Represents a geostationary satellite location relative to a modem.&#34;&#34;&#34;
+    name: str = &#39;&#39;
+    latitude: float = 0.0
+    longitude: float = 180.0
+    altitude: float = GEOSTATIONARY_DISTANCE_M
+    azimuth: float = 0.0
+    elevation: float = 0.0
+
+
+@dataclass
+class _PointLocation:
+    &#34;&#34;&#34;Location used for spherical coordinates (for azimuth/elevation).&#34;&#34;&#34;
+    x: float = 0.0
+    y: float = 0.0
+    z: float = 0.0
+    radius: float = 0.0
+    nx: float = 0.0
+    ny: float = 0.0
+    nz: float = 0.0
+
+
+def validate_nmea(nmea_sentence: str) -&gt; bool:
+    &#34;&#34;&#34;Validates a given NMEA-0183 sentence with CRC.
+    
+    Args:
+        nmea_sentence (str): NMEA-0183 sentence ending in checksum.
+    
+    &#34;&#34;&#34;
+    if &#39;*&#39; not in nmea_sentence:
+        return False
+    data, cs_hex = nmea_sentence.split(&#39;*&#39;)
+    candidate = int(cs_hex, 16)
+    crc = 0   # initial
+    for i in range(1, len(data)):   # ignore initial $
+        crc ^= ord(data[i])
+    return candidate == crc
+
+
+def parse_nmea_to_location(location: ModemLocation, nmea_sentence: str) -&gt; None:
+    &#34;&#34;&#34;Parses a NMEA-0183 sentence to update a ModemLocation.&#34;&#34;&#34;
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Parsing NMEA: %s&#39;, nmea_sentence)
+    if not validate_nmea(nmea_sentence):
+        raise ValueError(&#39;Invalid NMEA-0183 sentence&#39;)
+    data = nmea_sentence.split(&#39;*&#39;)[0]
+    nmea_type = &#39;&#39;
+    cache = {}
+    for i, field_data in enumerate(data.split(&#39;,&#39;)):
+        if i == 0:
+            nmea_type = field_data[-3:]
+            if nmea_type == &#39;GSV&#39;:
+                _log.warn(&#39;No processing required for GSV sentence&#39;)
+                return
+            if nmea_type == &#39;GSA&#39; and location.vdop != 99:
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Skipping redundant GSA data&#39;)
+                return
+            if vlog(TRACE_TAG):
+                _log.debug(&#39;Processing NMEA type: %s&#39;, nmea_type)
+        elif i == 1:
+            if nmea_type == &#39;RMC&#39;:
+                cache[&#39;fix_hour&#39;] = field_data[0:2]
+                cache[&#39;fix_min&#39;] = field_data[2:4]
+                cache[&#39;fix_sec&#39;] = field_data[4:6]
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix time %s:%s:%s&#39;, cache[&#39;fix_hour&#39;],
+                               cache[&#39;fix_min&#39;], cache[&#39;fix_sec&#39;])
+        elif i == 2:
+            if nmea_type == &#39;RMC&#39;:
+                if (field_data == &#39;V&#39;):
+                    _log.warn(&#39;Fix Void&#39;)
+            elif nmea_type == &#39;GSA&#39;:
+                location.fix_type = GnssFixType(int(field_data))
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix type: %s&#39;, location.fix_type.name)
+        elif i == 3:
+            if nmea_type == &#39;RMC&#39;:
+                location.latitude = (float(field_data[0:2]) +
+                                     float(field_data[2]) / 60.0)
+        elif i == 4:
+            if nmea_type == &#39;RMC&#39;:
+                if field_data == &#39;S&#39;:
+                    location.latitude *= -1
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Latitude: %.5f&#39;, location.latitude)
+        elif i == 5:
+            if nmea_type == &#39;RMC&#39;:
+                location.longitude = (float(field_data[0:3]) +
+                                      float(field_data[3]) / 60.0)
+        elif i == 6:
+            if nmea_type == &#39;RMC&#39;:
+                if field_data == &#39;W&#39;:
+                    location.longitude *= -1
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Longitude: %.5f&#39;, location.longitude)
+            elif nmea_type == &#39;GGA&#39;:
+                location.fix_quality = GnssFixQuality(int(field_data))
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix quality: %s&#39;, location.fix_quality.name)
+        elif i == 7:
+            if nmea_type == &#39;RMC&#39;:
+                location.speed = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Speed: %.1f&#39;, location.speed)
+            elif nmea_type == &#39;GGA&#39;:
+                location.satellites = int(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;GNSS satellites used: %d&#39;, location.satellites)
+        elif i == 8:
+            if nmea_type == &#39;RMC&#39;:
+                location.heading = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Heading: %.1f&#39;, location.heading)
+            elif nmea_type == &#39;GGA&#39;:
+                location.hdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;HDOP: %.1f&#39;, location.heading)
+        elif i == 9:
+            if nmea_type == &#39;RMC&#39;:
+                fix_day = field_data[0:2]
+                fix_month = field_data[2:4]
+                fix_yy = int(field_data[4:])
+                fix_yy += 1900 if fix_yy &gt;= 73 else 2000
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix date %d-%s-%s&#39;, fix_yy, fix_month, fix_day)
+                iso_time = (f&#39;{fix_yy}-{fix_month}-{fix_day}T&#39;
+                            f&#39;{cache[&#34;fix_hour&#34;]}:{cache[&#34;fix_min&#34;]}&#39;
+                            f&#39;:{cache[&#34;fix_sec&#34;]}Z&#39;)
+                unix_timestamp = iso_to_ts(iso_time)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix time ISO 8601: %s | Unix: %d&#39;,
+                               iso_time, unix_timestamp)
+                location.timestamp = unix_timestamp
+            elif nmea_type == &#39;GGA&#39;:
+                location.altitude = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Altitude: %.1f&#39;, location.altitude)
+        elif i == 10:
+            # RMC magnetic variation - ignore
+            if nmea_type == &#39;GGA&#39; and field_data != &#39;M&#39;:
+                _log.warning(&#39;Unexpected altitude units: %s&#39;, field_data)
+        # elif i == 11:   # RMC magnetic variation direction, GGA height of geoid - ignore
+        # elif i == 12:   # GGA units height of geoid - ignore
+        # elif i == 13:   # GGA seconds since last DGPS update - ignore
+        # elif i == 14:   # GGA DGPS station ID - ignore
+        elif i == 15:   # GSA PDOP - ignore (unused)
+            if nmea_type == &#39;GSA&#39;:
+                location.pdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;PDOP: %d&#39;, location.pdop)
+        # elif i == 16:   # GSA HDOP - ignore (use GGA)
+        elif i == 17:
+            if nmea_type == &#39;GSA&#39;:
+                location.vdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;VDOP: %d&#39;, location.vdop)
+
+
+def get_location_from_nmea_data(nmea_data: &#39;str|list[str]&#39;) -&gt; ModemLocation:
+    &#34;&#34;&#34;Derives a ModemLocation from a set of NMEA-0183 sentences.
+    
+    Args:
+        nmea_data (str): A set of NMEA-0183 sentences separated by `\n` or
+            a `list` of NMEA sentences.
+    
+    Returns:
+        `Location` object.
+    
+    &#34;&#34;&#34;
+    location = ModemLocation()
+    if isinstance(nmea_data, list):
+            if not all(isinstance(x, str) for x in nmea_data):
+                raise ValueError(&#39;Invalid NMEA sentence list&#39;)
+    elif isinstance(nmea_data, str):
+        nmea_data = nmea_data.split(&#39;\n&#39;)
+    for nmea_sentence in nmea_data:
+        parse_nmea_to_location(location, nmea_sentence)
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Location: %s&#39;, repr(location))
+    return location
+
+
+def get_closest_satellite(latitude: float, longitude: float) -&gt; GeoSatellite:
+    &#34;&#34;&#34;Get the closest geostationary satellite to a given location.&#34;&#34;&#34;
+    satellites = list(map(lambda x: x.value,GeoSatellite._member_map_.values()))
+    closest = GeoSatellite(min(satellites, key=lambda x:abs(x-longitude)))
+    if closest == GeoSatellite.AORWSC:   #: single regional beam only
+        if latitude &gt;= 15.0 or latitude &lt;= -45.0:
+            if longitude &gt;= -27.0:
+                return GeoSatellite.EMEA
+            return GeoSatellite.AMER
+    # elif closest == GeoSatellite.MEAS:   #: not all beams lit
+    #     if latitude &lt;= -4.5:
+    #         if longitude &gt;= 63.5:
+    #             return GeoSatellite.APAC
+    #         return GeoSatellite.EMEA
+    #     elif latitude &gt;= 40.9:
+    #         if longitude &lt;= 45.0:
+    #             return GeoSatellite.EMEA
+    #         if longitude &gt;= 82.5:
+    #             return GeoSatellite.APAC
+    #     elif longitude &gt;= 63.5:
+    #         if latitude &lt;= -4.0 or latitude &gt;= 30.0:
+    #             return GeoSatellite.APAC
+    return closest
+
+
+def get_satellite_location(modem_location: ModemLocation,
+                           geobeam: &#39;GeoBeam|None&#39; = None,
+                           ) -&gt; SatelliteLocation:
+    &#34;&#34;&#34;Derives the azimuth and elevation of the nearest satellite.
+    
+    If not provided the current GeoBeam, derives the closest satellite from
+    the location provided.
+    
+    Args:
+        modem_location (ModemLocation): The modem&#39;s Location object.
+        geobeam (GeoBeam): The GeoBeam, if known. If `None` it will be
+            assumed from fixed locations of satellites.
+    
+    Returns:
+        `SatelliteLocation` including azimuth, elevation from the modem.
+    
+    &#34;&#34;&#34;
+    # internal helper functions
+    def location_to_point(latitude: float,
+                        longitude: float,
+                        altitude: float,
+                        ) -&gt; _PointLocation:
+        &#34;&#34;&#34;Converts lat/lon/alt to point location.&#34;&#34;&#34;
+        lat_rad = latitude * math.pi / 180.0
+        lon_rad = longitude * math.pi / 180.0
+        radius = get_geographic_radius(lat_rad)
+        clat = get_geocentric_latitude(lat_rad)
+        cos_lon = math.cos(lon_rad)
+        sin_lon = math.sin(lon_rad)
+        cos_lat = math.cos(clat)
+        sin_lat = math.sin(clat)
+        x = radius * cos_lon * cos_lat
+        y = radius * sin_lon * cos_lat
+        z = radius * sin_lat
+        cos_glat = math.cos(lat_rad)
+        sin_glat = math.sin(lat_rad)
+        nx = cos_glat * cos_lon
+        ny = cos_glat * sin_lon
+        nz = sin_glat
+        x += altitude * nx
+        y += altitude * ny
+        z += altitude * nz
+        return _PointLocation(x, y, z, radius, nx, ny, nz)
+
+    def get_geographic_radius(lat_rad: float) -&gt; float:
+        &#34;&#34;&#34;Adjust radius for earth shape.&#34;&#34;&#34;
+        equatorial = 6378137.0
+        polar = 6356752.3
+        cos = math.cos(lat_rad)
+        sin = math.sin(lat_rad)
+        t1 = equatorial**2 * cos
+        t2 = polar**2 * sin
+        t3 = equatorial * cos
+        t4 = polar * sin
+        return math.sqrt((t1 * t1 + t2 * t2) / (t3 * t3 + t4 * t4))
+
+    def get_geocentric_latitude(lat_rad: float) -&gt; float:
+        &#34;&#34;&#34;Derives the geocentric latitude.&#34;&#34;&#34;
+        e2 = 0.00669437999014   # first eccentricity squared, constant
+        clat = math.atan((1.0 - e2) * math.tan(lat_rad))
+        return clat
+
+    def rotate_globe(b: SatelliteLocation, a: ModemLocation, b_radius: float):
+        &#34;&#34;&#34;Rotate the globe for vector alignment.&#34;&#34;&#34;
+        brp = location_to_point(b.latitude, b.longitude - a.longitude, b.altitude)
+        alat = get_geocentric_latitude(-a.latitude * math.pi / 180.0)
+        acos = math.cos(alat)
+        asin = math.sin(alat)
+        bx = (brp.x * acos) - (brp.z * asin)
+        by = brp.y
+        bz = (brp.x * asin) + (brp.z * acos)
+        return _PointLocation(bx, by, bz, b_radius, 0.0, 0.0, 0.0)
+
+    def normalize_vector(b: _PointLocation, a: _PointLocation):
+        &#34;&#34;&#34;Normalize the difference between vectors.&#34;&#34;&#34;
+        dx = b.x - a.x
+        dy = b.y - a.y
+        dz = b.z - a.z
+        dist2 = dx**2 + dy**2 +dz**2
+        if dist2 == 0:
+            return None
+        dist = math.sqrt(dist2)
+        return _PointLocation(dx/dist, dy/dist, dz/dist, 1.0, 0.0, 0.0, 0.0)
+
+    azimuth = None
+    elevation = None
+    if isinstance(geobeam, GeoBeam):
+        satellite_name = geobeam.name.split(&#39;_&#39;)[0]
+        satellite = GeoSatellite[satellite_name]
+    else:
+        satellite = get_closest_satellite(modem_location.latitude,
+                                          modem_location.longitude)
+    # modem and satellite Cartesian location
+    mc = modem_location
+    sc = SatelliteLocation(name=satellite.name,
+                           longitude=satellite.value, 
+                           altitude=GEOSTATIONARY_DISTANCE_M)
+    # modem and satellite Point location
+    mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
+    sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
+    ref_point = rotate_globe(sc, mc, sp.radius)
+    if ref_point.z**2 + ref_point.y**2 &gt; 1.0e-6:
+        theta = math.atan2(ref_point.z, ref_point.y) * 180.0 / math.pi
+        azimuth = 90.0 - theta
+        if azimuth &lt; 0.0:
+            azimuth += 360.0
+        if azimuth &gt; 360.0:
+            azimuth -= 360.0
+        bma = normalize_vector(sp, mp)   # Bayesian model averaging
+        if isinstance(bma, _PointLocation):
+            elevation = (90.0 - (180.0 / math.pi) * math.acos(
+                bma.x * mp.nx + bma.y * mp.ny + bma.z * mp.nz))
+    sc.azimuth = round(azimuth, 1)
+    sc.elevation = round(elevation, 1)
+    return sc
+
+# Below is parked for potential future use
+
+# def _parse_gsv_to_location(location: Location, gsv_sentence: str) -&gt; None:
+#     &#34;&#34;&#34;Returns a Location object based on an NMEA sentences data set.
+#
+#     Placeholder - overcomplicates Location object
+#
+#     Args:
+#         location: The Location object to update
+#         gsv_sentence: The Satellites in View sentence to parse
+#
+#     &#34;&#34;&#34;
+#     update_satellites = getattr(location, &#39;_update_satellites_info&#39;, None)
+#     if not callable(update_satellites):
+#         raise ValueError(&#39;Location object does not support GSV parsing&#39;)
+#     gsv = gsv_sentence.split(&#39;,&#39;)       # $GPGSV,2,1,08,01,40,083,46,02,17,308,41,12,07,344,39,14,22,228,45*75
+#     &#39;&#39;&#39;
+#     gsv_sentences = gsv[1]           # Number of sentences for full data
+#     gsv_sentence = gsv[2]            # Sentence number (up to 4 satellites per sentence)
+#     &#39;&#39;&#39;
+#     gsv_satellites = gsv[3]          # Number of satellites in view
+#     # following supports up to 4 satellites per sentence
+#     satellites_info = []
+#     if (len(gsv) - 4) % 4 &gt; 0:
+#         # TODO: warn/log this case of extra GSV data in sentence
+#         pass
+#     num_satellites_in_sentence = int((len(gsv)-4)/4)
+#     for i in range(1, num_satellites_in_sentence+1):
+#         prn = int(gsv[i*4]) if gsv[i*4] != &#39;&#39; else 0             # satellite PRN number
+#         elevation = int(gsv[i*4+1]) if gsv[i*4+1] != &#39;&#39; else 0   # Elevation in degrees
+#         azimuth = int(gsv[i*4+2]) if gsv[i*4+2] != &#39;&#39; else 0     # Azimuth in degrees
+#         snr = int(gsv[i*4+3]) if gsv[i*4+3] != &#39;&#39; else 0         # Signal to Noise Ratio
+#         satellites_info.append(GnssSatelliteInfo(prn,
+#                                                     elevation,
+#                                                     azimuth,
+#                                                     snr))
+#     location._update_satellites_info(satellites_info)
+#     satellites = int(gsv_satellites) if gsv_satellites != &#39;&#39; else 0
+#     if location.satellites &lt; satellites:
+#         location.satellites = satellites
+#     else:
+#         # TODO: log this case; should be limited to GPS simulation in Modem Simulator (3 satellites)
+#         pass</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="pynimomodem.location.get_closest_satellite"><code class="name flex">
+<span>def <span class="ident">get_closest_satellite</span></span>(<span>latitude: float, longitude: float) ‑> <a title="pynimomodem.constants.GeoSatellite" href="constants.html#pynimomodem.constants.GeoSatellite">GeoSatellite</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the closest geostationary satellite to a given location.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_closest_satellite(latitude: float, longitude: float) -&gt; GeoSatellite:
+    &#34;&#34;&#34;Get the closest geostationary satellite to a given location.&#34;&#34;&#34;
+    satellites = list(map(lambda x: x.value,GeoSatellite._member_map_.values()))
+    closest = GeoSatellite(min(satellites, key=lambda x:abs(x-longitude)))
+    if closest == GeoSatellite.AORWSC:   #: single regional beam only
+        if latitude &gt;= 15.0 or latitude &lt;= -45.0:
+            if longitude &gt;= -27.0:
+                return GeoSatellite.EMEA
+            return GeoSatellite.AMER
+    # elif closest == GeoSatellite.MEAS:   #: not all beams lit
+    #     if latitude &lt;= -4.5:
+    #         if longitude &gt;= 63.5:
+    #             return GeoSatellite.APAC
+    #         return GeoSatellite.EMEA
+    #     elif latitude &gt;= 40.9:
+    #         if longitude &lt;= 45.0:
+    #             return GeoSatellite.EMEA
+    #         if longitude &gt;= 82.5:
+    #             return GeoSatellite.APAC
+    #     elif longitude &gt;= 63.5:
+    #         if latitude &lt;= -4.0 or latitude &gt;= 30.0:
+    #             return GeoSatellite.APAC
+    return closest</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.location.get_location_from_nmea_data"><code class="name flex">
+<span>def <span class="ident">get_location_from_nmea_data</span></span>(<span>nmea_data: str|list[str]) ‑> <a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Derives a ModemLocation from a set of NMEA-0183 sentences.</p>
+<pre><code>Args:
+    nmea_data (str): A set of NMEA-0183 sentences separated by `
+</code></pre>
+<p>` or
+a <code>list</code> of NMEA sentences.</p>
+<pre><code>Returns:
+    &lt;code&gt;Location&lt;/code&gt; object.
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_location_from_nmea_data(nmea_data: &#39;str|list[str]&#39;) -&gt; ModemLocation:
+    &#34;&#34;&#34;Derives a ModemLocation from a set of NMEA-0183 sentences.
+    
+    Args:
+        nmea_data (str): A set of NMEA-0183 sentences separated by `\n` or
+            a `list` of NMEA sentences.
+    
+    Returns:
+        `Location` object.
+    
+    &#34;&#34;&#34;
+    location = ModemLocation()
+    if isinstance(nmea_data, list):
+            if not all(isinstance(x, str) for x in nmea_data):
+                raise ValueError(&#39;Invalid NMEA sentence list&#39;)
+    elif isinstance(nmea_data, str):
+        nmea_data = nmea_data.split(&#39;\n&#39;)
+    for nmea_sentence in nmea_data:
+        parse_nmea_to_location(location, nmea_sentence)
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Location: %s&#39;, repr(location))
+    return location</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.location.get_satellite_location"><code class="name flex">
+<span>def <span class="ident">get_satellite_location</span></span>(<span>modem_location: <a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a>, geobeam: GeoBeam|None = None) ‑> <a title="pynimomodem.location.SatelliteLocation" href="#pynimomodem.location.SatelliteLocation">SatelliteLocation</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Derives the azimuth and elevation of the nearest satellite.</p>
+<p>If not provided the current GeoBeam, derives the closest satellite from
+the location provided.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>modem_location</code></strong> :&ensp;<code><a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a></code></dt>
+<dd>The modem's Location object.</dd>
+<dt><strong><code>geobeam</code></strong> :&ensp;<code>GeoBeam</code></dt>
+<dd>The GeoBeam, if known. If <code>None</code> it will be
+assumed from fixed locations of satellites.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code><a title="pynimomodem.location.SatelliteLocation" href="#pynimomodem.location.SatelliteLocation">SatelliteLocation</a></code> including azimuth, elevation from the modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_satellite_location(modem_location: ModemLocation,
+                           geobeam: &#39;GeoBeam|None&#39; = None,
+                           ) -&gt; SatelliteLocation:
+    &#34;&#34;&#34;Derives the azimuth and elevation of the nearest satellite.
+    
+    If not provided the current GeoBeam, derives the closest satellite from
+    the location provided.
+    
+    Args:
+        modem_location (ModemLocation): The modem&#39;s Location object.
+        geobeam (GeoBeam): The GeoBeam, if known. If `None` it will be
+            assumed from fixed locations of satellites.
+    
+    Returns:
+        `SatelliteLocation` including azimuth, elevation from the modem.
+    
+    &#34;&#34;&#34;
+    # internal helper functions
+    def location_to_point(latitude: float,
+                        longitude: float,
+                        altitude: float,
+                        ) -&gt; _PointLocation:
+        &#34;&#34;&#34;Converts lat/lon/alt to point location.&#34;&#34;&#34;
+        lat_rad = latitude * math.pi / 180.0
+        lon_rad = longitude * math.pi / 180.0
+        radius = get_geographic_radius(lat_rad)
+        clat = get_geocentric_latitude(lat_rad)
+        cos_lon = math.cos(lon_rad)
+        sin_lon = math.sin(lon_rad)
+        cos_lat = math.cos(clat)
+        sin_lat = math.sin(clat)
+        x = radius * cos_lon * cos_lat
+        y = radius * sin_lon * cos_lat
+        z = radius * sin_lat
+        cos_glat = math.cos(lat_rad)
+        sin_glat = math.sin(lat_rad)
+        nx = cos_glat * cos_lon
+        ny = cos_glat * sin_lon
+        nz = sin_glat
+        x += altitude * nx
+        y += altitude * ny
+        z += altitude * nz
+        return _PointLocation(x, y, z, radius, nx, ny, nz)
+
+    def get_geographic_radius(lat_rad: float) -&gt; float:
+        &#34;&#34;&#34;Adjust radius for earth shape.&#34;&#34;&#34;
+        equatorial = 6378137.0
+        polar = 6356752.3
+        cos = math.cos(lat_rad)
+        sin = math.sin(lat_rad)
+        t1 = equatorial**2 * cos
+        t2 = polar**2 * sin
+        t3 = equatorial * cos
+        t4 = polar * sin
+        return math.sqrt((t1 * t1 + t2 * t2) / (t3 * t3 + t4 * t4))
+
+    def get_geocentric_latitude(lat_rad: float) -&gt; float:
+        &#34;&#34;&#34;Derives the geocentric latitude.&#34;&#34;&#34;
+        e2 = 0.00669437999014   # first eccentricity squared, constant
+        clat = math.atan((1.0 - e2) * math.tan(lat_rad))
+        return clat
+
+    def rotate_globe(b: SatelliteLocation, a: ModemLocation, b_radius: float):
+        &#34;&#34;&#34;Rotate the globe for vector alignment.&#34;&#34;&#34;
+        brp = location_to_point(b.latitude, b.longitude - a.longitude, b.altitude)
+        alat = get_geocentric_latitude(-a.latitude * math.pi / 180.0)
+        acos = math.cos(alat)
+        asin = math.sin(alat)
+        bx = (brp.x * acos) - (brp.z * asin)
+        by = brp.y
+        bz = (brp.x * asin) + (brp.z * acos)
+        return _PointLocation(bx, by, bz, b_radius, 0.0, 0.0, 0.0)
+
+    def normalize_vector(b: _PointLocation, a: _PointLocation):
+        &#34;&#34;&#34;Normalize the difference between vectors.&#34;&#34;&#34;
+        dx = b.x - a.x
+        dy = b.y - a.y
+        dz = b.z - a.z
+        dist2 = dx**2 + dy**2 +dz**2
+        if dist2 == 0:
+            return None
+        dist = math.sqrt(dist2)
+        return _PointLocation(dx/dist, dy/dist, dz/dist, 1.0, 0.0, 0.0, 0.0)
+
+    azimuth = None
+    elevation = None
+    if isinstance(geobeam, GeoBeam):
+        satellite_name = geobeam.name.split(&#39;_&#39;)[0]
+        satellite = GeoSatellite[satellite_name]
+    else:
+        satellite = get_closest_satellite(modem_location.latitude,
+                                          modem_location.longitude)
+    # modem and satellite Cartesian location
+    mc = modem_location
+    sc = SatelliteLocation(name=satellite.name,
+                           longitude=satellite.value, 
+                           altitude=GEOSTATIONARY_DISTANCE_M)
+    # modem and satellite Point location
+    mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
+    sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
+    ref_point = rotate_globe(sc, mc, sp.radius)
+    if ref_point.z**2 + ref_point.y**2 &gt; 1.0e-6:
+        theta = math.atan2(ref_point.z, ref_point.y) * 180.0 / math.pi
+        azimuth = 90.0 - theta
+        if azimuth &lt; 0.0:
+            azimuth += 360.0
+        if azimuth &gt; 360.0:
+            azimuth -= 360.0
+        bma = normalize_vector(sp, mp)   # Bayesian model averaging
+        if isinstance(bma, _PointLocation):
+            elevation = (90.0 - (180.0 / math.pi) * math.acos(
+                bma.x * mp.nx + bma.y * mp.ny + bma.z * mp.nz))
+    sc.azimuth = round(azimuth, 1)
+    sc.elevation = round(elevation, 1)
+    return sc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.location.parse_nmea_to_location"><code class="name flex">
+<span>def <span class="ident">parse_nmea_to_location</span></span>(<span>location: <a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a>, nmea_sentence: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses a NMEA-0183 sentence to update a ModemLocation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse_nmea_to_location(location: ModemLocation, nmea_sentence: str) -&gt; None:
+    &#34;&#34;&#34;Parses a NMEA-0183 sentence to update a ModemLocation.&#34;&#34;&#34;
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Parsing NMEA: %s&#39;, nmea_sentence)
+    if not validate_nmea(nmea_sentence):
+        raise ValueError(&#39;Invalid NMEA-0183 sentence&#39;)
+    data = nmea_sentence.split(&#39;*&#39;)[0]
+    nmea_type = &#39;&#39;
+    cache = {}
+    for i, field_data in enumerate(data.split(&#39;,&#39;)):
+        if i == 0:
+            nmea_type = field_data[-3:]
+            if nmea_type == &#39;GSV&#39;:
+                _log.warn(&#39;No processing required for GSV sentence&#39;)
+                return
+            if nmea_type == &#39;GSA&#39; and location.vdop != 99:
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Skipping redundant GSA data&#39;)
+                return
+            if vlog(TRACE_TAG):
+                _log.debug(&#39;Processing NMEA type: %s&#39;, nmea_type)
+        elif i == 1:
+            if nmea_type == &#39;RMC&#39;:
+                cache[&#39;fix_hour&#39;] = field_data[0:2]
+                cache[&#39;fix_min&#39;] = field_data[2:4]
+                cache[&#39;fix_sec&#39;] = field_data[4:6]
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix time %s:%s:%s&#39;, cache[&#39;fix_hour&#39;],
+                               cache[&#39;fix_min&#39;], cache[&#39;fix_sec&#39;])
+        elif i == 2:
+            if nmea_type == &#39;RMC&#39;:
+                if (field_data == &#39;V&#39;):
+                    _log.warn(&#39;Fix Void&#39;)
+            elif nmea_type == &#39;GSA&#39;:
+                location.fix_type = GnssFixType(int(field_data))
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix type: %s&#39;, location.fix_type.name)
+        elif i == 3:
+            if nmea_type == &#39;RMC&#39;:
+                location.latitude = (float(field_data[0:2]) +
+                                     float(field_data[2]) / 60.0)
+        elif i == 4:
+            if nmea_type == &#39;RMC&#39;:
+                if field_data == &#39;S&#39;:
+                    location.latitude *= -1
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Latitude: %.5f&#39;, location.latitude)
+        elif i == 5:
+            if nmea_type == &#39;RMC&#39;:
+                location.longitude = (float(field_data[0:3]) +
+                                      float(field_data[3]) / 60.0)
+        elif i == 6:
+            if nmea_type == &#39;RMC&#39;:
+                if field_data == &#39;W&#39;:
+                    location.longitude *= -1
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Longitude: %.5f&#39;, location.longitude)
+            elif nmea_type == &#39;GGA&#39;:
+                location.fix_quality = GnssFixQuality(int(field_data))
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix quality: %s&#39;, location.fix_quality.name)
+        elif i == 7:
+            if nmea_type == &#39;RMC&#39;:
+                location.speed = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Speed: %.1f&#39;, location.speed)
+            elif nmea_type == &#39;GGA&#39;:
+                location.satellites = int(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;GNSS satellites used: %d&#39;, location.satellites)
+        elif i == 8:
+            if nmea_type == &#39;RMC&#39;:
+                location.heading = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Heading: %.1f&#39;, location.heading)
+            elif nmea_type == &#39;GGA&#39;:
+                location.hdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;HDOP: %.1f&#39;, location.heading)
+        elif i == 9:
+            if nmea_type == &#39;RMC&#39;:
+                fix_day = field_data[0:2]
+                fix_month = field_data[2:4]
+                fix_yy = int(field_data[4:])
+                fix_yy += 1900 if fix_yy &gt;= 73 else 2000
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix date %d-%s-%s&#39;, fix_yy, fix_month, fix_day)
+                iso_time = (f&#39;{fix_yy}-{fix_month}-{fix_day}T&#39;
+                            f&#39;{cache[&#34;fix_hour&#34;]}:{cache[&#34;fix_min&#34;]}&#39;
+                            f&#39;:{cache[&#34;fix_sec&#34;]}Z&#39;)
+                unix_timestamp = iso_to_ts(iso_time)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Fix time ISO 8601: %s | Unix: %d&#39;,
+                               iso_time, unix_timestamp)
+                location.timestamp = unix_timestamp
+            elif nmea_type == &#39;GGA&#39;:
+                location.altitude = float(field_data)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;Altitude: %.1f&#39;, location.altitude)
+        elif i == 10:
+            # RMC magnetic variation - ignore
+            if nmea_type == &#39;GGA&#39; and field_data != &#39;M&#39;:
+                _log.warning(&#39;Unexpected altitude units: %s&#39;, field_data)
+        # elif i == 11:   # RMC magnetic variation direction, GGA height of geoid - ignore
+        # elif i == 12:   # GGA units height of geoid - ignore
+        # elif i == 13:   # GGA seconds since last DGPS update - ignore
+        # elif i == 14:   # GGA DGPS station ID - ignore
+        elif i == 15:   # GSA PDOP - ignore (unused)
+            if nmea_type == &#39;GSA&#39;:
+                location.pdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;PDOP: %d&#39;, location.pdop)
+        # elif i == 16:   # GSA HDOP - ignore (use GGA)
+        elif i == 17:
+            if nmea_type == &#39;GSA&#39;:
+                location.vdop = round(float(field_data), 1)
+                if vlog(TRACE_TAG):
+                    _log.debug(&#39;VDOP: %d&#39;, location.vdop)</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.location.validate_nmea"><code class="name flex">
+<span>def <span class="ident">validate_nmea</span></span>(<span>nmea_sentence: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Validates a given NMEA-0183 sentence with CRC.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nmea_sentence</code></strong> :&ensp;<code>str</code></dt>
+<dd>NMEA-0183 sentence ending in checksum.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate_nmea(nmea_sentence: str) -&gt; bool:
+    &#34;&#34;&#34;Validates a given NMEA-0183 sentence with CRC.
+    
+    Args:
+        nmea_sentence (str): NMEA-0183 sentence ending in checksum.
+    
+    &#34;&#34;&#34;
+    if &#39;*&#39; not in nmea_sentence:
+        return False
+    data, cs_hex = nmea_sentence.split(&#39;*&#39;)
+    candidate = int(cs_hex, 16)
+    crc = 0   # initial
+    for i in range(1, len(data)):   # ignore initial $
+        crc ^= ord(data[i])
+    return candidate == crc</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pynimomodem.location.GnssFixQuality"><code class="flex name class">
+<span>class <span class="ident">GnssFixQuality</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enumerated fix quality from NMEA-0183 standard.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssFixQuality(NimoIntEnum):
+    &#34;&#34;&#34;Enumerated fix quality from NMEA-0183 standard.&#34;&#34;&#34;
+    INVALID = 0
+    GPS_SPS = 1
+    DGPS = 2
+    PPS = 3
+    RTK = 4
+    FLOAT_RTK = 5
+    EST_DEAD_RECKONING = 6
+    MANUAL = 7
+    SIMULATION = 8</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.location.GnssFixQuality.DGPS"><code class="name">var <span class="ident">DGPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.EST_DEAD_RECKONING"><code class="name">var <span class="ident">EST_DEAD_RECKONING</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.FLOAT_RTK"><code class="name">var <span class="ident">FLOAT_RTK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.GPS_SPS"><code class="name">var <span class="ident">GPS_SPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.INVALID"><code class="name">var <span class="ident">INVALID</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.MANUAL"><code class="name">var <span class="ident">MANUAL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.PPS"><code class="name">var <span class="ident">PPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.RTK"><code class="name">var <span class="ident">RTK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixQuality.SIMULATION"><code class="name">var <span class="ident">SIMULATION</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.location.GnssFixType"><code class="flex name class">
+<span>class <span class="ident">GnssFixType</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enumerated fix type from NMEA-0183 standard.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssFixType(NimoIntEnum):
+    &#34;&#34;&#34;Enumerated fix type from NMEA-0183 standard.&#34;&#34;&#34;
+    NONE = 1
+    D2 = 2
+    D3 = 3</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.location.GnssFixType.D2"><code class="name">var <span class="ident">D2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixType.D3"><code class="name">var <span class="ident">D3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssFixType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.location.GnssSatelliteInfo"><code class="flex name class">
+<span>class <span class="ident">GnssSatelliteInfo</span></span>
+<span>(</span><span>prn: int, elevation: int, azimuth: int, snr: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Information specific to a GNSS satellite.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>prn</code></strong></dt>
+<dd>The PRN code (Pseudo-Random Number sequence)</dd>
+<dt><strong><code>elevation</code></strong></dt>
+<dd>The satellite elevation</dd>
+<dt><strong><code>azimuth</code></strong></dt>
+<dd>The satellite azimuth</dd>
+<dt><strong><code>snr</code></strong></dt>
+<dd>The satellite Signal-to-Noise Ratio</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class GnssSatelliteInfo(object):
+    &#34;&#34;&#34;Information specific to a GNSS satellite.
+    
+    Attributes:
+        prn: The PRN code (Pseudo-Random Number sequence)
+        elevation: The satellite elevation
+        azimuth: The satellite azimuth
+        snr: The satellite Signal-to-Noise Ratio
+    &#34;&#34;&#34;
+    prn: int
+    elevation: int
+    azimuth: int
+    snr: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.location.GnssSatelliteInfo.azimuth"><code class="name">var <span class="ident">azimuth</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssSatelliteInfo.elevation"><code class="name">var <span class="ident">elevation</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssSatelliteInfo.prn"><code class="name">var <span class="ident">prn</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.GnssSatelliteInfo.snr"><code class="name">var <span class="ident">snr</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.location.ModemLocation"><code class="flex name class">
+<span>class <span class="ident">ModemLocation</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A set of location-based information derived from the modem's NMEA data.</p>
+<p>Uses 90.0/180.0 if latitude/longitude are unknown</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>latitude</code></strong> :&ensp;<code>float</code></dt>
+<dd>decimal degrees</dd>
+<dt><strong><code>longitude</code></strong> :&ensp;<code>float</code></dt>
+<dd>decimal degrees</dd>
+<dt><strong><code>altitude</code></strong> :&ensp;<code>float</code></dt>
+<dd>in metres</dd>
+<dt><strong><code>speed</code></strong> :&ensp;<code>float</code></dt>
+<dd>in knots</dd>
+<dt><strong><code>heading</code></strong> :&ensp;<code>float</code></dt>
+<dd>in degrees</dd>
+<dt><strong><code>timestamp</code></strong> :&ensp;<code>int</code></dt>
+<dd>in seconds since 1970-01-01T00:00:00Z</dd>
+<dt><strong><code>satellites</code></strong> :&ensp;<code>int</code></dt>
+<dd>in view at time of fix</dd>
+<dt><strong><code>fix_type</code></strong> :&ensp;<code><a title="pynimomodem.location.GnssFixType" href="#pynimomodem.location.GnssFixType">GnssFixType</a></code></dt>
+<dd>1=None, 2=2D or 3=3D</dd>
+<dt><strong><code>fix_quality</code></strong> :&ensp;<code><a title="pynimomodem.location.GnssFixQuality" href="#pynimomodem.location.GnssFixQuality">GnssFixQuality</a></code></dt>
+<dd>Enumerated lookup value</dd>
+<dt><strong><code>pdop</code></strong> :&ensp;<code>float</code></dt>
+<dd>Probability Dilution of Precision</dd>
+<dt><strong><code>hdop</code></strong> :&ensp;<code>float</code></dt>
+<dd>Horizontal Dilution of Precision</dd>
+<dt><strong><code>vdop</code></strong> :&ensp;<code>float</code></dt>
+<dd>Vertical Dilution of Precision</dd>
+<dt><strong><code>time_iso</code></strong> :&ensp;<code>str</code></dt>
+<dd>ISO 8601 formatted timestamp</dd>
+</dl>
+<p>Initializes a Location with default latitude/longitude 90/180.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ModemLocation:
+    &#34;&#34;&#34;A set of location-based information derived from the modem&#39;s NMEA data.
+    
+    Uses 90.0/180.0 if latitude/longitude are unknown
+
+    Attributes:
+        latitude (float): decimal degrees
+        longitude (float): decimal degrees
+        altitude (float): in metres
+        speed (float): in knots
+        heading (float): in degrees
+        timestamp (int): in seconds since 1970-01-01T00:00:00Z
+        satellites (int): in view at time of fix
+        fix_type (GnssFixType): 1=None, 2=2D or 3=3D
+        fix_quality (GnssFixQuality): Enumerated lookup value
+        pdop (float): Probability Dilution of Precision
+        hdop (float): Horizontal Dilution of Precision
+        vdop (float): Vertical Dilution of Precision
+        time_iso (str): ISO 8601 formatted timestamp
+
+    &#34;&#34;&#34;
+    def __init__(self, **kwargs):
+        &#34;&#34;&#34;Initializes a Location with default latitude/longitude 90/180.&#34;&#34;&#34;
+        self.latitude = float(kwargs.get(&#39;latitude&#39;, 90.0))
+        self.longitude = float(kwargs.get(&#39;longitude&#39;, 180.0))
+        self.altitude = float(kwargs.get(&#39;altitude&#39;, 0.0))   # metres
+        self.speed = float(kwargs.get(&#39;speed&#39;, 0.0))  # knots
+        self.heading = float(kwargs.get(&#39;heading&#39;, 0.0))   # degrees
+        self.timestamp = int(kwargs.get(&#39;timestamp&#39;, 0))   # seconds (unix)
+        self.satellites = int(kwargs.get(&#39;satellites&#39;, 0))
+        self.fix_type = GnssFixType(int(kwargs.get(&#39;fix_type&#39;, 1)))
+        self.fix_quality = GnssFixQuality(int(kwargs.get(&#39;fix_quality&#39;, 0)))
+        self.pdop = float(kwargs.get(&#39;pdop&#39;, 99))
+        self.hdop = float(kwargs.get(&#39;hdop&#39;, 99))
+        self.vdop = float(kwargs.get(&#39;vdop&#39;, 99))
+        # self.satellites_info: &#39;list[GnssSatelliteInfo]&#39; = kwargs.get(
+        #     &#39;satellites_info&#39;, []
+        # )
+
+    @property
+    def time_iso(self) -&gt; str:
+        return f&#39;{ts_to_iso(self.timestamp)}&#39;
+
+    # def _update_satellites_info(self,
+    #                             satellites_info: &#39;list[GnssSatelliteInfo]&#39;):
+    #     &#34;&#34;&#34;Populates satellite information based on NMEA GSV data.&#34;&#34;&#34;
+    #     for satellite_info in satellites_info:
+    #         if isinstance(satellite_info, GnssSatelliteInfo):
+    #             new = True
+    #             for i, info in enumerate(self.satellites_info):
+    #                 if info.prn == satellite_info.prn:
+    #                     new = False
+    #                     self.satellites_info[i] = satellite_info
+    #                     break
+    #             if new:
+    #                 self.satellites_info.append(satellite_info)
+
+    def __repr__(self) -&gt; str:
+        obj = deepcopy(self.__dict__)
+        for k, v in obj.items():
+            if k in [&#39;latitude&#39;, &#39;longitude&#39;]:
+                obj[k] = round(v, 5)
+            elif isinstance(v, float):
+                obj[k] = round(v, 1)
+        return json.dumps(obj, skipkeys=True)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pynimomodem.location.ModemLocation.time_iso"><code class="name">var <span class="ident">time_iso</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def time_iso(self) -&gt; str:
+    return f&#39;{ts_to_iso(self.timestamp)}&#39;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation"><code class="flex name class">
+<span>class <span class="ident">SatelliteLocation</span></span>
+<span>(</span><span>name: str = '', latitude: float = 0.0, longitude: float = 180.0, altitude: float = 35786000, azimuth: float = 0.0, elevation: float = 0.0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a geostationary satellite location relative to a modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class SatelliteLocation:
+    &#34;&#34;&#34;Represents a geostationary satellite location relative to a modem.&#34;&#34;&#34;
+    name: str = &#39;&#39;
+    latitude: float = 0.0
+    longitude: float = 180.0
+    altitude: float = GEOSTATIONARY_DISTANCE_M
+    azimuth: float = 0.0
+    elevation: float = 0.0</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.location.SatelliteLocation.altitude"><code class="name">var <span class="ident">altitude</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.azimuth"><code class="name">var <span class="ident">azimuth</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.elevation"><code class="name">var <span class="ident">elevation</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.latitude"><code class="name">var <span class="ident">latitude</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.longitude"><code class="name">var <span class="ident">longitude</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pynimomodem" href="index.html">pynimomodem</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="pynimomodem.location.get_closest_satellite" href="#pynimomodem.location.get_closest_satellite">get_closest_satellite</a></code></li>
+<li><code><a title="pynimomodem.location.get_location_from_nmea_data" href="#pynimomodem.location.get_location_from_nmea_data">get_location_from_nmea_data</a></code></li>
+<li><code><a title="pynimomodem.location.get_satellite_location" href="#pynimomodem.location.get_satellite_location">get_satellite_location</a></code></li>
+<li><code><a title="pynimomodem.location.parse_nmea_to_location" href="#pynimomodem.location.parse_nmea_to_location">parse_nmea_to_location</a></code></li>
+<li><code><a title="pynimomodem.location.validate_nmea" href="#pynimomodem.location.validate_nmea">validate_nmea</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pynimomodem.location.GnssFixQuality" href="#pynimomodem.location.GnssFixQuality">GnssFixQuality</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.location.GnssFixQuality.DGPS" href="#pynimomodem.location.GnssFixQuality.DGPS">DGPS</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.EST_DEAD_RECKONING" href="#pynimomodem.location.GnssFixQuality.EST_DEAD_RECKONING">EST_DEAD_RECKONING</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.FLOAT_RTK" href="#pynimomodem.location.GnssFixQuality.FLOAT_RTK">FLOAT_RTK</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.GPS_SPS" href="#pynimomodem.location.GnssFixQuality.GPS_SPS">GPS_SPS</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.INVALID" href="#pynimomodem.location.GnssFixQuality.INVALID">INVALID</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.MANUAL" href="#pynimomodem.location.GnssFixQuality.MANUAL">MANUAL</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.PPS" href="#pynimomodem.location.GnssFixQuality.PPS">PPS</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.RTK" href="#pynimomodem.location.GnssFixQuality.RTK">RTK</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixQuality.SIMULATION" href="#pynimomodem.location.GnssFixQuality.SIMULATION">SIMULATION</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.location.GnssFixType" href="#pynimomodem.location.GnssFixType">GnssFixType</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.location.GnssFixType.D2" href="#pynimomodem.location.GnssFixType.D2">D2</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixType.D3" href="#pynimomodem.location.GnssFixType.D3">D3</a></code></li>
+<li><code><a title="pynimomodem.location.GnssFixType.NONE" href="#pynimomodem.location.GnssFixType.NONE">NONE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.location.GnssSatelliteInfo" href="#pynimomodem.location.GnssSatelliteInfo">GnssSatelliteInfo</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.location.GnssSatelliteInfo.azimuth" href="#pynimomodem.location.GnssSatelliteInfo.azimuth">azimuth</a></code></li>
+<li><code><a title="pynimomodem.location.GnssSatelliteInfo.elevation" href="#pynimomodem.location.GnssSatelliteInfo.elevation">elevation</a></code></li>
+<li><code><a title="pynimomodem.location.GnssSatelliteInfo.prn" href="#pynimomodem.location.GnssSatelliteInfo.prn">prn</a></code></li>
+<li><code><a title="pynimomodem.location.GnssSatelliteInfo.snr" href="#pynimomodem.location.GnssSatelliteInfo.snr">snr</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.location.ModemLocation" href="#pynimomodem.location.ModemLocation">ModemLocation</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.location.ModemLocation.time_iso" href="#pynimomodem.location.ModemLocation.time_iso">time_iso</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.location.SatelliteLocation" href="#pynimomodem.location.SatelliteLocation">SatelliteLocation</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.location.SatelliteLocation.altitude" href="#pynimomodem.location.SatelliteLocation.altitude">altitude</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.azimuth" href="#pynimomodem.location.SatelliteLocation.azimuth">azimuth</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.elevation" href="#pynimomodem.location.SatelliteLocation.elevation">elevation</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.latitude" href="#pynimomodem.location.SatelliteLocation.latitude">latitude</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.longitude" href="#pynimomodem.location.SatelliteLocation.longitude">longitude</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.name" href="#pynimomodem.location.SatelliteLocation.name">name</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

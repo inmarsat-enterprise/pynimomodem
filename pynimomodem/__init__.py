@@ -1,3 +1,5 @@
+"""Library to interface with a Viasat-approved NIMO modem for satellite IoT."""
+
 from .constants import (
     EventNotification,
     GnssMode,
@@ -23,23 +25,23 @@ from .modem import (
 )
 
 __all__ = [
-    GnssMode,
-    Manufacturer,
-    MessagePriority,
-    MessageState,
-    ModemLocation,
-    MoMessage,
-    MtMessage,
-    NimoModem,
-    NimoModemError,
-    PowerMode,
-    SatelliteAcquisitionDetail,
-    SatelliteLocation,
-    SignalQuality,
-    WakeupPeriod,
-    WakeupWay,
-    WorkMode,
-    UrcCode,
-    UrcControl,
-    EventNotification,
+    'GnssMode',
+    'Manufacturer',
+    'MessagePriority',
+    'MessageState',
+    'ModemLocation',
+    'MoMessage',
+    'MtMessage',
+    'NimoModem',
+    'NimoModemError',
+    'PowerMode',
+    'SatelliteAcquisitionDetail',
+    'SatelliteLocation',
+    'SignalQuality',
+    'WakeupPeriod',
+    'WakeupWay',
+    'WorkMode',
+    'UrcCode',
+    'UrcControl',
+    'EventNotification',
 ]

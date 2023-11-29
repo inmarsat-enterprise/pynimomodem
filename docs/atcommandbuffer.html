@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pynimomodem.atcommandbuffer API documentation</title>
+<meta name="description" content="AT command buffer parsing for a NIMO modem …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pynimomodem.atcommandbuffer</code></h1>
+</header>
+<section id="section-intro">
+<p>AT command buffer parsing for a NIMO modem.</p>
+<p>This module provides a bidirectional buffer model for sendind and receiving
+AT commands on a serial link to a satellite modem following V.25 spec.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;AT command buffer parsing for a NIMO modem.
+
+This module provides a bidirectional buffer model for sendind and receiving
+AT commands on a serial link to a satellite modem following V.25 spec.
+
+&#34;&#34;&#34;
+import logging
+import threading
+import time
+
+from .constants import AtErrorCode, AtParsingState
+from .crcxmodem import apply_crc, validate_crc
+from .nimoserial import Serial
+from .nimoutils import dprint, vlog
+
+VLOG_TAG = &#39;atcommand&#39;
+DEFAULT_AT_TIMEOUT = 3   # seconds
+VRES_OK = &#39;\r\nOK\r\n&#39;
+VRES_ERR = &#39;\r\nERROR\r\n&#39;
+RES_OK = &#39;0\r&#39;
+RES_ERR = &#39;4\r&#39;
+
+_log = logging.getLogger(__name__)
+
+
+class AtCommandBuffer:
+    &#34;&#34;&#34;A command/response buffer for communicating with a NIMO modem.
+    
+    Attributes:
+        serial (serial.Serial): The Serial object/stream used for communications
+        echo (bool): Echo enabled on commands (default True)
+        verbose (bool): Verbose response codes (default True)
+        quiet (bool): Suppressed response codes (default False)
+        crc (bool): CRC/checksum request/response enabled (default False)
+        ready (threading.Event): Blocks new requests until pending response
+            has completed or timed out.
+    
+    &#34;&#34;&#34;
+    def __init__(self, serial: Serial) -&gt; None:
+        self.echo: bool = True
+        self.verbose: bool = True
+        self.quiet: bool = False
+        self.crc: bool = False
+        if not isinstance(serial, Serial):
+            raise ValueError(&#39;Invalid serial port&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Connecting to %s (%d baud)&#39;,
+                       serial.name, serial.baudrate)
+        self.serial = serial
+        self._char_delay: float = 8 / serial.baudrate
+        self._pending_command: str = None
+        self._rx_buffer: str = &#39;&#39;
+        self.ready = threading.Event()
+        self.ready.set()
+    
+    def is_data_waiting(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if data is in the serial receive buffer.&#34;&#34;&#34;
+        return self.serial.in_waiting &gt; 0
+    
+    def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+        &#34;&#34;&#34;Reads data from the serial receive buffer.
+        
+        Args:
+            timeout (int): Optional timeout in seconds to wait for data.
+                If 0, will stop reading when no character is waiting.
+        
+        Returns:
+            The data string if any was present, else `None`.
+            
+        &#34;&#34;&#34;
+        if not isinstance(timeout, int):
+            timeout = 0
+        self.serial.flush()   # wait for anything sent prior to be done
+        rx_data = &#39;&#39;
+        start_time = time.time()
+        while (time.time() - start_time &lt; timeout or timeout == 0):
+            while (self.serial.in_waiting &gt; 0):
+                rx_data += self._read()
+            if timeout == 0 or rx_data.endswith(read_until):
+                break
+        if vlog(VLOG_TAG):
+            if rx_data:
+                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+            else:
+                _log.debug(&#39;No data waiting on serial buffer&#39;)
+        return rx_data
+    
+    def send_at_command(self, at_command: str) -&gt; None:
+        &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
+        
+        Use `read_at_response` then `get_resopnse` after sending the command.
+        
+        Args:
+            at_command: The command to send.
+        
+        &#34;&#34;&#34;
+        if vlog(VLOG_TAG) and not self.ready.is_set():
+            _log.debug(&#39;Waiting for prior command completion&#39;)
+        self.ready.wait()
+        self.ready.clear()
+        if &#39;ATS80?&#39; in at_command:
+            _log.debug(&#39;Somebody is querying error state!&#39;)
+        dump_buffer = self.read_rx_buffer()
+        if dump_buffer:
+            _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+        self._pending_command = at_command
+        if self.crc and &#39;*&#39; not in at_command:
+            self._pending_command = apply_crc(at_command)
+        self._pending_command += &#39;\r&#39;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
+        self.serial.write(self._pending_command.encode())
+        self.serial.flush()   # ensure it gets sent
+    
+    def read_at_response(self,
+                         prefix: str = None,
+                         timeout: int = DEFAULT_AT_TIMEOUT,
+                         tick: int = 0) -&gt; AtErrorCode:
+        &#34;&#34;&#34;Parses the pending AT command response into a buffer.
+        
+        Use `send_at_command` prior to calling.
+        Use `get_response` to retrieve the parsed response.
+        
+        Args:
+            prefix: Optional prefix to remove from the response.
+            timeout: Maximum time in seconds to wait for response (default 3)
+            tick: Optional debug for timeout countdown in seconds
+        
+        Returns:
+            Error code indicating success or reason for parsing error.
+        
+        Raises:
+            `OSError` if there is no pending command.
+        
+        &#34;&#34;&#34;
+        if not isinstance(timeout, int):
+            timeout = DEFAULT_AT_TIMEOUT
+        if not self._pending_command:
+            raise OSError(&#39;No pending command to read response for&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing response for %s&#39;, dprint(self._pending_command))
+        self._rx_buffer = &#39;&#39;
+        parsing = AtParsingState.ECHO if self.echo else AtParsingState.RESPONSE
+        result_ok: bool = False
+        crc_found: bool = False
+        error: AtErrorCode = AtErrorCode.OK
+        peeked: str = &#39;&#39;
+        start_time = time.time()
+        countdown = timeout
+        while (time.time() - start_time &lt; timeout and
+               parsing &lt; AtParsingState.OK):
+            while ((self.serial.in_waiting &gt; 0 or peeked) and
+                   parsing &lt; AtParsingState.OK):
+                if peeked:
+                    self._rx_buffer += peeked
+                    peeked = &#39;&#39;
+                else:
+                    self._rx_buffer += self._read()
+                last = self._rx_buffer[-1]
+                if last == &#39;\n&#39;:
+                    if self._rx_buffer.endswith(VRES_OK):
+                        result_ok = True
+                        if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
+                            _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                            self.crc = True
+                        elif self.crc and self.serial.in_waiting == 0:
+                            _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+                            self.crc = False
+                        parsing = self._parsing_ok()
+                    elif self._rx_buffer.endswith(VRES_ERR):
+                        parsing = self._parsing_error()
+                    elif parsing == AtParsingState.CRC:
+                        if vlog(VLOG_TAG):
+                            _log.debug(&#39;CRC parsing complete&#39;)
+                        if not result_ok:
+                            parsing = AtParsingState.ERROR
+                        else:
+                            if validate_crc(self._rx_buffer):
+                                parsing = AtParsingState.OK
+                            else:
+                                _log.error(&#39;Invalid CRC&#39;)
+                                parsing = AtParsingState.ERROR
+                                error = AtErrorCode.INVALID_CRC
+                                result_ok = False
+                    # else response line terminator - keep parsing
+                elif last == &#39;\r&#39;:
+                    if self._rx_buffer == self._pending_command:
+                        if vlog(VLOG_TAG):
+                            _log.debug(&#39;Echo received - clearing RX buffer&#39;)
+                        self._rx_buffer = &#39;&#39;
+                        parsing = AtParsingState.RESPONSE
+                    else:
+                        old_parsing = parsing
+                        if self.serial.in_waiting == 0:
+                            parsing = self._parsing_short(parsing)
+                        else:
+                            peeked = self._read()
+                            if peeked == &#39;*&#39;:
+                                parsing = self._parsing_short()
+                        if old_parsing != parsing:
+                            result_ok = parsing == AtParsingState.OK
+                else:
+                    if parsing == AtParsingState.CRC and last == &#39;*&#39;:
+                        crc_found = True
+            if parsing &gt;= AtParsingState.OK:
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Parsing complete&#39;)
+                break
+            if tick &gt; 0 and self._rx_buffer == &#39;&#39;:
+                time.sleep(tick)
+                countdown -= tick
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Countdown: %d&#39;, countdown)
+            time.sleep(self._char_delay)
+        # end while &lt; timeout
+        if vlog(VLOG_TAG) and self._rx_buffer:
+            _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
+        if parsing &lt; AtParsingState.OK:
+            _log.warning(&#39;AT command timeout during parsing&#39;)
+            if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+                _log.info(&#39;Detected non-verbose - setting flag&#39;)
+                self.verbose = False
+            else:
+                error = AtErrorCode.TIMEOUT
+        elif parsing == AtParsingState.ERROR:
+            error = AtErrorCode.ERROR
+            if not self.crc and crc_found:
+                _log.warning(&#39;CRC detected but not expected - setting flag&#39;)
+                self.crc = True
+                error = AtErrorCode.CRC_CONFIG_MISMATCH
+            self._rx_buffer = &#39;&#39;
+        else:
+            if (self.crc):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Removing CRC&#39;)
+                crc_length = 7
+                if (self._rx_buffer[-crc_length:].startswith(&#39;*&#39;) and
+                    self._rx_buffer[-crc_length:].endswith(&#39;\r\n&#39;)):
+                    # CRC terminates response so remove it
+                    self._rx_buffer = self._rx_buffer[:-crc_length]
+                else:
+                    _log.warning(&#39;CRC expected but not found - reset flag&#39;)
+                    self.crc = False
+            to_remove = VRES_OK if self.verbose else RES_OK
+            self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Removed result code (%s): %s&#39;,
+                           dprint(to_remove), dprint(self._rx_buffer))
+            if prefix:
+                self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Removed prefix (%s): %s&#39;,
+                               dprint(prefix), dprint(self._rx_buffer))
+            self._rx_buffer = self._rx_buffer.strip()
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
+                           dprint(self._rx_buffer))
+            self._rx_buffer = self._rx_buffer.replace(&#39;\r\n&#39;, &#39;\n&#39;)
+            self._rx_buffer = self._rx_buffer.replace(&#39;\n\n&#39;, &#39;\n&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Consolidated line feeds: %s&#39;,
+                           dprint(self._rx_buffer))
+        # cleanup
+        self._pending_command = &#39;&#39;
+        self.ready.set()
+        return error
+    
+    def get_response(self) -&gt; str:
+        &#34;&#34;&#34;Get the response following a read operation and clear the buffer.&#34;&#34;&#34;
+        response = self._rx_buffer
+        self._rx_buffer = &#39;&#39;
+        return response
+    
+    def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
+        &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
+        
+        Returns:
+            An integer code if present, or `None`.
+        
+        &#34;&#34;&#34;
+        if not isinstance(prefix, str) or not prefix:
+            raise ValueError(&#39;Invalid URC prefix&#39;)
+        if vlog(VLOG_TAG) and not self.ready.is_set():
+            _log.debug(&#39;Waiting for prior command/response completion&#39;)
+        self.ready.wait()
+        self.ready.clear()
+        urc = None
+        urc_buffer: str = &#39;&#39;
+        while self.serial.in_waiting &gt; 0:
+            urc_buffer += self._read()
+            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
+                urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
+                break
+        if vlog(VLOG_TAG) and urc is not None:
+            _log.debug(&#39;Found URC: %d&#39;, urc)
+        self.ready.set()
+        return urc
+    
+    def _read(self) -&gt; str:
+        &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
+        char = self.serial.read()
+        try:
+            return char.decode()
+        except UnicodeDecodeError as exc:
+            _log.error(&#39;Unable to decode [%d] (%s)&#39;, char, exc)
+            return &#39;&#39;
+    
+    def _parsing_ok(self) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
+        return AtParsingState.CRC if self.crc else AtParsingState.OK
+    
+    def _parsing_error(self) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
+        _log.warning(&#39;Parsing error&#39;)
+        if self.crc or self.serial.in_waiting &gt; 0:
+            return AtParsingState.CRC
+        else:
+            time.sleep(self._char_delay)
+            if self.serial.in_waiting &gt; 0:
+                return AtParsingState.CRC
+        return AtParsingState.ERROR
+    
+    def _parsing_short(self, current: AtParsingState = None) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing short code responses.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Check short response for: %s&#39;, dprint(self._rx_buffer))
+        if (not self._rx_buffer.endswith((RES_OK, RES_ERR)) or
+            (self.verbose and self._rx_buffer.startswith(&#39;\r\n&#39;))):
+            # just reading too fast, wait for next character
+            return current
+        if self.verbose:
+            _log.warning(&#39;Clearing verbose flag due to short response match&#39;)
+            self.verbose = False
+        if self._rx_buffer.endswith(RES_OK):
+            return self._parsing_ok()
+        return self._parsing_error()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer"><code class="flex name class">
+<span>class <span class="ident">AtCommandBuffer</span></span>
+<span>(</span><span>serial: serial.serialposix.Serial)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A command/response buffer for communicating with a NIMO modem.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>serial</code></strong> :&ensp;<code>serial.Serial</code></dt>
+<dd>The Serial object/stream used for communications</dd>
+<dt><strong><code>echo</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Echo enabled on commands (default True)</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Verbose response codes (default True)</dd>
+<dt><strong><code>quiet</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Suppressed response codes (default False)</dd>
+<dt><strong><code>crc</code></strong> :&ensp;<code>bool</code></dt>
+<dd>CRC/checksum request/response enabled (default False)</dd>
+<dt><strong><code>ready</code></strong> :&ensp;<code>threading.Event</code></dt>
+<dd>Blocks new requests until pending response
+has completed or timed out.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AtCommandBuffer:
+    &#34;&#34;&#34;A command/response buffer for communicating with a NIMO modem.
+    
+    Attributes:
+        serial (serial.Serial): The Serial object/stream used for communications
+        echo (bool): Echo enabled on commands (default True)
+        verbose (bool): Verbose response codes (default True)
+        quiet (bool): Suppressed response codes (default False)
+        crc (bool): CRC/checksum request/response enabled (default False)
+        ready (threading.Event): Blocks new requests until pending response
+            has completed or timed out.
+    
+    &#34;&#34;&#34;
+    def __init__(self, serial: Serial) -&gt; None:
+        self.echo: bool = True
+        self.verbose: bool = True
+        self.quiet: bool = False
+        self.crc: bool = False
+        if not isinstance(serial, Serial):
+            raise ValueError(&#39;Invalid serial port&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Connecting to %s (%d baud)&#39;,
+                       serial.name, serial.baudrate)
+        self.serial = serial
+        self._char_delay: float = 8 / serial.baudrate
+        self._pending_command: str = None
+        self._rx_buffer: str = &#39;&#39;
+        self.ready = threading.Event()
+        self.ready.set()
+    
+    def is_data_waiting(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if data is in the serial receive buffer.&#34;&#34;&#34;
+        return self.serial.in_waiting &gt; 0
+    
+    def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+        &#34;&#34;&#34;Reads data from the serial receive buffer.
+        
+        Args:
+            timeout (int): Optional timeout in seconds to wait for data.
+                If 0, will stop reading when no character is waiting.
+        
+        Returns:
+            The data string if any was present, else `None`.
+            
+        &#34;&#34;&#34;
+        if not isinstance(timeout, int):
+            timeout = 0
+        self.serial.flush()   # wait for anything sent prior to be done
+        rx_data = &#39;&#39;
+        start_time = time.time()
+        while (time.time() - start_time &lt; timeout or timeout == 0):
+            while (self.serial.in_waiting &gt; 0):
+                rx_data += self._read()
+            if timeout == 0 or rx_data.endswith(read_until):
+                break
+        if vlog(VLOG_TAG):
+            if rx_data:
+                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+            else:
+                _log.debug(&#39;No data waiting on serial buffer&#39;)
+        return rx_data
+    
+    def send_at_command(self, at_command: str) -&gt; None:
+        &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
+        
+        Use `read_at_response` then `get_resopnse` after sending the command.
+        
+        Args:
+            at_command: The command to send.
+        
+        &#34;&#34;&#34;
+        if vlog(VLOG_TAG) and not self.ready.is_set():
+            _log.debug(&#39;Waiting for prior command completion&#39;)
+        self.ready.wait()
+        self.ready.clear()
+        if &#39;ATS80?&#39; in at_command:
+            _log.debug(&#39;Somebody is querying error state!&#39;)
+        dump_buffer = self.read_rx_buffer()
+        if dump_buffer:
+            _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+        self._pending_command = at_command
+        if self.crc and &#39;*&#39; not in at_command:
+            self._pending_command = apply_crc(at_command)
+        self._pending_command += &#39;\r&#39;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
+        self.serial.write(self._pending_command.encode())
+        self.serial.flush()   # ensure it gets sent
+    
+    def read_at_response(self,
+                         prefix: str = None,
+                         timeout: int = DEFAULT_AT_TIMEOUT,
+                         tick: int = 0) -&gt; AtErrorCode:
+        &#34;&#34;&#34;Parses the pending AT command response into a buffer.
+        
+        Use `send_at_command` prior to calling.
+        Use `get_response` to retrieve the parsed response.
+        
+        Args:
+            prefix: Optional prefix to remove from the response.
+            timeout: Maximum time in seconds to wait for response (default 3)
+            tick: Optional debug for timeout countdown in seconds
+        
+        Returns:
+            Error code indicating success or reason for parsing error.
+        
+        Raises:
+            `OSError` if there is no pending command.
+        
+        &#34;&#34;&#34;
+        if not isinstance(timeout, int):
+            timeout = DEFAULT_AT_TIMEOUT
+        if not self._pending_command:
+            raise OSError(&#39;No pending command to read response for&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing response for %s&#39;, dprint(self._pending_command))
+        self._rx_buffer = &#39;&#39;
+        parsing = AtParsingState.ECHO if self.echo else AtParsingState.RESPONSE
+        result_ok: bool = False
+        crc_found: bool = False
+        error: AtErrorCode = AtErrorCode.OK
+        peeked: str = &#39;&#39;
+        start_time = time.time()
+        countdown = timeout
+        while (time.time() - start_time &lt; timeout and
+               parsing &lt; AtParsingState.OK):
+            while ((self.serial.in_waiting &gt; 0 or peeked) and
+                   parsing &lt; AtParsingState.OK):
+                if peeked:
+                    self._rx_buffer += peeked
+                    peeked = &#39;&#39;
+                else:
+                    self._rx_buffer += self._read()
+                last = self._rx_buffer[-1]
+                if last == &#39;\n&#39;:
+                    if self._rx_buffer.endswith(VRES_OK):
+                        result_ok = True
+                        if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
+                            _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                            self.crc = True
+                        elif self.crc and self.serial.in_waiting == 0:
+                            _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+                            self.crc = False
+                        parsing = self._parsing_ok()
+                    elif self._rx_buffer.endswith(VRES_ERR):
+                        parsing = self._parsing_error()
+                    elif parsing == AtParsingState.CRC:
+                        if vlog(VLOG_TAG):
+                            _log.debug(&#39;CRC parsing complete&#39;)
+                        if not result_ok:
+                            parsing = AtParsingState.ERROR
+                        else:
+                            if validate_crc(self._rx_buffer):
+                                parsing = AtParsingState.OK
+                            else:
+                                _log.error(&#39;Invalid CRC&#39;)
+                                parsing = AtParsingState.ERROR
+                                error = AtErrorCode.INVALID_CRC
+                                result_ok = False
+                    # else response line terminator - keep parsing
+                elif last == &#39;\r&#39;:
+                    if self._rx_buffer == self._pending_command:
+                        if vlog(VLOG_TAG):
+                            _log.debug(&#39;Echo received - clearing RX buffer&#39;)
+                        self._rx_buffer = &#39;&#39;
+                        parsing = AtParsingState.RESPONSE
+                    else:
+                        old_parsing = parsing
+                        if self.serial.in_waiting == 0:
+                            parsing = self._parsing_short(parsing)
+                        else:
+                            peeked = self._read()
+                            if peeked == &#39;*&#39;:
+                                parsing = self._parsing_short()
+                        if old_parsing != parsing:
+                            result_ok = parsing == AtParsingState.OK
+                else:
+                    if parsing == AtParsingState.CRC and last == &#39;*&#39;:
+                        crc_found = True
+            if parsing &gt;= AtParsingState.OK:
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Parsing complete&#39;)
+                break
+            if tick &gt; 0 and self._rx_buffer == &#39;&#39;:
+                time.sleep(tick)
+                countdown -= tick
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Countdown: %d&#39;, countdown)
+            time.sleep(self._char_delay)
+        # end while &lt; timeout
+        if vlog(VLOG_TAG) and self._rx_buffer:
+            _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
+        if parsing &lt; AtParsingState.OK:
+            _log.warning(&#39;AT command timeout during parsing&#39;)
+            if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+                _log.info(&#39;Detected non-verbose - setting flag&#39;)
+                self.verbose = False
+            else:
+                error = AtErrorCode.TIMEOUT
+        elif parsing == AtParsingState.ERROR:
+            error = AtErrorCode.ERROR
+            if not self.crc and crc_found:
+                _log.warning(&#39;CRC detected but not expected - setting flag&#39;)
+                self.crc = True
+                error = AtErrorCode.CRC_CONFIG_MISMATCH
+            self._rx_buffer = &#39;&#39;
+        else:
+            if (self.crc):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Removing CRC&#39;)
+                crc_length = 7
+                if (self._rx_buffer[-crc_length:].startswith(&#39;*&#39;) and
+                    self._rx_buffer[-crc_length:].endswith(&#39;\r\n&#39;)):
+                    # CRC terminates response so remove it
+                    self._rx_buffer = self._rx_buffer[:-crc_length]
+                else:
+                    _log.warning(&#39;CRC expected but not found - reset flag&#39;)
+                    self.crc = False
+            to_remove = VRES_OK if self.verbose else RES_OK
+            self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Removed result code (%s): %s&#39;,
+                           dprint(to_remove), dprint(self._rx_buffer))
+            if prefix:
+                self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Removed prefix (%s): %s&#39;,
+                               dprint(prefix), dprint(self._rx_buffer))
+            self._rx_buffer = self._rx_buffer.strip()
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
+                           dprint(self._rx_buffer))
+            self._rx_buffer = self._rx_buffer.replace(&#39;\r\n&#39;, &#39;\n&#39;)
+            self._rx_buffer = self._rx_buffer.replace(&#39;\n\n&#39;, &#39;\n&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Consolidated line feeds: %s&#39;,
+                           dprint(self._rx_buffer))
+        # cleanup
+        self._pending_command = &#39;&#39;
+        self.ready.set()
+        return error
+    
+    def get_response(self) -&gt; str:
+        &#34;&#34;&#34;Get the response following a read operation and clear the buffer.&#34;&#34;&#34;
+        response = self._rx_buffer
+        self._rx_buffer = &#39;&#39;
+        return response
+    
+    def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
+        &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
+        
+        Returns:
+            An integer code if present, or `None`.
+        
+        &#34;&#34;&#34;
+        if not isinstance(prefix, str) or not prefix:
+            raise ValueError(&#39;Invalid URC prefix&#39;)
+        if vlog(VLOG_TAG) and not self.ready.is_set():
+            _log.debug(&#39;Waiting for prior command/response completion&#39;)
+        self.ready.wait()
+        self.ready.clear()
+        urc = None
+        urc_buffer: str = &#39;&#39;
+        while self.serial.in_waiting &gt; 0:
+            urc_buffer += self._read()
+            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
+                urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
+                break
+        if vlog(VLOG_TAG) and urc is not None:
+            _log.debug(&#39;Found URC: %d&#39;, urc)
+        self.ready.set()
+        return urc
+    
+    def _read(self) -&gt; str:
+        &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
+        char = self.serial.read()
+        try:
+            return char.decode()
+        except UnicodeDecodeError as exc:
+            _log.error(&#39;Unable to decode [%d] (%s)&#39;, char, exc)
+            return &#39;&#39;
+    
+    def _parsing_ok(self) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
+        return AtParsingState.CRC if self.crc else AtParsingState.OK
+    
+    def _parsing_error(self) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
+        _log.warning(&#39;Parsing error&#39;)
+        if self.crc or self.serial.in_waiting &gt; 0:
+            return AtParsingState.CRC
+        else:
+            time.sleep(self._char_delay)
+            if self.serial.in_waiting &gt; 0:
+                return AtParsingState.CRC
+        return AtParsingState.ERROR
+    
+    def _parsing_short(self, current: AtParsingState = None) -&gt; AtParsingState:
+        &#34;&#34;&#34;Internal helper for parsing short code responses.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Check short response for: %s&#39;, dprint(self._rx_buffer))
+        if (not self._rx_buffer.endswith((RES_OK, RES_ERR)) or
+            (self.verbose and self._rx_buffer.startswith(&#39;\r\n&#39;))):
+            # just reading too fast, wait for next character
+            return current
+        if self.verbose:
+            _log.warning(&#39;Clearing verbose flag due to short response match&#39;)
+            self.verbose = False
+        if self._rx_buffer.endswith(RES_OK):
+            return self._parsing_ok()
+        return self._parsing_error()</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.get_response"><code class="name flex">
+<span>def <span class="ident">get_response</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the response following a read operation and clear the buffer.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_response(self) -&gt; str:
+    &#34;&#34;&#34;Get the response following a read operation and clear the buffer.&#34;&#34;&#34;
+    response = self._rx_buffer
+    self._rx_buffer = &#39;&#39;
+    return response</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc"><code class="name flex">
+<span>def <span class="ident">get_urc</span></span>(<span>self, prefix: str, read_until: str = '\r\n') ‑> int|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the (next) Unsolicited Response Code if present.</p>
+<h2 id="returns">Returns</h2>
+<p>An integer code if present, or <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
+    &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
+    
+    Returns:
+        An integer code if present, or `None`.
+    
+    &#34;&#34;&#34;
+    if not isinstance(prefix, str) or not prefix:
+        raise ValueError(&#39;Invalid URC prefix&#39;)
+    if vlog(VLOG_TAG) and not self.ready.is_set():
+        _log.debug(&#39;Waiting for prior command/response completion&#39;)
+    self.ready.wait()
+    self.ready.clear()
+    urc = None
+    urc_buffer: str = &#39;&#39;
+    while self.serial.in_waiting &gt; 0:
+        urc_buffer += self._read()
+        if urc_buffer.endswith(read_until) and prefix in urc_buffer:
+            urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
+            break
+    if vlog(VLOG_TAG) and urc is not None:
+        _log.debug(&#39;Found URC: %d&#39;, urc)
+    self.ready.set()
+    return urc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting"><code class="name flex">
+<span>def <span class="ident">is_data_waiting</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if data is in the serial receive buffer.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_data_waiting(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if data is in the serial receive buffer.&#34;&#34;&#34;
+    return self.serial.in_waiting &gt; 0</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response"><code class="name flex">
+<span>def <span class="ident">read_at_response</span></span>(<span>self, prefix: str = None, timeout: int = 3, tick: int = 0) ‑> <a title="pynimomodem.constants.AtErrorCode" href="constants.html#pynimomodem.constants.AtErrorCode">AtErrorCode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses the pending AT command response into a buffer.</p>
+<p>Use <code>send_at_command</code> prior to calling.
+Use <code>get_response</code> to retrieve the parsed response.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>prefix</code></strong></dt>
+<dd>Optional prefix to remove from the response.</dd>
+<dt><strong><code>timeout</code></strong></dt>
+<dd>Maximum time in seconds to wait for response (default 3)</dd>
+<dt><strong><code>tick</code></strong></dt>
+<dd>Optional debug for timeout countdown in seconds</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Error code indicating success or reason for parsing error.</p>
+<h2 id="raises">Raises</h2>
+<p><code>OSError</code> if there is no pending command.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_at_response(self,
+                     prefix: str = None,
+                     timeout: int = DEFAULT_AT_TIMEOUT,
+                     tick: int = 0) -&gt; AtErrorCode:
+    &#34;&#34;&#34;Parses the pending AT command response into a buffer.
+    
+    Use `send_at_command` prior to calling.
+    Use `get_response` to retrieve the parsed response.
+    
+    Args:
+        prefix: Optional prefix to remove from the response.
+        timeout: Maximum time in seconds to wait for response (default 3)
+        tick: Optional debug for timeout countdown in seconds
+    
+    Returns:
+        Error code indicating success or reason for parsing error.
+    
+    Raises:
+        `OSError` if there is no pending command.
+    
+    &#34;&#34;&#34;
+    if not isinstance(timeout, int):
+        timeout = DEFAULT_AT_TIMEOUT
+    if not self._pending_command:
+        raise OSError(&#39;No pending command to read response for&#39;)
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Parsing response for %s&#39;, dprint(self._pending_command))
+    self._rx_buffer = &#39;&#39;
+    parsing = AtParsingState.ECHO if self.echo else AtParsingState.RESPONSE
+    result_ok: bool = False
+    crc_found: bool = False
+    error: AtErrorCode = AtErrorCode.OK
+    peeked: str = &#39;&#39;
+    start_time = time.time()
+    countdown = timeout
+    while (time.time() - start_time &lt; timeout and
+           parsing &lt; AtParsingState.OK):
+        while ((self.serial.in_waiting &gt; 0 or peeked) and
+               parsing &lt; AtParsingState.OK):
+            if peeked:
+                self._rx_buffer += peeked
+                peeked = &#39;&#39;
+            else:
+                self._rx_buffer += self._read()
+            last = self._rx_buffer[-1]
+            if last == &#39;\n&#39;:
+                if self._rx_buffer.endswith(VRES_OK):
+                    result_ok = True
+                    if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
+                        _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                        self.crc = True
+                    elif self.crc and self.serial.in_waiting == 0:
+                        _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+                        self.crc = False
+                    parsing = self._parsing_ok()
+                elif self._rx_buffer.endswith(VRES_ERR):
+                    parsing = self._parsing_error()
+                elif parsing == AtParsingState.CRC:
+                    if vlog(VLOG_TAG):
+                        _log.debug(&#39;CRC parsing complete&#39;)
+                    if not result_ok:
+                        parsing = AtParsingState.ERROR
+                    else:
+                        if validate_crc(self._rx_buffer):
+                            parsing = AtParsingState.OK
+                        else:
+                            _log.error(&#39;Invalid CRC&#39;)
+                            parsing = AtParsingState.ERROR
+                            error = AtErrorCode.INVALID_CRC
+                            result_ok = False
+                # else response line terminator - keep parsing
+            elif last == &#39;\r&#39;:
+                if self._rx_buffer == self._pending_command:
+                    if vlog(VLOG_TAG):
+                        _log.debug(&#39;Echo received - clearing RX buffer&#39;)
+                    self._rx_buffer = &#39;&#39;
+                    parsing = AtParsingState.RESPONSE
+                else:
+                    old_parsing = parsing
+                    if self.serial.in_waiting == 0:
+                        parsing = self._parsing_short(parsing)
+                    else:
+                        peeked = self._read()
+                        if peeked == &#39;*&#39;:
+                            parsing = self._parsing_short()
+                    if old_parsing != parsing:
+                        result_ok = parsing == AtParsingState.OK
+            else:
+                if parsing == AtParsingState.CRC and last == &#39;*&#39;:
+                    crc_found = True
+        if parsing &gt;= AtParsingState.OK:
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Parsing complete&#39;)
+            break
+        if tick &gt; 0 and self._rx_buffer == &#39;&#39;:
+            time.sleep(tick)
+            countdown -= tick
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Countdown: %d&#39;, countdown)
+        time.sleep(self._char_delay)
+    # end while &lt; timeout
+    if vlog(VLOG_TAG) and self._rx_buffer:
+        _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
+    if parsing &lt; AtParsingState.OK:
+        _log.warning(&#39;AT command timeout during parsing&#39;)
+        if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+            _log.info(&#39;Detected non-verbose - setting flag&#39;)
+            self.verbose = False
+        else:
+            error = AtErrorCode.TIMEOUT
+    elif parsing == AtParsingState.ERROR:
+        error = AtErrorCode.ERROR
+        if not self.crc and crc_found:
+            _log.warning(&#39;CRC detected but not expected - setting flag&#39;)
+            self.crc = True
+            error = AtErrorCode.CRC_CONFIG_MISMATCH
+        self._rx_buffer = &#39;&#39;
+    else:
+        if (self.crc):
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Removing CRC&#39;)
+            crc_length = 7
+            if (self._rx_buffer[-crc_length:].startswith(&#39;*&#39;) and
+                self._rx_buffer[-crc_length:].endswith(&#39;\r\n&#39;)):
+                # CRC terminates response so remove it
+                self._rx_buffer = self._rx_buffer[:-crc_length]
+            else:
+                _log.warning(&#39;CRC expected but not found - reset flag&#39;)
+                self.crc = False
+        to_remove = VRES_OK if self.verbose else RES_OK
+        self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Removed result code (%s): %s&#39;,
+                       dprint(to_remove), dprint(self._rx_buffer))
+        if prefix:
+            self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Removed prefix (%s): %s&#39;,
+                           dprint(prefix), dprint(self._rx_buffer))
+        self._rx_buffer = self._rx_buffer.strip()
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
+                       dprint(self._rx_buffer))
+        self._rx_buffer = self._rx_buffer.replace(&#39;\r\n&#39;, &#39;\n&#39;)
+        self._rx_buffer = self._rx_buffer.replace(&#39;\n\n&#39;, &#39;\n&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Consolidated line feeds: %s&#39;,
+                       dprint(self._rx_buffer))
+    # cleanup
+    self._pending_command = &#39;&#39;
+    self.ready.set()
+    return error</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer"><code class="name flex">
+<span>def <span class="ident">read_rx_buffer</span></span>(<span>self, timeout: int = 0, read_until: str = '') ‑> str|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reads data from the serial receive buffer.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>timeout</code></strong> :&ensp;<code>int</code></dt>
+<dd>Optional timeout in seconds to wait for data.
+If 0, will stop reading when no character is waiting.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The data string if any was present, else <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+    &#34;&#34;&#34;Reads data from the serial receive buffer.
+    
+    Args:
+        timeout (int): Optional timeout in seconds to wait for data.
+            If 0, will stop reading when no character is waiting.
+    
+    Returns:
+        The data string if any was present, else `None`.
+        
+    &#34;&#34;&#34;
+    if not isinstance(timeout, int):
+        timeout = 0
+    self.serial.flush()   # wait for anything sent prior to be done
+    rx_data = &#39;&#39;
+    start_time = time.time()
+    while (time.time() - start_time &lt; timeout or timeout == 0):
+        while (self.serial.in_waiting &gt; 0):
+            rx_data += self._read()
+        if timeout == 0 or rx_data.endswith(read_until):
+            break
+    if vlog(VLOG_TAG):
+        if rx_data:
+            _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+        else:
+            _log.debug(&#39;No data waiting on serial buffer&#39;)
+    return rx_data</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command"><code class="name flex">
+<span>def <span class="ident">send_at_command</span></span>(<span>self, at_command: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Submits an AT command to the NIMO modem to solicit a response.</p>
+<p>Use <code>read_at_response</code> then <code>get_resopnse</code> after sending the command.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>at_command</code></strong></dt>
+<dd>The command to send.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def send_at_command(self, at_command: str) -&gt; None:
+    &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
+    
+    Use `read_at_response` then `get_resopnse` after sending the command.
+    
+    Args:
+        at_command: The command to send.
+    
+    &#34;&#34;&#34;
+    if vlog(VLOG_TAG) and not self.ready.is_set():
+        _log.debug(&#39;Waiting for prior command completion&#39;)
+    self.ready.wait()
+    self.ready.clear()
+    if &#39;ATS80?&#39; in at_command:
+        _log.debug(&#39;Somebody is querying error state!&#39;)
+    dump_buffer = self.read_rx_buffer()
+    if dump_buffer:
+        _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+    self._pending_command = at_command
+    if self.crc and &#39;*&#39; not in at_command:
+        self._pending_command = apply_crc(at_command)
+    self._pending_command += &#39;\r&#39;
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
+    self.serial.write(self._pending_command.encode())
+    self.serial.flush()   # ensure it gets sent</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pynimomodem" href="index.html">pynimomodem</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer">AtCommandBuffer</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_response">get_response</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc">get_urc</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting">is_data_waiting</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response">read_at_response</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer">read_rx_buffer</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command">send_at_command</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

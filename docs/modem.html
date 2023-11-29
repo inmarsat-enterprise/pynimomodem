@@ -1,0 +1,4071 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>pynimomodem.modem API documentation</title>
+<meta name="description" content="Class for a Non-IP Modem using Orbcomm network protocols …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>pynimomodem.modem</code></h1>
+</header>
+<section id="section-intro">
+<p>Class for a Non-IP Modem using Orbcomm network protocols.</p>
+<p>This module encapsulates specific AT commands from the following supported
+NIMO modem manufacturers:</p>
+<ul>
+<li><strong>ORBCOMM</strong></li>
+<li><strong>Quectel</strong></li>
+</ul>
+<p>Key concepts include modem properties, configuration, and satellite acquisition
+details including signal level.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Class for a Non-IP Modem using Orbcomm network protocols.
+
+This module encapsulates specific AT commands from the following supported
+NIMO modem manufacturers:
+
+* **ORBCOMM**
+* **Quectel**
+
+Key concepts include modem properties, configuration, and satellite acquisition
+details including signal level.
+
+&#34;&#34;&#34;
+import base64
+import logging
+import time
+from dataclasses import dataclass
+from enum import IntEnum
+from threading import Event
+
+from .atcommandbuffer import DEFAULT_AT_TIMEOUT, AtCommandBuffer
+from .constants import (
+    BAUDRATES,
+    MSG_MO_MAX_SIZE,
+    MSG_MO_NAME_MAX_LEN,
+    MSG_MO_NAME_QMAX_LEN,
+    AtErrorCode,
+    BeamState,
+    ControlState,
+    DataFormat,
+    GeoBeam,
+    GnssMode,
+    GnssModeOrbcomm,
+    GnssModeQuectel,
+    MessagePriority,
+    MessageState,
+    PowerMode,
+    SignalLevelRegional,
+    SignalQuality,
+    UrcCode,
+    WakeupPeriod,
+    WakeupWay,
+    WorkMode,
+)
+from .location import (
+    ModemLocation,
+    SatelliteLocation,
+    get_location_from_nmea_data,
+    get_satellite_location,
+)
+from .message import MoMessage, MtMessage, NimoMessage
+from .nimoserial import Serial
+from .nimoutils import iso_to_ts, vlog
+
+VLOG_TAG = &#39;nimomodem&#39;
+
+_log = logging.getLogger(__name__)
+
+
+class Manufacturer(IntEnum):
+    &#34;&#34;&#34;Supported NIMO modem implementations.&#34;&#34;&#34;
+    NONE = 0
+    ORBCOMM = 1
+    QUECTEL = 2
+
+
+@dataclass
+class SatelliteAcquisitionDetail:
+    &#34;&#34;&#34;Details about the satellite acquisition state of the modem.
+    
+    Attributes:
+        ctrl_state (NimoControlState): Primary network acquisition state.
+        beam_state (NimoBeamState): Secondary beam acquistion state.
+        rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
+        vcid (int): Virtual carrier identifier for low-level sanity check.
+    
+    &#34;&#34;&#34;
+    ctrl_state: ControlState = ControlState.STOPPED
+    beam_state: BeamState = BeamState.IDLE
+    rssi: float = 0.0
+    vcid: int = 0
+
+
+class NimoModemError(Exception):
+    &#34;&#34;&#34;Base class for NIMO modem errors.&#34;&#34;&#34;
+
+
+class NimoModem:
+    &#34;&#34;&#34;A class for NIMO satellite IoT modem interaction.&#34;&#34;&#34;
+    # __slots__ = (&#39;_modem&#39;, &#39;_mobile_id&#39;,
+    #              &#39;_mfr_code&#39;, &#39;_modem_booted&#39;, &#39;_ready&#39;,
+    #              )
+    
+    def __init__(self, serial_port: str, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Instantiate the NimoModem object.
+        
+        For additional kwargs see PySerial API:
+        https://pyserial.readthedocs.io/en/latest/pyserial_api.html
+        
+        Args:
+            serial_port (str): The path to the modem&#39;s serial port.
+        
+        Keyword Args:
+            baudrate (int): The baud rate of the modem (default 9600)
+        
+        Raises:
+            `NimoModemError` if unable to connect to the serial port.
+        
+        &#34;&#34;&#34;
+        try:
+            self._serial = Serial(serial_port, kwargs.get(&#39;baudrate&#39;, 9600))
+        except Exception as exc:
+            raise NimoModemError(&#39;Unable to connect to modem&#39;) from exc
+        self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
+        self._baudrate: int = self._serial.baudrate
+        self._modem_booted: bool = False
+        self._mobile_id: str = &#39;&#39;
+        self._manufacturer: Manufacturer = Manufacturer.NONE
+        self._ready = Event()
+        self._ready.set()
+    
+    @property
+    def is_ready(self) -&gt; bool:
+        return self._ready.is_set()
+    
+    @property
+    def crc_enabled(self) -&gt; bool:
+        return self._modem.crc
+    
+    @property
+    def modem_booted(self) -&gt; bool:
+        return self._modem_booted
+    
+    @property
+    def _mfr(self) -&gt; Manufacturer:
+        &#34;&#34;&#34;Used internally to support different manufacturer commands.&#34;&#34;&#34;
+        if not self._manufacturer:
+            self.get_manufacturer()
+        return self._manufacturer
+    
+    @property
+    def _mo_msg_name_len_max(self) -&gt; int:
+        &#34;&#34;&#34;Used internally to restrict the length of the MO message name.&#34;&#34;&#34;
+        maxlen = MSG_MO_NAME_MAX_LEN
+        if self._mfr == Manufacturer.QUECTEL:
+            maxlen = MSG_MO_NAME_QMAX_LEN
+        return maxlen
+    
+    def _at_command_response(self,
+                             command: str,
+                             prefix: str = &#39;&#39;,
+                             timeout: int = DEFAULT_AT_TIMEOUT) -&gt; str:
+        &#34;&#34;&#34;Send a command and return the response.&#34;&#34;&#34;
+        self._ready.wait()
+        self._ready.clear()
+        try:
+            self._modem.send_at_command(command)
+            err = self._modem.read_at_response(prefix, timeout)
+            if err == AtErrorCode.OK:
+                return self._modem.get_response()
+            raise NimoModemError(err)
+        finally:
+            self._ready.set()
+    
+    def is_connected(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is responding to a basic AT query.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&#39;)
+            self._modem_booted = True
+            return True
+        except NimoModemError:
+            self._modem_booted = False
+            return False
+    
+    @property
+    def baudrate(self) -&gt; int:
+        &#34;&#34;&#34;The baudrate of the serial connection.&#34;&#34;&#34;
+        return self._modem.serial.baudrate
+    
+    @baudrate.setter
+    def baudrate(self, baudrate: int):
+        &#34;&#34;&#34;Set the baud rate of the modem and adjust the serial rate.&#34;&#34;&#34;
+        if baudrate not in [9600, 115200]:
+            raise ValueError(&#39;Invalid baudrate&#39;)
+        self._at_command_response(f&#39;AT+IPR={baudrate}&#39;)
+        self._modem.serial.baudrate = baudrate
+    
+    def retry_baudrate(self) -&gt; bool:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+        for baud in BAUDRATES:
+            self._modem.serial.baudrate = baud
+            if self.is_connected():
+                return True
+        return False
+    
+    def await_boot(self, boot_timeout: int = 10) -&gt; bool:
+        &#34;&#34;&#34;Indicates if a boot string is received within a timeout window.
+        
+        Use `is_connected` before waiting for boot.
+        
+        Args:
+            boot_timeout (int): The maximum time to wait in seconds.
+        
+        Returns:
+            True if a valid boot string was received inside the timeout.
+        
+        &#34;&#34;&#34;
+        boot_strings = [&#39;ST Version&#39;, &#39;RDY&#39;]
+        _log.debug(&#39;Awaiting modem boot string for %d seconds...&#39;, boot_timeout)
+        rx_data = &#39;&#39;
+        started = time.time()
+        while time.time() - started &lt; boot_timeout and not self._modem_booted:
+            while self._modem.is_data_waiting():
+                rx_data += self._modem.read_rx_buffer()
+            if rx_data and any(b in rx_data for b in boot_strings):
+                self._modem_booted = True
+                _log.debug(&#39;Found boot string - clearing Rx buffer&#39;)
+                while self._modem.is_data_waiting():
+                    rx_data += self._modem.read_rx_buffer()
+                break
+        return self._modem_booted
+    
+    def get_last_error_code(self) -&gt; int:
+        &#34;&#34;&#34;Get the last error code from the modem.&#34;&#34;&#34;
+        try:
+            return int(self._at_command_response(&#39;ATS80?&#39;))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def initialize(self,
+                   echo: bool = True,
+                   verbose: bool = True,
+                   ) -&gt; bool:
+        &#34;&#34;&#34;Initialize the modem AT configuration for Echo and Verbose.&#34;&#34;&#34;
+        at_command = (f&#39;ATZ;E{int(echo)};V{int(verbose)}&#39;)
+        try:
+            self._at_command_response(at_command)
+            return True
+        except NimoModemError as exc:
+            if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+                try:
+                    _log.info(&#39;Retry initialization with CRC enabled&#39;)
+                    self._at_command_response(at_command)
+                    return True
+                except NimoModemError:
+                    pass
+            return False
+    
+    def set_crc(self, enable: bool = False) -&gt; bool:
+        &#34;&#34;&#34;Enable or disable CRC error checking on the modem serial port.&#34;&#34;&#34;
+        try:
+            self._at_command_response(f&#39;AT%CRC={int(enable)}&#39;)
+            return True
+        except NimoModemError as exc:
+            if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+                if ((self._modem.crc and enable) or
+                    (not self._modem.crc and not enable)):
+                    return True
+            return False
+    
+    def reset_factory_config(self) -&gt; bool:
+        &#34;&#34;&#34;Reset the modem&#39;s factory default configuration.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&amp;F&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def save_config(self) -&gt; bool:
+        &#34;&#34;&#34;Store the current configuration to modem non-volatile memory.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&amp;W&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_mobile_id(self) -&gt; str:
+        &#34;&#34;&#34;Get the modem&#39;s globally unique identifier.&#34;&#34;&#34;
+        if not self._mobile_id:
+            try:
+                self._mobile_id = self._at_command_response(&#39;AT+GSN&#39;, &#39;+GSN:&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Cached Mobile ID %s&#39;, self._mobile_id)
+            except NimoModemError:
+                self._mobile_id = &#39;&#39;
+        return self._mobile_id
+    
+    @property
+    def _is_simulator(self) -&gt; bool:
+        return self.get_mobile_id().startswith(&#39;00000000&#39;)
+    
+    def get_manufacturer(self) -&gt; str:
+        &#34;&#34;&#34;Get the manufacturer name.&#34;&#34;&#34;
+        if not self._manufacturer:
+            try:
+                mfr = self._at_command_response(&#39;ATI&#39;)
+                if &#39;quectel&#39; in mfr.lower():
+                    self._manufacturer = Manufacturer.QUECTEL
+                else:
+                    if not any(m in mfr.lower()
+                               for m in [&#39;orbcomm&#39;, &#39;skywave&#39;]):
+                        _log.warning(&#39;Unsupported manufacturer %s&#39;, mfr)
+                    self._manufacturer = Manufacturer.ORBCOMM
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Caching manufacturer: %s&#39;,
+                               self._manufacturer.name)
+            except NimoModemError:
+                self._manufacturer = &#39;&#39;
+                _log.warning(&#39;Cleared cached manufacturer&#39;)
+        return self._manufacturer.name
+    
+    def get_firmware_version(self) -&gt; str:
+        &#34;&#34;&#34;Get the modem&#39;s firmware version.&#34;&#34;&#34;
+        # TODO: Firmware structure with hardware, firmware, software?
+        try:
+            return self._at_command_response(&#39;AT+GMR&#39;, &#39;+GMR:&#39;)
+        except NimoModemError:
+            return &#39;&#39;
+    
+    def get_system_time(self) -&gt; int:
+        &#34;&#34;&#34;Get the system/GNSS time from the modem.&#34;&#34;&#34;
+        try:
+            nimo_time = self._at_command_response(&#39;AT%UTC&#39;, &#39;%UTC:&#39;)
+            iso_time = nimo_time.replace(&#39; &#39;, &#39;T&#39;) + &#39;Z&#39;
+            return iso_to_ts(iso_time)
+        except NimoModemError:
+            return 0
+    
+    def is_transmit_allowed(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is able to transmit data.&#34;&#34;&#34;
+        return self.get_satellite_status() == 5
+    
+    def is_blocked(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if line-of-sight to the satellite is blocked.&#34;&#34;&#34;
+        return self.get_satellite_status() == 8
+    
+    def is_muted(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem has been muted (disallowed to transmit data).
+        &#34;&#34;&#34;
+        return self.get_satellite_status() == 7
+    
+    def is_updating_network(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is updating network information.
+        
+        The modem should not be powered down during a network update.
+        
+        &#34;&#34;&#34;
+        return self.get_satellite_status() == 4
+    
+    def get_satellite_status(self) -&gt; int:
+        &#34;&#34;&#34;Get the current satellite acquisition status.&#34;&#34;&#34;
+        cmd = &#39;ATS54?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QREG?&#39;
+            prefix = &#39;+QREG:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_rssi(self) -&gt; float:
+        &#34;&#34;&#34;Get the current Received Signal Strength Indicator.
+        
+        Also referred to as SNR or C/N0 (dB-Hz)
+        
+        &#34;&#34;&#34;
+        cmd = &#39;ATS90=3 S91=1 S92=1 S116?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSCN&#39;
+            prefix = &#39;+QSCN:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix)) / 100
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_signal_quality(self) -&gt; SignalQuality:
+        &#34;&#34;&#34;Get a qualitative indicator from 0..5 of the satellite signal.&#34;&#34;&#34;
+        snr = self.get_rssi()
+        if snr &gt;= SignalLevelRegional.INVALID.value:
+            return SignalQuality.WARNING
+        if snr &gt;= SignalLevelRegional.BARS_5.value:
+            return SignalQuality.STRONG
+        if snr &gt;= SignalLevelRegional.BARS_4.value:
+            return SignalQuality.GOOD
+        if snr &gt;= SignalLevelRegional.BARS_3.value:
+            return SignalQuality.MID
+        if snr &gt;= SignalLevelRegional.BARS_2.value:
+            return SignalQuality.LOW
+        if snr &gt;= SignalLevelRegional.BARS_1.value:
+            return SignalQuality.WEAK
+        return SignalQuality.NONE
+    
+    def get_acquisition_detail(self) -&gt; &#39;SatelliteAcquisitionDetail|None&#39;:
+        &#34;&#34;&#34;Get the detailed satellite acquisition status.
+        
+        Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
+        indicators.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;ATS90=3 S91=1 S92=1 S122? S123? S116? S101?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QEVNT=3,1&#39;
+            prefix = &#39;+QEVNT:&#39;
+        try:
+            result_str = self._at_command_response(cmd, prefix, timeout=10)
+            if self._mfr == Manufacturer.ORBCOMM:
+                results = [int(x) for x in result_str.split(&#39;\n&#39;)]
+                ctrl_state = ControlState(results[0])
+                beam_state = BeamState(results[1])
+                rssi = float(results[2]) / 100
+                vcid = results[3]
+            elif self._mfr == Manufacturer.QUECTEL:
+                # Workaround Quectel 20230731 documentation error says +QEVNT:
+                result_str = result_str.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+                results = [int(x) for x in result_str.split(&#39;,&#39;)]
+                # &lt;dataCount&gt;,&lt;signedBitmask&gt;,&lt;MTID&gt;,&lt;timestamp&gt;,
+                #   &lt;class&gt;,&lt;subclass&gt;,&lt;priority&gt;,&lt;data0&gt;,...
+                data0 = 7   # list index where trace data starts
+                ctrl_state = ControlState(results[data0+22])
+                beam_state = BeamState(results[data0+23])
+                rssi = float(results[data0+16]) / 100
+                vcid = results[data0+1]
+            return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+        except NimoModemError:
+            return None
+    
+    def send_data(self, data: bytes, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+        &#34;&#34;&#34;Submits data to send as a mobile-originated message.
+        
+        If a `message_name` is not supplied one will be generated using the
+        least significant 8 digits of unix timestamp.
+        
+        Args:
+            data (bytes): The data to send.
+        
+        Keyword Args:
+            message_name (str): Optional handle for message in Tx queue. Max 8
+                characters for Orbcomm modem or 12 for Quectel.
+            priority (int): Optional priority 1 (highest) .. 4 (low, default).
+                May use `MessagePriority`.
+            codec_sin (int): Optional first byte of payload to add as a codec
+                service identifier, must be in range 16..255.
+            codec_min (int): Optional second byte of payload to add as a codec
+                message identifier, must be in range 0..255.
+            return_message (bool): If set, returns a `MoMessage` instead of the
+                message handle.
+        
+        Returns:
+            Message handle (str) or `MoMessage` if `return_message` kwarg is set.
+        
+        Raises:
+            `ValueError`
+        
+        &#34;&#34;&#34;
+        data_size = len(data)
+        msg_payload_sin_min = b&#39;&#39;
+        message_name = kwargs.get(&#39;message_name&#39;, &#39;&#39;)
+        priority = MessagePriority(kwargs.get(&#39;priority&#39;,
+                                              MessagePriority.LOW.value))
+        codec_sin = kwargs.get(&#39;codec_sin&#39;, -1)
+        codec_min = kwargs.get(&#39;codec_min&#39;, -1)
+        if codec_sin &gt; -1:
+            data_size += 1
+            msg_payload_sin_min += codec_sin.to_bytes(1, &#39;big&#39;)
+        if codec_min &gt; -1:
+            data_size += 1
+            msg_payload_sin_min += codec_min.to_bytes(1, &#39;big&#39;)
+        if not 2 &lt;= data_size &lt;= MSG_MO_MAX_SIZE:
+            raise ValueError(&#39;Invalid mobile-originated message size&#39;)
+        if message_name and len(message_name) &gt; self._mo_msg_name_len_max:
+            raise ValueError(&#39;Message name too long&#39;)
+        data_index = 0
+        if codec_sin &lt;= -1:
+            codec_sin = data[0]
+            data_index += 1
+            data_size -= 1
+        if codec_sin not in range(16, 256):
+            raise ValueError(&#39;Illegal first payload byte SIN must be 16..255&#39;)
+        if codec_min &lt;= -1:
+            codec_min = data[1]
+            data_index += 1
+            data_size -= 1
+        if codec_min &gt; 255:
+            raise ValueError(&#39;Invalid second payload byte MIN must be 0..255&#39;)
+        max_name_len = self._mo_msg_name_len_max
+        if message_name and len(message_name) &gt; max_name_len:
+            raise ValueError(f&#39;Invalid message name longer than {max_name_len}&#39;)
+        if len(message_name) == 0:
+            message_name = f&#39;{int(time.time())}&#39;[-max_name_len:]
+        # Convert to base64 string for serial efficiency
+        #   no effect on OTA size, modem always decodes and sends raw bytes OTA
+        data_format = DataFormat.BASE64
+        formatted_data = base64.b64encode(data[2:]).decode(&#39;utf-8&#39;)
+        cmd = &#39;AT%MGRT=&#39;
+        codec_sep = &#39;.&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGT=&#39;
+            codec_sep = &#39;,&#39;
+        cmd = (f&#39;{cmd}&#34;{message_name}&#34;,{priority},{codec_sin}{codec_sep}&#39;
+               f&#39;{codec_min},{data_format},{formatted_data}&#39;)
+        try:
+            self._at_command_response(cmd)
+            if kwargs.get(&#39;return_message&#39;, False) is True:
+                return MoMessage(message_name, priority, MessageState.TX_READY,
+                                 payload=(msg_payload_sin_min + data))
+            return message_name
+        except NimoModemError:
+            return &#39;&#39;
+    
+    def send_text(self, text: str, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+        &#34;&#34;&#34;Submits a text string to send as data.
+        
+        If `codec_sin` kwarg is not provided 128 is prepended as the first byte.
+        If `codec_min` kwarg is not provided 1 is prepended as the second byte.
+        Other kwargs as per `send_data`.
+        
+        Args:
+            text (str): The text message to send.
+        
+        Returns:
+            (str) The message name assigned or MoMessage if kwarg
+                `return_message` is set.
+        
+        &#34;&#34;&#34;
+        data = b&#39;&#39;
+        codec_sin = int(kwargs.get(&#39;codec_sin&#39;, 128))
+        data += codec_sin.to_bytes(1, &#39;big&#39;)
+        codec_min = int(kwargs.get(&#39;codec_min&#39;, 1))
+        data += codec_min.to_bytes(1, &#39;big&#39;)
+        data += text.encode()
+        flowthru = [&#39;message_name&#39;, &#39;priority&#39;, &#39;return_message&#39;]
+        next_kwargs = { k:v for k, v in kwargs if k in flowthru }
+        return self.send_data(data, **next_kwargs)
+    
+    def cancel_mo_message(self, message_name: str) -&gt; bool:
+        &#34;&#34;&#34;Attempts to cancel a previously submitted mobile-originated message.
+        
+        Args:
+            message_name (str): The mobile-originated message handle to delete.
+        
+        &#34;&#34;&#34;
+        _log.debug(&#39;Attempting to cancel MO message %s&#39;, message_name)
+        cmd = &#39;AT%MGRC&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGC&#39;
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        try:
+            self._at_command_response(cmd)
+            message_states = self.get_mo_message_states(message_name)
+            if len(message_states) &gt; 0:
+                state = message_states[0].state
+                if state == MessageState.TX_CANCELLED:
+                    return True
+            elif self._is_simulator:
+                return True
+        except NimoModemError:
+            pass
+        _log.warn(&#39;Failed to cancel message %s&#39;, message_name)
+        return False
+    
+    def get_mo_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MoMessage]&#39;:
+        &#34;&#34;&#34;Get a list of mobile-originated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MoMessage` objects including state and metadata.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%MGRS&#39;
+        prefix = &#39;%MGRS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGS&#39;
+            prefix = &#39;+QSMGS:&#39;
+        if message_name and not self._is_simulator:
+            # Orbcomm Modem Simulator returns ERROR for %MGRS= command
+            cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        response_str = self._at_command_response(cmd, prefix)
+        return self._parse_message_states(response_str, is_mo=True)
+    
+    def _parse_message_states(self,
+                              response_str: str,
+                              is_mo: bool,
+                              ) -&gt; &#39;list[NimoMessage]&#39;:
+        &#34;&#34;&#34;Parses textual metadata to build a SatelliteMessageState.&#34;&#34;&#34;
+        mo_states = []
+        if not response_str:
+            return mo_states
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing %s message states from %s&#39;,
+                       &#39;MO&#39; if is_mo else &#39;MT&#39;, response_str)
+        states_meta = [m for m in response_str.split(&#39;\n&#39;) if m != &#39;&#39;]
+        for meta in states_meta:
+            message = MoMessage() if is_mo else MtMessage()
+            for field_idx, field_data in enumerate(meta.split(&#39;,&#39;)):
+                self._update_message_state(message, field_idx,
+                                           field_data, is_mo)
+            mo_states.append(message)
+        return mo_states
+    
+    def _update_message_state(self,
+                              message_state: NimoMessage,
+                              field_idx: int,
+                              field_data: str,
+                              is_mo: bool) -&gt; None:
+        &#34;&#34;&#34;Parse textual metadata to update a message&#39;s state.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing %s message state index %d: %s&#39;,
+                       &#39;MO&#39; if is_mo else &#39;MT&#39;, field_idx, field_data)
+        mfr = self._mfr
+        if field_idx == 0:
+            message_state.name = field_data.replace(&#39;&#34;&#39;, &#39;&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message name: %s&#39;, message_state.name)
+        elif field_idx == 1 and mfr == Manufacturer.ORBCOMM:
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Ignoring msgNum %s&#39;, field_data)
+        elif ((field_idx == 2 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+            message_state.priority = MessagePriority(int(field_data))
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message priority %s&#39;, message_state.priority.name)
+        elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Ignoring codec SIN %s&#39;, field_data)
+        elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
+            message_state.state = MessageState(int(field_data))
+            _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
+        elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
+            message_state.length = int(field_data)
+            _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
+        elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
+            message_state.bytes_delivered = int(field_data)
+            _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
+        else:
+            _log.warning(&#39;Unhandled field index %d (%s) for manufacturer %s&#39;,
+                         field_idx, &#39;MO&#39; if is_mo else &#39;MT&#39;, mfr.name)
+    
+    def get_mt_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MtMessage]&#39;:
+        &#34;&#34;&#34;Get a list of mobile-terminated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MtMessage` objects including state and metadata.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%MGFN&#39; if not message_name else &#39;AT%MGFS&#39;
+        prefix = &#39;%MGFN:&#39; if not message_name else &#39;AT%MGFS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QRMGN&#39; if not message_name else &#39;AT+QRMGS&#39;
+            prefix = &#39;+QRMGN:&#39; if not message_name else &#39;+QRMGS:&#39;
+        if message_name and not self._is_simulator:
+            cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        response_str = self._at_command_response(cmd, prefix)
+        return self._parse_message_states(response_str, is_mo=False)
+    
+    def get_mt_message(self, message_name: str) -&gt; &#39;MtMessage|None&#39;:
+        &#34;&#34;&#34;Get a mobile-terminated message from the modem&#39;s Rx queue by name.&#34;&#34;&#34;
+        cmd = &#39;AT%MGFG&#39;
+        prefix = &#39;%MGFG:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+GRMGR&#39;
+            prefix = &#39;+GRMGR:&#39;
+        data_format = DataFormat.BASE64
+        cmd += f&#39;=&#34;{message_name}&#34;,{data_format}&#39;
+        response = self._at_command_response(cmd, prefix)
+        if response:
+            return self._parse_mt_message(response)
+        return None
+    
+    def _parse_mt_message(self, meta: str) -&gt; MtMessage:
+        &#34;&#34;&#34;Parse textual metadata to build a MtMessage.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing MT message from meta: %s&#39;, meta)
+        data_includes_sin = False
+        mfr = self._mfr
+        message = MtMessage()
+        for field_idx, field_data in enumerate(meta.split(&#39;,&#39;)):
+            if field_idx == 0:
+                message.name = field_data.replace(&#39;&#34;&#39;, &#39;&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message name: %s&#39;, message.name)
+            elif (field_idx == 1 and mfr == Manufacturer.ORBCOMM):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Ignoring msgNum %s&#39;, field_data)
+            elif (field_idx == 2 and mfr == Manufacturer.ORBCOMM):
+                message.priority = MessagePriority(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message priority %s&#39;, message.priority.name)
+            elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+                codec_sin = int(field_data)
+                if not data_includes_sin:
+                    message.payload += codec_sin.to_bytes(1, &#39;big&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Added SIN as first payload byte: %d&#39;, codec_sin)
+            elif (field_idx == 4 and mfr == Manufacturer.ORBCOMM):
+                message.state = MessageState(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message state %s&#39;, message.state.name)
+            elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
+                message.length = int(field_data)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message size: %d bytes&#39;, message.length)
+            elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
+                data_format = DataFormat(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Data format %s&#39;, data_format.name)
+            elif ((field_idx == 7 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Decoding payload from: %s&#39;, field_data)
+                if message.length &gt; 0:
+                    if data_format == DataFormat.BASE64:
+                        message.payload += base64.b64decode(field_data)
+                    elif data_format == DataFormat.HEX:
+                        message.payload += bytes.fromhex(field_data)
+                    else:   # DataFormat.TEXT
+                        message.payload += field_data.encode()
+                    if message.length != len(message.payload):
+                        _log.warn(&#39;Message length mismatch&#39;)
+        return message
+    
+    def delete_mt_message(self, message_name: str) -&gt; bool:
+        &#34;&#34;&#34;Remove a mobile-terminated message from the modem&#39;s Rx queue.&#34;&#34;&#34;
+        cmd = &#39;AT%MGFM&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QRMGM&#39;
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        self._at_command_response(cmd)
+        check = self.get_mt_message_states(message_name)
+        if check and check[0].state == MessageState.RX_RETRIEVED:
+            return True
+        return False
+    
+    def receive_data(self, message_name: str) -&gt; &#39;bytes|None&#39;:
+        &#34;&#34;&#34;Get the raw data from a mobile-terminated message.&#34;&#34;&#34;
+        message = self.get_mt_message(message_name)
+        if message:
+            return message.payload
+        return None
+    
+    def get_gnss_mode(self) -&gt; GnssMode:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+        cmd = &#39;ATS39?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSSMOD?&#39;
+            prefix = &#39;+QGNSSMOD:&#39;
+        response = self._at_command_response(cmd, prefix)
+        if self._mfr == Manufacturer.QUECTEL:
+            return GnssModeQuectel(int(response))
+        return GnssModeOrbcomm(int(response))
+    
+    def set_gnss_mode(self, gnss_mode: GnssMode) -&gt; bool:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+        cmd = f&#39;ATS39={gnss_mode}&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            if not GnssModeQuectel.is_valid(gnss_mode):
+                raise ValueError(&#39;Invalid GNSS mode&#39;)
+            cmd = f&#39;AT+QGNSSMOD={gnss_mode}&#39;
+            prefix = &#39;+QGNSSMOD:&#39;
+        else:
+            if not GnssModeOrbcomm.is_valid(gnss_mode):
+                raise ValueError(&#39;Invalid GNSS mode&#39;)
+        try:
+            self._at_command_response(cmd, prefix)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_gnss_continuous(self) -&gt; int:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS continuous refresh interval in seconds.&#34;&#34;&#34;
+        cmd = &#39;ATS55?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSSCW?&#39;
+            prefix = &#39;+QGNSSCW:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_gnss_continuous(self, interval: int) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s GNSS continuous refresh interval in seconds.
+        
+        Args:
+            interval (int): Automatic update interval 0..30 seconds.
+        
+        Returns:
+            `True` if successful.
+        
+        Raises:
+            `ValueError` if invalid interval is specified.
+        
+        &#34;&#34;&#34;
+        if interval not in range (0, 31):
+            raise ValueError(&#39;Invalid GNSS refresh interval&#39;)
+        cmd = f&#39;ATS55={interval}&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f&#39;AT+QGNSSCW={interval}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_nmea_data(self,
+                      stale_secs: int = 1,
+                      wait_secs: int = 35,
+                      rmc: bool = True,
+                      gga: bool = True,
+                      gsa: bool = True,
+                      gsv: bool = False,
+                      ) -&gt; str:
+        &#34;&#34;&#34;Get a set of NMEA data detailing the modem&#39;s location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+            rmc (bool): Include Recommended Minimum data.
+            gga (bool): Include altitude and fix quality data.
+            gsa (bool): Include Dilution of Precision data.
+            gsv (bool): Include verbose GNSS satellite details.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%GPS&#39;
+        prefix = &#39;%GPS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSS&#39;
+            prefix = &#39;+QGNSS:&#39;
+        cmd += f&#39;={stale_secs},{wait_secs}&#39;
+        if rmc:
+            cmd += &#39;,&#34;RMC&#34;&#39;
+        if gga:
+            cmd += &#39;,&#34;GGA&#34;&#39;
+        if gsa:
+            cmd += &#39;,&#34;GSA&#34;&#39;
+        if gsv:
+            cmd += &#39;,&#34;GSV&#34;&#39;
+        try:
+            response = self._at_command_response(cmd, prefix, wait_secs + 5)
+            return response
+        except NimoModemError as exc:
+            if exc.args[0] != AtErrorCode.GNSS_TIMEOUT:
+                raise
+        return &#39;&#39;
+    
+    def get_location(self,
+                     stale_secs: int = 1,
+                     wait_secs: int = 35) -&gt; &#39;ModemLocation|None&#39;:
+        &#34;&#34;&#34;Get the modem&#39;s location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+        
+        Returns:
+            ModemLocation object if GNSS does not time out waiting for fix.
+        
+        &#34;&#34;&#34;
+        nmea_data = self.get_nmea_data(stale_secs, wait_secs)
+        if nmea_data:
+            return get_location_from_nmea_data(nmea_data)
+        return None
+    
+    def get_satellite_location(self,
+                               modem_location: ModemLocation = None,
+                               ) -&gt; &#39;SatelliteLocation|None&#39;:
+        &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+        
+        Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
+        
+        Args:
+            modem_location (ModemLocation): Optional if known to speed up
+                response.
+        
+        Returns:
+            SatelliteLocation object (azimuth, elevation) if determinable.
+        
+        &#34;&#34;&#34;
+        geobeam = None
+        if modem_location is None:
+            modem_location = self.get_location()
+        if modem_location is not None:
+            cmd = &#39;ATS90=3 S91=5 S92=1 S102?&#39;
+            prefix = &#39;&#39;
+            if self._mfr == Manufacturer.QUECTEL:
+                cmd = &#39;AT+QEVNT=3,5&#39;
+                prefix = &#39;+QEVNT:&#39;
+            try:
+                response = self._at_command_response(cmd, prefix)
+                if self._mfr == Manufacturer.QUECTEL:
+                    # workaround documentation error
+                    response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+                    response = response.split(&#39;,&#39;)[9]
+                geobeam = GeoBeam(int(response))
+            except NimoModemError:
+                pass
+        satellite_loc = get_satellite_location(modem_location, geobeam)
+        return satellite_loc if satellite_loc.azimuth else None
+    
+    def get_event_mask(self) -&gt; int:
+        &#34;&#34;&#34;Get the set of monitored events that trigger event notification.&#34;&#34;&#34;
+        cmd = &#39;ATS88?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_event_mask(self, event_mask: int) -&gt; bool:
+        &#34;&#34;&#34;Set monitored events that trigger event notification.&#34;&#34;&#34;
+        max_bits = 12
+        if not isinstance(event_mask, int) or event_mask &gt; 2**max_bits-1:
+            raise ValueError(&#39;Invalid event bitmask&#39;)
+        cmd = f&#39;ATS88={event_mask}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_events_asserted_mask(self) -&gt; int:
+        &#34;&#34;&#34;Get the set of events that are active following a notification.&#34;&#34;&#34;
+        cmd = &#39;ATS89?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_urc_ctl(self) -&gt; int:
+        &#34;&#34;&#34;Get the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        cmd = &#39;AT+QURCCTL?&#39;
+        prefix = &#39;+QURCCTL:&#39;
+        try:
+            response = self._at_command_response(cmd, prefix)
+            return int(response, 16)
+        except NimoModemError:
+            return 0
+    
+    def set_urc_ctl(self, qurc_mask: int) -&gt; bool:
+        &#34;&#34;&#34;Set the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        cmd = f&#39;AT+QURCCTL=0x{qurc_mask:04X}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_urc(self) -&gt; &#39;UrcCode|None&#39;:
+        &#34;&#34;&#34;Get the pending Unsolicited Result Code if one is present.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
+        result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+        if result:
+            try:
+                if &#39;_&#39; in result:   # long code
+                    return UrcCode[result]
+                return UrcCode(int(result))
+            except ValueError as exc:
+                _log.error(&#39;Parsing error: %s&#39;, exc)
+        return None
+    
+    def get_power_mode(self) -&gt; PowerMode:
+        &#34;&#34;&#34;Get the modem&#39;s power mode configuration.&#34;&#34;&#34;
+        cmd = &#39;ATS50?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QPMD?&#39;
+            prefix = &#39;+QPMD:&#39;
+        try:
+            return PowerMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return PowerMode.MOBILE_POWERED
+    
+    def set_power_mode(self, power_mode: PowerMode) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s power mode configuration.&#34;&#34;&#34;
+        if not PowerMode.is_valid(power_mode):
+            raise ValueError(&#39;Invalid Power Mode&#39;)
+        cmd = f&#39;ATS50={power_mode}&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f&#39;AT+QPMD={power_mode}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_wakeup_period(self) -&gt; WakeupPeriod:
+        &#34;&#34;&#34;Get the modem&#39;s wakeup period configuration.&#34;&#34;&#34;
+        cmd = &#39;ATS51?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QWKUPCFG?&#39;
+            prefix = &#39;+QWKUPCFG:&#39;
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                return WakeupPeriod(int(
+                    self._at_command_response(cmd, prefix).split(&#39;,&#39;)[0]))
+            return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WakeupPeriod.NONE
+    
+    def set_wakeup_period(self,
+                          wakeup_period: WakeupPeriod,
+                          wakeup_way: &#39;WakeupWay|None&#39; = None,
+                          ) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s wakeup period configuration.
+        
+        The configuration does not update until confimed by the network.
+        
+        &#34;&#34;&#34;
+        if not WakeupPeriod.is_valid(wakeup_period):
+            raise ValueError(&#39;Invalid wakeup period&#39;)
+        cmd = f&#39;ATS51={wakeup_period}&#39;
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                if wakeup_way is None:
+                    query = self._at_command_response(&#39;AT+QWKUPCFG?&#39;, &#39;+QWKUPCFG:&#39;)
+                    wakeup_way = WakeupWay(int(query.split(&#39;,&#39;)[1]))
+                cmd = f&#39;AT+QWKUPCFG={wakeup_period},{wakeup_way}&#39;
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_wakeup_way(self) -&gt; WakeupWay:
+        &#34;&#34;&#34;Get the modem wakeup method.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        try:
+            cmd = &#39;AT+QWKUPCFG?&#39;
+            prefix = &#39;+QWKUPCFG:&#39;
+            wakeup_way = self._at_command_response(cmd, prefix).split(&#39;,&#39;)[1]
+            return WakeupWay(int(wakeup_way))
+        except NimoModemError:
+            return WakeupWay.WAKEUP_PIN
+    
+    def power_down(self) -&gt; bool:
+        &#34;&#34;&#34;Prepare the modem for power-down.&#34;&#34;&#34;
+        cmd = &#39;AT%OFF&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QPOWD=2&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_workmode(self) -&gt; WorkMode:
+        &#34;&#34;&#34;Get the modem working mode.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        cmd = &#39;AT+QMOD?&#39;
+        prefix = &#39;+QMOD:&#39;
+        try:
+            return WorkMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WorkMode.WORKING
+    
+    def set_workmode(self, workmode: WorkMode) -&gt; bool:
+        &#34;&#34;&#34;Set the modem working mode.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        if not WorkMode.is_valid(workmode):
+            raise ValueError(&#39;Invalid workmode&#39;)
+        cmd = f&#39;AT+QMOD={workmode}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_deepsleep_enable(self) -&gt; bool:
+        &#34;&#34;&#34;Get the deepsleep configuration flag.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        cmd = &#39;AT+QSCLK?&#39;
+        prefix = &#39;+QSCLK:&#39;
+        try:
+            return bool(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return False
+    
+    def set_deepsleep_enable(self, enable: bool) -&gt; bool:
+        &#34;&#34;&#34;Set the deepsleep configuration flag.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        try:
+            self._at_command_response(f&#39;AT+QSCLK={int(enable)}&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_register(self, s_register_number: int) -&gt; &#39;int|None&#39;:
+        &#34;&#34;&#34;Get a modem register value.&#34;&#34;&#34;
+        cmd = f&#39;ATS{s_register_number}?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return None
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_register(self, s_register_number: int, value: int) -&gt; bool:
+        &#34;&#34;&#34;Set a modem register value.&#34;&#34;&#34;
+        cmd = f&#39;ATS{s_register_number}={value}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_all_registers(self) -&gt; dict:
+        &#34;&#34;&#34;Get a dictionary of modem register values.&#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="pynimomodem.modem.Manufacturer"><code class="flex name class">
+<span>class <span class="ident">Manufacturer</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Supported NIMO modem implementations.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Manufacturer(IntEnum):
+    &#34;&#34;&#34;Supported NIMO modem implementations.&#34;&#34;&#34;
+    NONE = 0
+    ORBCOMM = 1
+    QUECTEL = 2</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.modem.Manufacturer.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.Manufacturer.ORBCOMM"><code class="name">var <span class="ident">ORBCOMM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.Manufacturer.QUECTEL"><code class="name">var <span class="ident">QUECTEL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.modem.NimoModem"><code class="flex name class">
+<span>class <span class="ident">NimoModem</span></span>
+<span>(</span><span>serial_port: str, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class for NIMO satellite IoT modem interaction.</p>
+<p>Instantiate the NimoModem object.</p>
+<p>For additional kwargs see PySerial API:
+<a href="https://pyserial.readthedocs.io/en/latest/pyserial_api.html">https://pyserial.readthedocs.io/en/latest/pyserial_api.html</a></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>serial_port</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to the modem's serial port.</dd>
+</dl>
+<p>Keyword Args:
+baudrate (int): The baud rate of the modem (default 9600)</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="pynimomodem.modem.NimoModemError" href="#pynimomodem.modem.NimoModemError">NimoModemError</a></code> if unable to connect to the serial port.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NimoModem:
+    &#34;&#34;&#34;A class for NIMO satellite IoT modem interaction.&#34;&#34;&#34;
+    # __slots__ = (&#39;_modem&#39;, &#39;_mobile_id&#39;,
+    #              &#39;_mfr_code&#39;, &#39;_modem_booted&#39;, &#39;_ready&#39;,
+    #              )
+    
+    def __init__(self, serial_port: str, **kwargs) -&gt; None:
+        &#34;&#34;&#34;Instantiate the NimoModem object.
+        
+        For additional kwargs see PySerial API:
+        https://pyserial.readthedocs.io/en/latest/pyserial_api.html
+        
+        Args:
+            serial_port (str): The path to the modem&#39;s serial port.
+        
+        Keyword Args:
+            baudrate (int): The baud rate of the modem (default 9600)
+        
+        Raises:
+            `NimoModemError` if unable to connect to the serial port.
+        
+        &#34;&#34;&#34;
+        try:
+            self._serial = Serial(serial_port, kwargs.get(&#39;baudrate&#39;, 9600))
+        except Exception as exc:
+            raise NimoModemError(&#39;Unable to connect to modem&#39;) from exc
+        self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
+        self._baudrate: int = self._serial.baudrate
+        self._modem_booted: bool = False
+        self._mobile_id: str = &#39;&#39;
+        self._manufacturer: Manufacturer = Manufacturer.NONE
+        self._ready = Event()
+        self._ready.set()
+    
+    @property
+    def is_ready(self) -&gt; bool:
+        return self._ready.is_set()
+    
+    @property
+    def crc_enabled(self) -&gt; bool:
+        return self._modem.crc
+    
+    @property
+    def modem_booted(self) -&gt; bool:
+        return self._modem_booted
+    
+    @property
+    def _mfr(self) -&gt; Manufacturer:
+        &#34;&#34;&#34;Used internally to support different manufacturer commands.&#34;&#34;&#34;
+        if not self._manufacturer:
+            self.get_manufacturer()
+        return self._manufacturer
+    
+    @property
+    def _mo_msg_name_len_max(self) -&gt; int:
+        &#34;&#34;&#34;Used internally to restrict the length of the MO message name.&#34;&#34;&#34;
+        maxlen = MSG_MO_NAME_MAX_LEN
+        if self._mfr == Manufacturer.QUECTEL:
+            maxlen = MSG_MO_NAME_QMAX_LEN
+        return maxlen
+    
+    def _at_command_response(self,
+                             command: str,
+                             prefix: str = &#39;&#39;,
+                             timeout: int = DEFAULT_AT_TIMEOUT) -&gt; str:
+        &#34;&#34;&#34;Send a command and return the response.&#34;&#34;&#34;
+        self._ready.wait()
+        self._ready.clear()
+        try:
+            self._modem.send_at_command(command)
+            err = self._modem.read_at_response(prefix, timeout)
+            if err == AtErrorCode.OK:
+                return self._modem.get_response()
+            raise NimoModemError(err)
+        finally:
+            self._ready.set()
+    
+    def is_connected(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is responding to a basic AT query.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&#39;)
+            self._modem_booted = True
+            return True
+        except NimoModemError:
+            self._modem_booted = False
+            return False
+    
+    @property
+    def baudrate(self) -&gt; int:
+        &#34;&#34;&#34;The baudrate of the serial connection.&#34;&#34;&#34;
+        return self._modem.serial.baudrate
+    
+    @baudrate.setter
+    def baudrate(self, baudrate: int):
+        &#34;&#34;&#34;Set the baud rate of the modem and adjust the serial rate.&#34;&#34;&#34;
+        if baudrate not in [9600, 115200]:
+            raise ValueError(&#39;Invalid baudrate&#39;)
+        self._at_command_response(f&#39;AT+IPR={baudrate}&#39;)
+        self._modem.serial.baudrate = baudrate
+    
+    def retry_baudrate(self) -&gt; bool:
+        &#34;&#34;&#34;&#34;&#34;&#34;
+        for baud in BAUDRATES:
+            self._modem.serial.baudrate = baud
+            if self.is_connected():
+                return True
+        return False
+    
+    def await_boot(self, boot_timeout: int = 10) -&gt; bool:
+        &#34;&#34;&#34;Indicates if a boot string is received within a timeout window.
+        
+        Use `is_connected` before waiting for boot.
+        
+        Args:
+            boot_timeout (int): The maximum time to wait in seconds.
+        
+        Returns:
+            True if a valid boot string was received inside the timeout.
+        
+        &#34;&#34;&#34;
+        boot_strings = [&#39;ST Version&#39;, &#39;RDY&#39;]
+        _log.debug(&#39;Awaiting modem boot string for %d seconds...&#39;, boot_timeout)
+        rx_data = &#39;&#39;
+        started = time.time()
+        while time.time() - started &lt; boot_timeout and not self._modem_booted:
+            while self._modem.is_data_waiting():
+                rx_data += self._modem.read_rx_buffer()
+            if rx_data and any(b in rx_data for b in boot_strings):
+                self._modem_booted = True
+                _log.debug(&#39;Found boot string - clearing Rx buffer&#39;)
+                while self._modem.is_data_waiting():
+                    rx_data += self._modem.read_rx_buffer()
+                break
+        return self._modem_booted
+    
+    def get_last_error_code(self) -&gt; int:
+        &#34;&#34;&#34;Get the last error code from the modem.&#34;&#34;&#34;
+        try:
+            return int(self._at_command_response(&#39;ATS80?&#39;))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def initialize(self,
+                   echo: bool = True,
+                   verbose: bool = True,
+                   ) -&gt; bool:
+        &#34;&#34;&#34;Initialize the modem AT configuration for Echo and Verbose.&#34;&#34;&#34;
+        at_command = (f&#39;ATZ;E{int(echo)};V{int(verbose)}&#39;)
+        try:
+            self._at_command_response(at_command)
+            return True
+        except NimoModemError as exc:
+            if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+                try:
+                    _log.info(&#39;Retry initialization with CRC enabled&#39;)
+                    self._at_command_response(at_command)
+                    return True
+                except NimoModemError:
+                    pass
+            return False
+    
+    def set_crc(self, enable: bool = False) -&gt; bool:
+        &#34;&#34;&#34;Enable or disable CRC error checking on the modem serial port.&#34;&#34;&#34;
+        try:
+            self._at_command_response(f&#39;AT%CRC={int(enable)}&#39;)
+            return True
+        except NimoModemError as exc:
+            if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+                if ((self._modem.crc and enable) or
+                    (not self._modem.crc and not enable)):
+                    return True
+            return False
+    
+    def reset_factory_config(self) -&gt; bool:
+        &#34;&#34;&#34;Reset the modem&#39;s factory default configuration.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&amp;F&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def save_config(self) -&gt; bool:
+        &#34;&#34;&#34;Store the current configuration to modem non-volatile memory.&#34;&#34;&#34;
+        try:
+            self._at_command_response(&#39;AT&amp;W&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_mobile_id(self) -&gt; str:
+        &#34;&#34;&#34;Get the modem&#39;s globally unique identifier.&#34;&#34;&#34;
+        if not self._mobile_id:
+            try:
+                self._mobile_id = self._at_command_response(&#39;AT+GSN&#39;, &#39;+GSN:&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Cached Mobile ID %s&#39;, self._mobile_id)
+            except NimoModemError:
+                self._mobile_id = &#39;&#39;
+        return self._mobile_id
+    
+    @property
+    def _is_simulator(self) -&gt; bool:
+        return self.get_mobile_id().startswith(&#39;00000000&#39;)
+    
+    def get_manufacturer(self) -&gt; str:
+        &#34;&#34;&#34;Get the manufacturer name.&#34;&#34;&#34;
+        if not self._manufacturer:
+            try:
+                mfr = self._at_command_response(&#39;ATI&#39;)
+                if &#39;quectel&#39; in mfr.lower():
+                    self._manufacturer = Manufacturer.QUECTEL
+                else:
+                    if not any(m in mfr.lower()
+                               for m in [&#39;orbcomm&#39;, &#39;skywave&#39;]):
+                        _log.warning(&#39;Unsupported manufacturer %s&#39;, mfr)
+                    self._manufacturer = Manufacturer.ORBCOMM
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Caching manufacturer: %s&#39;,
+                               self._manufacturer.name)
+            except NimoModemError:
+                self._manufacturer = &#39;&#39;
+                _log.warning(&#39;Cleared cached manufacturer&#39;)
+        return self._manufacturer.name
+    
+    def get_firmware_version(self) -&gt; str:
+        &#34;&#34;&#34;Get the modem&#39;s firmware version.&#34;&#34;&#34;
+        # TODO: Firmware structure with hardware, firmware, software?
+        try:
+            return self._at_command_response(&#39;AT+GMR&#39;, &#39;+GMR:&#39;)
+        except NimoModemError:
+            return &#39;&#39;
+    
+    def get_system_time(self) -&gt; int:
+        &#34;&#34;&#34;Get the system/GNSS time from the modem.&#34;&#34;&#34;
+        try:
+            nimo_time = self._at_command_response(&#39;AT%UTC&#39;, &#39;%UTC:&#39;)
+            iso_time = nimo_time.replace(&#39; &#39;, &#39;T&#39;) + &#39;Z&#39;
+            return iso_to_ts(iso_time)
+        except NimoModemError:
+            return 0
+    
+    def is_transmit_allowed(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is able to transmit data.&#34;&#34;&#34;
+        return self.get_satellite_status() == 5
+    
+    def is_blocked(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if line-of-sight to the satellite is blocked.&#34;&#34;&#34;
+        return self.get_satellite_status() == 8
+    
+    def is_muted(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem has been muted (disallowed to transmit data).
+        &#34;&#34;&#34;
+        return self.get_satellite_status() == 7
+    
+    def is_updating_network(self) -&gt; bool:
+        &#34;&#34;&#34;Indicates if the modem is updating network information.
+        
+        The modem should not be powered down during a network update.
+        
+        &#34;&#34;&#34;
+        return self.get_satellite_status() == 4
+    
+    def get_satellite_status(self) -&gt; int:
+        &#34;&#34;&#34;Get the current satellite acquisition status.&#34;&#34;&#34;
+        cmd = &#39;ATS54?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QREG?&#39;
+            prefix = &#39;+QREG:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_rssi(self) -&gt; float:
+        &#34;&#34;&#34;Get the current Received Signal Strength Indicator.
+        
+        Also referred to as SNR or C/N0 (dB-Hz)
+        
+        &#34;&#34;&#34;
+        cmd = &#39;ATS90=3 S91=1 S92=1 S116?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSCN&#39;
+            prefix = &#39;+QSCN:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix)) / 100
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_signal_quality(self) -&gt; SignalQuality:
+        &#34;&#34;&#34;Get a qualitative indicator from 0..5 of the satellite signal.&#34;&#34;&#34;
+        snr = self.get_rssi()
+        if snr &gt;= SignalLevelRegional.INVALID.value:
+            return SignalQuality.WARNING
+        if snr &gt;= SignalLevelRegional.BARS_5.value:
+            return SignalQuality.STRONG
+        if snr &gt;= SignalLevelRegional.BARS_4.value:
+            return SignalQuality.GOOD
+        if snr &gt;= SignalLevelRegional.BARS_3.value:
+            return SignalQuality.MID
+        if snr &gt;= SignalLevelRegional.BARS_2.value:
+            return SignalQuality.LOW
+        if snr &gt;= SignalLevelRegional.BARS_1.value:
+            return SignalQuality.WEAK
+        return SignalQuality.NONE
+    
+    def get_acquisition_detail(self) -&gt; &#39;SatelliteAcquisitionDetail|None&#39;:
+        &#34;&#34;&#34;Get the detailed satellite acquisition status.
+        
+        Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
+        indicators.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;ATS90=3 S91=1 S92=1 S122? S123? S116? S101?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QEVNT=3,1&#39;
+            prefix = &#39;+QEVNT:&#39;
+        try:
+            result_str = self._at_command_response(cmd, prefix, timeout=10)
+            if self._mfr == Manufacturer.ORBCOMM:
+                results = [int(x) for x in result_str.split(&#39;\n&#39;)]
+                ctrl_state = ControlState(results[0])
+                beam_state = BeamState(results[1])
+                rssi = float(results[2]) / 100
+                vcid = results[3]
+            elif self._mfr == Manufacturer.QUECTEL:
+                # Workaround Quectel 20230731 documentation error says +QEVNT:
+                result_str = result_str.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+                results = [int(x) for x in result_str.split(&#39;,&#39;)]
+                # &lt;dataCount&gt;,&lt;signedBitmask&gt;,&lt;MTID&gt;,&lt;timestamp&gt;,
+                #   &lt;class&gt;,&lt;subclass&gt;,&lt;priority&gt;,&lt;data0&gt;,...
+                data0 = 7   # list index where trace data starts
+                ctrl_state = ControlState(results[data0+22])
+                beam_state = BeamState(results[data0+23])
+                rssi = float(results[data0+16]) / 100
+                vcid = results[data0+1]
+            return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+        except NimoModemError:
+            return None
+    
+    def send_data(self, data: bytes, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+        &#34;&#34;&#34;Submits data to send as a mobile-originated message.
+        
+        If a `message_name` is not supplied one will be generated using the
+        least significant 8 digits of unix timestamp.
+        
+        Args:
+            data (bytes): The data to send.
+        
+        Keyword Args:
+            message_name (str): Optional handle for message in Tx queue. Max 8
+                characters for Orbcomm modem or 12 for Quectel.
+            priority (int): Optional priority 1 (highest) .. 4 (low, default).
+                May use `MessagePriority`.
+            codec_sin (int): Optional first byte of payload to add as a codec
+                service identifier, must be in range 16..255.
+            codec_min (int): Optional second byte of payload to add as a codec
+                message identifier, must be in range 0..255.
+            return_message (bool): If set, returns a `MoMessage` instead of the
+                message handle.
+        
+        Returns:
+            Message handle (str) or `MoMessage` if `return_message` kwarg is set.
+        
+        Raises:
+            `ValueError`
+        
+        &#34;&#34;&#34;
+        data_size = len(data)
+        msg_payload_sin_min = b&#39;&#39;
+        message_name = kwargs.get(&#39;message_name&#39;, &#39;&#39;)
+        priority = MessagePriority(kwargs.get(&#39;priority&#39;,
+                                              MessagePriority.LOW.value))
+        codec_sin = kwargs.get(&#39;codec_sin&#39;, -1)
+        codec_min = kwargs.get(&#39;codec_min&#39;, -1)
+        if codec_sin &gt; -1:
+            data_size += 1
+            msg_payload_sin_min += codec_sin.to_bytes(1, &#39;big&#39;)
+        if codec_min &gt; -1:
+            data_size += 1
+            msg_payload_sin_min += codec_min.to_bytes(1, &#39;big&#39;)
+        if not 2 &lt;= data_size &lt;= MSG_MO_MAX_SIZE:
+            raise ValueError(&#39;Invalid mobile-originated message size&#39;)
+        if message_name and len(message_name) &gt; self._mo_msg_name_len_max:
+            raise ValueError(&#39;Message name too long&#39;)
+        data_index = 0
+        if codec_sin &lt;= -1:
+            codec_sin = data[0]
+            data_index += 1
+            data_size -= 1
+        if codec_sin not in range(16, 256):
+            raise ValueError(&#39;Illegal first payload byte SIN must be 16..255&#39;)
+        if codec_min &lt;= -1:
+            codec_min = data[1]
+            data_index += 1
+            data_size -= 1
+        if codec_min &gt; 255:
+            raise ValueError(&#39;Invalid second payload byte MIN must be 0..255&#39;)
+        max_name_len = self._mo_msg_name_len_max
+        if message_name and len(message_name) &gt; max_name_len:
+            raise ValueError(f&#39;Invalid message name longer than {max_name_len}&#39;)
+        if len(message_name) == 0:
+            message_name = f&#39;{int(time.time())}&#39;[-max_name_len:]
+        # Convert to base64 string for serial efficiency
+        #   no effect on OTA size, modem always decodes and sends raw bytes OTA
+        data_format = DataFormat.BASE64
+        formatted_data = base64.b64encode(data[2:]).decode(&#39;utf-8&#39;)
+        cmd = &#39;AT%MGRT=&#39;
+        codec_sep = &#39;.&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGT=&#39;
+            codec_sep = &#39;,&#39;
+        cmd = (f&#39;{cmd}&#34;{message_name}&#34;,{priority},{codec_sin}{codec_sep}&#39;
+               f&#39;{codec_min},{data_format},{formatted_data}&#39;)
+        try:
+            self._at_command_response(cmd)
+            if kwargs.get(&#39;return_message&#39;, False) is True:
+                return MoMessage(message_name, priority, MessageState.TX_READY,
+                                 payload=(msg_payload_sin_min + data))
+            return message_name
+        except NimoModemError:
+            return &#39;&#39;
+    
+    def send_text(self, text: str, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+        &#34;&#34;&#34;Submits a text string to send as data.
+        
+        If `codec_sin` kwarg is not provided 128 is prepended as the first byte.
+        If `codec_min` kwarg is not provided 1 is prepended as the second byte.
+        Other kwargs as per `send_data`.
+        
+        Args:
+            text (str): The text message to send.
+        
+        Returns:
+            (str) The message name assigned or MoMessage if kwarg
+                `return_message` is set.
+        
+        &#34;&#34;&#34;
+        data = b&#39;&#39;
+        codec_sin = int(kwargs.get(&#39;codec_sin&#39;, 128))
+        data += codec_sin.to_bytes(1, &#39;big&#39;)
+        codec_min = int(kwargs.get(&#39;codec_min&#39;, 1))
+        data += codec_min.to_bytes(1, &#39;big&#39;)
+        data += text.encode()
+        flowthru = [&#39;message_name&#39;, &#39;priority&#39;, &#39;return_message&#39;]
+        next_kwargs = { k:v for k, v in kwargs if k in flowthru }
+        return self.send_data(data, **next_kwargs)
+    
+    def cancel_mo_message(self, message_name: str) -&gt; bool:
+        &#34;&#34;&#34;Attempts to cancel a previously submitted mobile-originated message.
+        
+        Args:
+            message_name (str): The mobile-originated message handle to delete.
+        
+        &#34;&#34;&#34;
+        _log.debug(&#39;Attempting to cancel MO message %s&#39;, message_name)
+        cmd = &#39;AT%MGRC&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGC&#39;
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        try:
+            self._at_command_response(cmd)
+            message_states = self.get_mo_message_states(message_name)
+            if len(message_states) &gt; 0:
+                state = message_states[0].state
+                if state == MessageState.TX_CANCELLED:
+                    return True
+            elif self._is_simulator:
+                return True
+        except NimoModemError:
+            pass
+        _log.warn(&#39;Failed to cancel message %s&#39;, message_name)
+        return False
+    
+    def get_mo_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MoMessage]&#39;:
+        &#34;&#34;&#34;Get a list of mobile-originated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MoMessage` objects including state and metadata.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%MGRS&#39;
+        prefix = &#39;%MGRS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QSMGS&#39;
+            prefix = &#39;+QSMGS:&#39;
+        if message_name and not self._is_simulator:
+            # Orbcomm Modem Simulator returns ERROR for %MGRS= command
+            cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        response_str = self._at_command_response(cmd, prefix)
+        return self._parse_message_states(response_str, is_mo=True)
+    
+    def _parse_message_states(self,
+                              response_str: str,
+                              is_mo: bool,
+                              ) -&gt; &#39;list[NimoMessage]&#39;:
+        &#34;&#34;&#34;Parses textual metadata to build a SatelliteMessageState.&#34;&#34;&#34;
+        mo_states = []
+        if not response_str:
+            return mo_states
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing %s message states from %s&#39;,
+                       &#39;MO&#39; if is_mo else &#39;MT&#39;, response_str)
+        states_meta = [m for m in response_str.split(&#39;\n&#39;) if m != &#39;&#39;]
+        for meta in states_meta:
+            message = MoMessage() if is_mo else MtMessage()
+            for field_idx, field_data in enumerate(meta.split(&#39;,&#39;)):
+                self._update_message_state(message, field_idx,
+                                           field_data, is_mo)
+            mo_states.append(message)
+        return mo_states
+    
+    def _update_message_state(self,
+                              message_state: NimoMessage,
+                              field_idx: int,
+                              field_data: str,
+                              is_mo: bool) -&gt; None:
+        &#34;&#34;&#34;Parse textual metadata to update a message&#39;s state.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing %s message state index %d: %s&#39;,
+                       &#39;MO&#39; if is_mo else &#39;MT&#39;, field_idx, field_data)
+        mfr = self._mfr
+        if field_idx == 0:
+            message_state.name = field_data.replace(&#39;&#34;&#39;, &#39;&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message name: %s&#39;, message_state.name)
+        elif field_idx == 1 and mfr == Manufacturer.ORBCOMM:
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Ignoring msgNum %s&#39;, field_data)
+        elif ((field_idx == 2 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+            message_state.priority = MessagePriority(int(field_data))
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message priority %s&#39;, message_state.priority.name)
+        elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Ignoring codec SIN %s&#39;, field_data)
+        elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
+            message_state.state = MessageState(int(field_data))
+            _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
+        elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
+            message_state.length = int(field_data)
+            _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
+        elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
+            message_state.bytes_delivered = int(field_data)
+            _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
+        else:
+            _log.warning(&#39;Unhandled field index %d (%s) for manufacturer %s&#39;,
+                         field_idx, &#39;MO&#39; if is_mo else &#39;MT&#39;, mfr.name)
+    
+    def get_mt_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MtMessage]&#39;:
+        &#34;&#34;&#34;Get a list of mobile-terminated message states in the modem Tx queue.
+        
+        Args:
+            message_name (str): Optional filter on message name.
+        
+        Returns:
+            A list of `MtMessage` objects including state and metadata.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%MGFN&#39; if not message_name else &#39;AT%MGFS&#39;
+        prefix = &#39;%MGFN:&#39; if not message_name else &#39;AT%MGFS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QRMGN&#39; if not message_name else &#39;AT+QRMGS&#39;
+            prefix = &#39;+QRMGN:&#39; if not message_name else &#39;+QRMGS:&#39;
+        if message_name and not self._is_simulator:
+            cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        response_str = self._at_command_response(cmd, prefix)
+        return self._parse_message_states(response_str, is_mo=False)
+    
+    def get_mt_message(self, message_name: str) -&gt; &#39;MtMessage|None&#39;:
+        &#34;&#34;&#34;Get a mobile-terminated message from the modem&#39;s Rx queue by name.&#34;&#34;&#34;
+        cmd = &#39;AT%MGFG&#39;
+        prefix = &#39;%MGFG:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+GRMGR&#39;
+            prefix = &#39;+GRMGR:&#39;
+        data_format = DataFormat.BASE64
+        cmd += f&#39;=&#34;{message_name}&#34;,{data_format}&#39;
+        response = self._at_command_response(cmd, prefix)
+        if response:
+            return self._parse_mt_message(response)
+        return None
+    
+    def _parse_mt_message(self, meta: str) -&gt; MtMessage:
+        &#34;&#34;&#34;Parse textual metadata to build a MtMessage.&#34;&#34;&#34;
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Parsing MT message from meta: %s&#39;, meta)
+        data_includes_sin = False
+        mfr = self._mfr
+        message = MtMessage()
+        for field_idx, field_data in enumerate(meta.split(&#39;,&#39;)):
+            if field_idx == 0:
+                message.name = field_data.replace(&#39;&#34;&#39;, &#39;&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message name: %s&#39;, message.name)
+            elif (field_idx == 1 and mfr == Manufacturer.ORBCOMM):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Ignoring msgNum %s&#39;, field_data)
+            elif (field_idx == 2 and mfr == Manufacturer.ORBCOMM):
+                message.priority = MessagePriority(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message priority %s&#39;, message.priority.name)
+            elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+                codec_sin = int(field_data)
+                if not data_includes_sin:
+                    message.payload += codec_sin.to_bytes(1, &#39;big&#39;)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Added SIN as first payload byte: %d&#39;, codec_sin)
+            elif (field_idx == 4 and mfr == Manufacturer.ORBCOMM):
+                message.state = MessageState(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message state %s&#39;, message.state.name)
+            elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
+                message.length = int(field_data)
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Message size: %d bytes&#39;, message.length)
+            elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
+                data_format = DataFormat(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Data format %s&#39;, data_format.name)
+            elif ((field_idx == 7 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
+                if vlog(VLOG_TAG):
+                    _log.debug(&#39;Decoding payload from: %s&#39;, field_data)
+                if message.length &gt; 0:
+                    if data_format == DataFormat.BASE64:
+                        message.payload += base64.b64decode(field_data)
+                    elif data_format == DataFormat.HEX:
+                        message.payload += bytes.fromhex(field_data)
+                    else:   # DataFormat.TEXT
+                        message.payload += field_data.encode()
+                    if message.length != len(message.payload):
+                        _log.warn(&#39;Message length mismatch&#39;)
+        return message
+    
+    def delete_mt_message(self, message_name: str) -&gt; bool:
+        &#34;&#34;&#34;Remove a mobile-terminated message from the modem&#39;s Rx queue.&#34;&#34;&#34;
+        cmd = &#39;AT%MGFM&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QRMGM&#39;
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+        self._at_command_response(cmd)
+        check = self.get_mt_message_states(message_name)
+        if check and check[0].state == MessageState.RX_RETRIEVED:
+            return True
+        return False
+    
+    def receive_data(self, message_name: str) -&gt; &#39;bytes|None&#39;:
+        &#34;&#34;&#34;Get the raw data from a mobile-terminated message.&#34;&#34;&#34;
+        message = self.get_mt_message(message_name)
+        if message:
+            return message.payload
+        return None
+    
+    def get_gnss_mode(self) -&gt; GnssMode:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+        cmd = &#39;ATS39?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSSMOD?&#39;
+            prefix = &#39;+QGNSSMOD:&#39;
+        response = self._at_command_response(cmd, prefix)
+        if self._mfr == Manufacturer.QUECTEL:
+            return GnssModeQuectel(int(response))
+        return GnssModeOrbcomm(int(response))
+    
+    def set_gnss_mode(self, gnss_mode: GnssMode) -&gt; bool:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+        cmd = f&#39;ATS39={gnss_mode}&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            if not GnssModeQuectel.is_valid(gnss_mode):
+                raise ValueError(&#39;Invalid GNSS mode&#39;)
+            cmd = f&#39;AT+QGNSSMOD={gnss_mode}&#39;
+            prefix = &#39;+QGNSSMOD:&#39;
+        else:
+            if not GnssModeOrbcomm.is_valid(gnss_mode):
+                raise ValueError(&#39;Invalid GNSS mode&#39;)
+        try:
+            self._at_command_response(cmd, prefix)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_gnss_continuous(self) -&gt; int:
+        &#34;&#34;&#34;Get the modem&#39;s GNSS continuous refresh interval in seconds.&#34;&#34;&#34;
+        cmd = &#39;ATS55?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSSCW?&#39;
+            prefix = &#39;+QGNSSCW:&#39;
+        try:
+            return int(self._at_command_response(cmd, prefix))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_gnss_continuous(self, interval: int) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s GNSS continuous refresh interval in seconds.
+        
+        Args:
+            interval (int): Automatic update interval 0..30 seconds.
+        
+        Returns:
+            `True` if successful.
+        
+        Raises:
+            `ValueError` if invalid interval is specified.
+        
+        &#34;&#34;&#34;
+        if interval not in range (0, 31):
+            raise ValueError(&#39;Invalid GNSS refresh interval&#39;)
+        cmd = f&#39;ATS55={interval}&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f&#39;AT+QGNSSCW={interval}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_nmea_data(self,
+                      stale_secs: int = 1,
+                      wait_secs: int = 35,
+                      rmc: bool = True,
+                      gga: bool = True,
+                      gsa: bool = True,
+                      gsv: bool = False,
+                      ) -&gt; str:
+        &#34;&#34;&#34;Get a set of NMEA data detailing the modem&#39;s location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+            rmc (bool): Include Recommended Minimum data.
+            gga (bool): Include altitude and fix quality data.
+            gsa (bool): Include Dilution of Precision data.
+            gsv (bool): Include verbose GNSS satellite details.
+        
+        &#34;&#34;&#34;
+        cmd = &#39;AT%GPS&#39;
+        prefix = &#39;%GPS:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QGNSS&#39;
+            prefix = &#39;+QGNSS:&#39;
+        cmd += f&#39;={stale_secs},{wait_secs}&#39;
+        if rmc:
+            cmd += &#39;,&#34;RMC&#34;&#39;
+        if gga:
+            cmd += &#39;,&#34;GGA&#34;&#39;
+        if gsa:
+            cmd += &#39;,&#34;GSA&#34;&#39;
+        if gsv:
+            cmd += &#39;,&#34;GSV&#34;&#39;
+        try:
+            response = self._at_command_response(cmd, prefix, wait_secs + 5)
+            return response
+        except NimoModemError as exc:
+            if exc.args[0] != AtErrorCode.GNSS_TIMEOUT:
+                raise
+        return &#39;&#39;
+    
+    def get_location(self,
+                     stale_secs: int = 1,
+                     wait_secs: int = 35) -&gt; &#39;ModemLocation|None&#39;:
+        &#34;&#34;&#34;Get the modem&#39;s location.
+        
+        Args:
+            stale_secs (int): Maximum cached fix age to use in seconds.
+            wait_secs (int): Maximum duration to wait for a fix in seconds.
+        
+        Returns:
+            ModemLocation object if GNSS does not time out waiting for fix.
+        
+        &#34;&#34;&#34;
+        nmea_data = self.get_nmea_data(stale_secs, wait_secs)
+        if nmea_data:
+            return get_location_from_nmea_data(nmea_data)
+        return None
+    
+    def get_satellite_location(self,
+                               modem_location: ModemLocation = None,
+                               ) -&gt; &#39;SatelliteLocation|None&#39;:
+        &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+        
+        Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
+        
+        Args:
+            modem_location (ModemLocation): Optional if known to speed up
+                response.
+        
+        Returns:
+            SatelliteLocation object (azimuth, elevation) if determinable.
+        
+        &#34;&#34;&#34;
+        geobeam = None
+        if modem_location is None:
+            modem_location = self.get_location()
+        if modem_location is not None:
+            cmd = &#39;ATS90=3 S91=5 S92=1 S102?&#39;
+            prefix = &#39;&#39;
+            if self._mfr == Manufacturer.QUECTEL:
+                cmd = &#39;AT+QEVNT=3,5&#39;
+                prefix = &#39;+QEVNT:&#39;
+            try:
+                response = self._at_command_response(cmd, prefix)
+                if self._mfr == Manufacturer.QUECTEL:
+                    # workaround documentation error
+                    response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+                    response = response.split(&#39;,&#39;)[9]
+                geobeam = GeoBeam(int(response))
+            except NimoModemError:
+                pass
+        satellite_loc = get_satellite_location(modem_location, geobeam)
+        return satellite_loc if satellite_loc.azimuth else None
+    
+    def get_event_mask(self) -&gt; int:
+        &#34;&#34;&#34;Get the set of monitored events that trigger event notification.&#34;&#34;&#34;
+        cmd = &#39;ATS88?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_event_mask(self, event_mask: int) -&gt; bool:
+        &#34;&#34;&#34;Set monitored events that trigger event notification.&#34;&#34;&#34;
+        max_bits = 12
+        if not isinstance(event_mask, int) or event_mask &gt; 2**max_bits-1:
+            raise ValueError(&#39;Invalid event bitmask&#39;)
+        cmd = f&#39;ATS88={event_mask}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_events_asserted_mask(self) -&gt; int:
+        &#34;&#34;&#34;Get the set of events that are active following a notification.&#34;&#34;&#34;
+        cmd = &#39;ATS89?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return 0
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def get_urc_ctl(self) -&gt; int:
+        &#34;&#34;&#34;Get the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        cmd = &#39;AT+QURCCTL?&#39;
+        prefix = &#39;+QURCCTL:&#39;
+        try:
+            response = self._at_command_response(cmd, prefix)
+            return int(response, 16)
+        except NimoModemError:
+            return 0
+    
+    def set_urc_ctl(self, qurc_mask: int) -&gt; bool:
+        &#34;&#34;&#34;Set the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        cmd = f&#39;AT+QURCCTL=0x{qurc_mask:04X}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_urc(self) -&gt; &#39;UrcCode|None&#39;:
+        &#34;&#34;&#34;Get the pending Unsolicited Result Code if one is present.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise ValueError(&#39;Modem does not support this feature&#39;)
+        eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
+        result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+        if result:
+            try:
+                if &#39;_&#39; in result:   # long code
+                    return UrcCode[result]
+                return UrcCode(int(result))
+            except ValueError as exc:
+                _log.error(&#39;Parsing error: %s&#39;, exc)
+        return None
+    
+    def get_power_mode(self) -&gt; PowerMode:
+        &#34;&#34;&#34;Get the modem&#39;s power mode configuration.&#34;&#34;&#34;
+        cmd = &#39;ATS50?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QPMD?&#39;
+            prefix = &#39;+QPMD:&#39;
+        try:
+            return PowerMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return PowerMode.MOBILE_POWERED
+    
+    def set_power_mode(self, power_mode: PowerMode) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s power mode configuration.&#34;&#34;&#34;
+        if not PowerMode.is_valid(power_mode):
+            raise ValueError(&#39;Invalid Power Mode&#39;)
+        cmd = f&#39;ATS50={power_mode}&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = f&#39;AT+QPMD={power_mode}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_wakeup_period(self) -&gt; WakeupPeriod:
+        &#34;&#34;&#34;Get the modem&#39;s wakeup period configuration.&#34;&#34;&#34;
+        cmd = &#39;ATS51?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QWKUPCFG?&#39;
+            prefix = &#39;+QWKUPCFG:&#39;
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                return WakeupPeriod(int(
+                    self._at_command_response(cmd, prefix).split(&#39;,&#39;)[0]))
+            return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WakeupPeriod.NONE
+    
+    def set_wakeup_period(self,
+                          wakeup_period: WakeupPeriod,
+                          wakeup_way: &#39;WakeupWay|None&#39; = None,
+                          ) -&gt; bool:
+        &#34;&#34;&#34;Set the modem&#39;s wakeup period configuration.
+        
+        The configuration does not update until confimed by the network.
+        
+        &#34;&#34;&#34;
+        if not WakeupPeriod.is_valid(wakeup_period):
+            raise ValueError(&#39;Invalid wakeup period&#39;)
+        cmd = f&#39;ATS51={wakeup_period}&#39;
+        try:
+            if self._mfr == Manufacturer.QUECTEL:
+                if wakeup_way is None:
+                    query = self._at_command_response(&#39;AT+QWKUPCFG?&#39;, &#39;+QWKUPCFG:&#39;)
+                    wakeup_way = WakeupWay(int(query.split(&#39;,&#39;)[1]))
+                cmd = f&#39;AT+QWKUPCFG={wakeup_period},{wakeup_way}&#39;
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_wakeup_way(self) -&gt; WakeupWay:
+        &#34;&#34;&#34;Get the modem wakeup method.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        try:
+            cmd = &#39;AT+QWKUPCFG?&#39;
+            prefix = &#39;+QWKUPCFG:&#39;
+            wakeup_way = self._at_command_response(cmd, prefix).split(&#39;,&#39;)[1]
+            return WakeupWay(int(wakeup_way))
+        except NimoModemError:
+            return WakeupWay.WAKEUP_PIN
+    
+    def power_down(self) -&gt; bool:
+        &#34;&#34;&#34;Prepare the modem for power-down.&#34;&#34;&#34;
+        cmd = &#39;AT%OFF&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QPOWD=2&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_workmode(self) -&gt; WorkMode:
+        &#34;&#34;&#34;Get the modem working mode.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        cmd = &#39;AT+QMOD?&#39;
+        prefix = &#39;+QMOD:&#39;
+        try:
+            return WorkMode(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return WorkMode.WORKING
+    
+    def set_workmode(self, workmode: WorkMode) -&gt; bool:
+        &#34;&#34;&#34;Set the modem working mode.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        if not WorkMode.is_valid(workmode):
+            raise ValueError(&#39;Invalid workmode&#39;)
+        cmd = f&#39;AT+QMOD={workmode}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_deepsleep_enable(self) -&gt; bool:
+        &#34;&#34;&#34;Get the deepsleep configuration flag.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        cmd = &#39;AT+QSCLK?&#39;
+        prefix = &#39;+QSCLK:&#39;
+        try:
+            return bool(int(self._at_command_response(cmd, prefix)))
+        except NimoModemError:
+            return False
+    
+    def set_deepsleep_enable(self, enable: bool) -&gt; bool:
+        &#34;&#34;&#34;Set the deepsleep configuration flag.&#34;&#34;&#34;
+        if self._mfr != Manufacturer.QUECTEL:
+            raise IOError(&#39;Operation not supported on this modem type.&#39;)
+        try:
+            self._at_command_response(f&#39;AT+QSCLK={int(enable)}&#39;)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_register(self, s_register_number: int) -&gt; &#39;int|None&#39;:
+        &#34;&#34;&#34;Get a modem register value.&#34;&#34;&#34;
+        cmd = f&#39;ATS{s_register_number}?&#39;
+        try:
+            return int(self._at_command_response(cmd))
+        except NimoModemError as exc:
+            _log.error(exc)
+            return None
+        except ValueError as exc:
+            raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc
+    
+    def set_register(self, s_register_number: int, value: int) -&gt; bool:
+        &#34;&#34;&#34;Set a modem register value.&#34;&#34;&#34;
+        cmd = f&#39;ATS{s_register_number}={value}&#39;
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
+    
+    def get_all_registers(self) -&gt; dict:
+        &#34;&#34;&#34;Get a dictionary of modem register values.&#34;&#34;&#34;
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pynimomodem.modem.NimoModem.baudrate"><code class="name">var <span class="ident">baudrate</span> : int</code></dt>
+<dd>
+<div class="desc"><p>The baudrate of the serial connection.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def baudrate(self) -&gt; int:
+    &#34;&#34;&#34;The baudrate of the serial connection.&#34;&#34;&#34;
+    return self._modem.serial.baudrate</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.crc_enabled"><code class="name">var <span class="ident">crc_enabled</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def crc_enabled(self) -&gt; bool:
+    return self._modem.crc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_ready"><code class="name">var <span class="ident">is_ready</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def is_ready(self) -&gt; bool:
+    return self._ready.is_set()</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.modem_booted"><code class="name">var <span class="ident">modem_booted</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def modem_booted(self) -&gt; bool:
+    return self._modem_booted</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pynimomodem.modem.NimoModem.await_boot"><code class="name flex">
+<span>def <span class="ident">await_boot</span></span>(<span>self, boot_timeout: int = 10) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if a boot string is received within a timeout window.</p>
+<p>Use <code>is_connected</code> before waiting for boot.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>boot_timeout</code></strong> :&ensp;<code>int</code></dt>
+<dd>The maximum time to wait in seconds.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>True if a valid boot string was received inside the timeout.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def await_boot(self, boot_timeout: int = 10) -&gt; bool:
+    &#34;&#34;&#34;Indicates if a boot string is received within a timeout window.
+    
+    Use `is_connected` before waiting for boot.
+    
+    Args:
+        boot_timeout (int): The maximum time to wait in seconds.
+    
+    Returns:
+        True if a valid boot string was received inside the timeout.
+    
+    &#34;&#34;&#34;
+    boot_strings = [&#39;ST Version&#39;, &#39;RDY&#39;]
+    _log.debug(&#39;Awaiting modem boot string for %d seconds...&#39;, boot_timeout)
+    rx_data = &#39;&#39;
+    started = time.time()
+    while time.time() - started &lt; boot_timeout and not self._modem_booted:
+        while self._modem.is_data_waiting():
+            rx_data += self._modem.read_rx_buffer()
+        if rx_data and any(b in rx_data for b in boot_strings):
+            self._modem_booted = True
+            _log.debug(&#39;Found boot string - clearing Rx buffer&#39;)
+            while self._modem.is_data_waiting():
+                rx_data += self._modem.read_rx_buffer()
+            break
+    return self._modem_booted</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.cancel_mo_message"><code class="name flex">
+<span>def <span class="ident">cancel_mo_message</span></span>(<span>self, message_name: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Attempts to cancel a previously submitted mobile-originated message.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>message_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The mobile-originated message handle to delete.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cancel_mo_message(self, message_name: str) -&gt; bool:
+    &#34;&#34;&#34;Attempts to cancel a previously submitted mobile-originated message.
+    
+    Args:
+        message_name (str): The mobile-originated message handle to delete.
+    
+    &#34;&#34;&#34;
+    _log.debug(&#39;Attempting to cancel MO message %s&#39;, message_name)
+    cmd = &#39;AT%MGRC&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QSMGC&#39;
+    cmd += f&#39;=&#34;{message_name}&#34;&#39;
+    try:
+        self._at_command_response(cmd)
+        message_states = self.get_mo_message_states(message_name)
+        if len(message_states) &gt; 0:
+            state = message_states[0].state
+            if state == MessageState.TX_CANCELLED:
+                return True
+        elif self._is_simulator:
+            return True
+    except NimoModemError:
+        pass
+    _log.warn(&#39;Failed to cancel message %s&#39;, message_name)
+    return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.delete_mt_message"><code class="name flex">
+<span>def <span class="ident">delete_mt_message</span></span>(<span>self, message_name: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a mobile-terminated message from the modem's Rx queue.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_mt_message(self, message_name: str) -&gt; bool:
+    &#34;&#34;&#34;Remove a mobile-terminated message from the modem&#39;s Rx queue.&#34;&#34;&#34;
+    cmd = &#39;AT%MGFM&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QRMGM&#39;
+    cmd += f&#39;=&#34;{message_name}&#34;&#39;
+    self._at_command_response(cmd)
+    check = self.get_mt_message_states(message_name)
+    if check and check[0].state == MessageState.RX_RETRIEVED:
+        return True
+    return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_acquisition_detail"><code class="name flex">
+<span>def <span class="ident">get_acquisition_detail</span></span>(<span>self) ‑> <a title="pynimomodem.modem.SatelliteAcquisitionDetail" href="#pynimomodem.modem.SatelliteAcquisitionDetail">SatelliteAcquisitionDetail</a>|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the detailed satellite acquisition status.</p>
+<p>Includes <code>acquisition_state</code>, <code>beamsearch_state</code>, <code>vcid</code> and <code>snr</code>
+indicators.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_acquisition_detail(self) -&gt; &#39;SatelliteAcquisitionDetail|None&#39;:
+    &#34;&#34;&#34;Get the detailed satellite acquisition status.
+    
+    Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
+    indicators.
+    
+    &#34;&#34;&#34;
+    cmd = &#39;ATS90=3 S91=1 S92=1 S122? S123? S116? S101?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QEVNT=3,1&#39;
+        prefix = &#39;+QEVNT:&#39;
+    try:
+        result_str = self._at_command_response(cmd, prefix, timeout=10)
+        if self._mfr == Manufacturer.ORBCOMM:
+            results = [int(x) for x in result_str.split(&#39;\n&#39;)]
+            ctrl_state = ControlState(results[0])
+            beam_state = BeamState(results[1])
+            rssi = float(results[2]) / 100
+            vcid = results[3]
+        elif self._mfr == Manufacturer.QUECTEL:
+            # Workaround Quectel 20230731 documentation error says +QEVNT:
+            result_str = result_str.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+            results = [int(x) for x in result_str.split(&#39;,&#39;)]
+            # &lt;dataCount&gt;,&lt;signedBitmask&gt;,&lt;MTID&gt;,&lt;timestamp&gt;,
+            #   &lt;class&gt;,&lt;subclass&gt;,&lt;priority&gt;,&lt;data0&gt;,...
+            data0 = 7   # list index where trace data starts
+            ctrl_state = ControlState(results[data0+22])
+            beam_state = BeamState(results[data0+23])
+            rssi = float(results[data0+16]) / 100
+            vcid = results[data0+1]
+        return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+    except NimoModemError:
+        return None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_all_registers"><code class="name flex">
+<span>def <span class="ident">get_all_registers</span></span>(<span>self) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a dictionary of modem register values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_registers(self) -&gt; dict:
+    &#34;&#34;&#34;Get a dictionary of modem register values.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_deepsleep_enable"><code class="name flex">
+<span>def <span class="ident">get_deepsleep_enable</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the deepsleep configuration flag.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_deepsleep_enable(self) -&gt; bool:
+    &#34;&#34;&#34;Get the deepsleep configuration flag.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise IOError(&#39;Operation not supported on this modem type.&#39;)
+    cmd = &#39;AT+QSCLK?&#39;
+    prefix = &#39;+QSCLK:&#39;
+    try:
+        return bool(int(self._at_command_response(cmd, prefix)))
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_event_mask"><code class="name flex">
+<span>def <span class="ident">get_event_mask</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the set of monitored events that trigger event notification.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_event_mask(self) -&gt; int:
+    &#34;&#34;&#34;Get the set of monitored events that trigger event notification.&#34;&#34;&#34;
+    cmd = &#39;ATS88?&#39;
+    try:
+        return int(self._at_command_response(cmd))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_events_asserted_mask"><code class="name flex">
+<span>def <span class="ident">get_events_asserted_mask</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the set of events that are active following a notification.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_events_asserted_mask(self) -&gt; int:
+    &#34;&#34;&#34;Get the set of events that are active following a notification.&#34;&#34;&#34;
+    cmd = &#39;ATS89?&#39;
+    try:
+        return int(self._at_command_response(cmd))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_firmware_version"><code class="name flex">
+<span>def <span class="ident">get_firmware_version</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's firmware version.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_firmware_version(self) -&gt; str:
+    &#34;&#34;&#34;Get the modem&#39;s firmware version.&#34;&#34;&#34;
+    # TODO: Firmware structure with hardware, firmware, software?
+    try:
+        return self._at_command_response(&#39;AT+GMR&#39;, &#39;+GMR:&#39;)
+    except NimoModemError:
+        return &#39;&#39;</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_gnss_continuous"><code class="name flex">
+<span>def <span class="ident">get_gnss_continuous</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's GNSS continuous refresh interval in seconds.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_gnss_continuous(self) -&gt; int:
+    &#34;&#34;&#34;Get the modem&#39;s GNSS continuous refresh interval in seconds.&#34;&#34;&#34;
+    cmd = &#39;ATS55?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QGNSSCW?&#39;
+        prefix = &#39;+QGNSSCW:&#39;
+    try:
+        return int(self._at_command_response(cmd, prefix))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_gnss_mode"><code class="name flex">
+<span>def <span class="ident">get_gnss_mode</span></span>(<span>self) ‑> <a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's GNSS receiver mode.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_gnss_mode(self) -&gt; GnssMode:
+    &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+    cmd = &#39;ATS39?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QGNSSMOD?&#39;
+        prefix = &#39;+QGNSSMOD:&#39;
+    response = self._at_command_response(cmd, prefix)
+    if self._mfr == Manufacturer.QUECTEL:
+        return GnssModeQuectel(int(response))
+    return GnssModeOrbcomm(int(response))</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_last_error_code"><code class="name flex">
+<span>def <span class="ident">get_last_error_code</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the last error code from the modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_last_error_code(self) -&gt; int:
+    &#34;&#34;&#34;Get the last error code from the modem.&#34;&#34;&#34;
+    try:
+        return int(self._at_command_response(&#39;ATS80?&#39;))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_location"><code class="name flex">
+<span>def <span class="ident">get_location</span></span>(<span>self, stale_secs: int = 1, wait_secs: int = 35) ‑> ModemLocation|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's location.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stale_secs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum cached fix age to use in seconds.</dd>
+<dt><strong><code>wait_secs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum duration to wait for a fix in seconds.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>ModemLocation object if GNSS does not time out waiting for fix.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_location(self,
+                 stale_secs: int = 1,
+                 wait_secs: int = 35) -&gt; &#39;ModemLocation|None&#39;:
+    &#34;&#34;&#34;Get the modem&#39;s location.
+    
+    Args:
+        stale_secs (int): Maximum cached fix age to use in seconds.
+        wait_secs (int): Maximum duration to wait for a fix in seconds.
+    
+    Returns:
+        ModemLocation object if GNSS does not time out waiting for fix.
+    
+    &#34;&#34;&#34;
+    nmea_data = self.get_nmea_data(stale_secs, wait_secs)
+    if nmea_data:
+        return get_location_from_nmea_data(nmea_data)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_manufacturer"><code class="name flex">
+<span>def <span class="ident">get_manufacturer</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the manufacturer name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_manufacturer(self) -&gt; str:
+    &#34;&#34;&#34;Get the manufacturer name.&#34;&#34;&#34;
+    if not self._manufacturer:
+        try:
+            mfr = self._at_command_response(&#39;ATI&#39;)
+            if &#39;quectel&#39; in mfr.lower():
+                self._manufacturer = Manufacturer.QUECTEL
+            else:
+                if not any(m in mfr.lower()
+                           for m in [&#39;orbcomm&#39;, &#39;skywave&#39;]):
+                    _log.warning(&#39;Unsupported manufacturer %s&#39;, mfr)
+                self._manufacturer = Manufacturer.ORBCOMM
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Caching manufacturer: %s&#39;,
+                           self._manufacturer.name)
+        except NimoModemError:
+            self._manufacturer = &#39;&#39;
+            _log.warning(&#39;Cleared cached manufacturer&#39;)
+    return self._manufacturer.name</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_mo_message_states"><code class="name flex">
+<span>def <span class="ident">get_mo_message_states</span></span>(<span>self, message_name: str = '') ‑> list[<a title="pynimomodem.message.MoMessage" href="message.html#pynimomodem.message.MoMessage">MoMessage</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a list of mobile-originated message states in the modem Tx queue.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>message_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Optional filter on message name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code>MoMessage</code> objects including state and metadata.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mo_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MoMessage]&#39;:
+    &#34;&#34;&#34;Get a list of mobile-originated message states in the modem Tx queue.
+    
+    Args:
+        message_name (str): Optional filter on message name.
+    
+    Returns:
+        A list of `MoMessage` objects including state and metadata.
+    
+    &#34;&#34;&#34;
+    cmd = &#39;AT%MGRS&#39;
+    prefix = &#39;%MGRS:&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QSMGS&#39;
+        prefix = &#39;+QSMGS:&#39;
+    if message_name and not self._is_simulator:
+        # Orbcomm Modem Simulator returns ERROR for %MGRS= command
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+    response_str = self._at_command_response(cmd, prefix)
+    return self._parse_message_states(response_str, is_mo=True)</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_mobile_id"><code class="name flex">
+<span>def <span class="ident">get_mobile_id</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's globally unique identifier.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mobile_id(self) -&gt; str:
+    &#34;&#34;&#34;Get the modem&#39;s globally unique identifier.&#34;&#34;&#34;
+    if not self._mobile_id:
+        try:
+            self._mobile_id = self._at_command_response(&#39;AT+GSN&#39;, &#39;+GSN:&#39;)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Cached Mobile ID %s&#39;, self._mobile_id)
+        except NimoModemError:
+            self._mobile_id = &#39;&#39;
+    return self._mobile_id</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_mt_message"><code class="name flex">
+<span>def <span class="ident">get_mt_message</span></span>(<span>self, message_name: str) ‑> MtMessage|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a mobile-terminated message from the modem's Rx queue by name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mt_message(self, message_name: str) -&gt; &#39;MtMessage|None&#39;:
+    &#34;&#34;&#34;Get a mobile-terminated message from the modem&#39;s Rx queue by name.&#34;&#34;&#34;
+    cmd = &#39;AT%MGFG&#39;
+    prefix = &#39;%MGFG:&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+GRMGR&#39;
+        prefix = &#39;+GRMGR:&#39;
+    data_format = DataFormat.BASE64
+    cmd += f&#39;=&#34;{message_name}&#34;,{data_format}&#39;
+    response = self._at_command_response(cmd, prefix)
+    if response:
+        return self._parse_mt_message(response)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_mt_message_states"><code class="name flex">
+<span>def <span class="ident">get_mt_message_states</span></span>(<span>self, message_name: str = '') ‑> list[<a title="pynimomodem.message.MtMessage" href="message.html#pynimomodem.message.MtMessage">MtMessage</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a list of mobile-terminated message states in the modem Tx queue.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>message_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Optional filter on message name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of <code>MtMessage</code> objects including state and metadata.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mt_message_states(self, message_name: str = &#39;&#39;) -&gt; &#39;list[MtMessage]&#39;:
+    &#34;&#34;&#34;Get a list of mobile-terminated message states in the modem Tx queue.
+    
+    Args:
+        message_name (str): Optional filter on message name.
+    
+    Returns:
+        A list of `MtMessage` objects including state and metadata.
+    
+    &#34;&#34;&#34;
+    cmd = &#39;AT%MGFN&#39; if not message_name else &#39;AT%MGFS&#39;
+    prefix = &#39;%MGFN:&#39; if not message_name else &#39;AT%MGFS:&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QRMGN&#39; if not message_name else &#39;AT+QRMGS&#39;
+        prefix = &#39;+QRMGN:&#39; if not message_name else &#39;+QRMGS:&#39;
+    if message_name and not self._is_simulator:
+        cmd += f&#39;=&#34;{message_name}&#34;&#39;
+    response_str = self._at_command_response(cmd, prefix)
+    return self._parse_message_states(response_str, is_mo=False)</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_nmea_data"><code class="name flex">
+<span>def <span class="ident">get_nmea_data</span></span>(<span>self, stale_secs: int = 1, wait_secs: int = 35, rmc: bool = True, gga: bool = True, gsa: bool = True, gsv: bool = False) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a set of NMEA data detailing the modem's location.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stale_secs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum cached fix age to use in seconds.</dd>
+<dt><strong><code>wait_secs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximum duration to wait for a fix in seconds.</dd>
+<dt><strong><code>rmc</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Include Recommended Minimum data.</dd>
+<dt><strong><code>gga</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Include altitude and fix quality data.</dd>
+<dt><strong><code>gsa</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Include Dilution of Precision data.</dd>
+<dt><strong><code>gsv</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Include verbose GNSS satellite details.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_nmea_data(self,
+                  stale_secs: int = 1,
+                  wait_secs: int = 35,
+                  rmc: bool = True,
+                  gga: bool = True,
+                  gsa: bool = True,
+                  gsv: bool = False,
+                  ) -&gt; str:
+    &#34;&#34;&#34;Get a set of NMEA data detailing the modem&#39;s location.
+    
+    Args:
+        stale_secs (int): Maximum cached fix age to use in seconds.
+        wait_secs (int): Maximum duration to wait for a fix in seconds.
+        rmc (bool): Include Recommended Minimum data.
+        gga (bool): Include altitude and fix quality data.
+        gsa (bool): Include Dilution of Precision data.
+        gsv (bool): Include verbose GNSS satellite details.
+    
+    &#34;&#34;&#34;
+    cmd = &#39;AT%GPS&#39;
+    prefix = &#39;%GPS:&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QGNSS&#39;
+        prefix = &#39;+QGNSS:&#39;
+    cmd += f&#39;={stale_secs},{wait_secs}&#39;
+    if rmc:
+        cmd += &#39;,&#34;RMC&#34;&#39;
+    if gga:
+        cmd += &#39;,&#34;GGA&#34;&#39;
+    if gsa:
+        cmd += &#39;,&#34;GSA&#34;&#39;
+    if gsv:
+        cmd += &#39;,&#34;GSV&#34;&#39;
+    try:
+        response = self._at_command_response(cmd, prefix, wait_secs + 5)
+        return response
+    except NimoModemError as exc:
+        if exc.args[0] != AtErrorCode.GNSS_TIMEOUT:
+            raise
+    return &#39;&#39;</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_power_mode"><code class="name flex">
+<span>def <span class="ident">get_power_mode</span></span>(<span>self) ‑> <a title="pynimomodem.constants.PowerMode" href="constants.html#pynimomodem.constants.PowerMode">PowerMode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's power mode configuration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_power_mode(self) -&gt; PowerMode:
+    &#34;&#34;&#34;Get the modem&#39;s power mode configuration.&#34;&#34;&#34;
+    cmd = &#39;ATS50?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QPMD?&#39;
+        prefix = &#39;+QPMD:&#39;
+    try:
+        return PowerMode(int(self._at_command_response(cmd, prefix)))
+    except NimoModemError:
+        return PowerMode.MOBILE_POWERED</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_register"><code class="name flex">
+<span>def <span class="ident">get_register</span></span>(<span>self, s_register_number: int) ‑> int|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a modem register value.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_register(self, s_register_number: int) -&gt; &#39;int|None&#39;:
+    &#34;&#34;&#34;Get a modem register value.&#34;&#34;&#34;
+    cmd = f&#39;ATS{s_register_number}?&#39;
+    try:
+        return int(self._at_command_response(cmd))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return None
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_rssi"><code class="name flex">
+<span>def <span class="ident">get_rssi</span></span>(<span>self) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the current Received Signal Strength Indicator.</p>
+<p>Also referred to as SNR or C/N0 (dB-Hz)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_rssi(self) -&gt; float:
+    &#34;&#34;&#34;Get the current Received Signal Strength Indicator.
+    
+    Also referred to as SNR or C/N0 (dB-Hz)
+    
+    &#34;&#34;&#34;
+    cmd = &#39;ATS90=3 S91=1 S92=1 S116?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QSCN&#39;
+        prefix = &#39;+QSCN:&#39;
+    try:
+        return int(self._at_command_response(cmd, prefix)) / 100
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_satellite_location"><code class="name flex">
+<span>def <span class="ident">get_satellite_location</span></span>(<span>self, modem_location: <a title="pynimomodem.location.ModemLocation" href="location.html#pynimomodem.location.ModemLocation">ModemLocation</a> = None) ‑> SatelliteLocation|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the satellite's relative position as azimuth and elevation.</p>
+<p>Derives which satellite/GeoBeam is used from trace class 3 subclass 5.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>modem_location</code></strong> :&ensp;<code>ModemLocation</code></dt>
+<dd>Optional if known to speed up
+response.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>SatelliteLocation object (azimuth, elevation) if determinable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_satellite_location(self,
+                           modem_location: ModemLocation = None,
+                           ) -&gt; &#39;SatelliteLocation|None&#39;:
+    &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+    
+    Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
+    
+    Args:
+        modem_location (ModemLocation): Optional if known to speed up
+            response.
+    
+    Returns:
+        SatelliteLocation object (azimuth, elevation) if determinable.
+    
+    &#34;&#34;&#34;
+    geobeam = None
+    if modem_location is None:
+        modem_location = self.get_location()
+    if modem_location is not None:
+        cmd = &#39;ATS90=3 S91=5 S92=1 S102?&#39;
+        prefix = &#39;&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = &#39;AT+QEVNT=3,5&#39;
+            prefix = &#39;+QEVNT:&#39;
+        try:
+            response = self._at_command_response(cmd, prefix)
+            if self._mfr == Manufacturer.QUECTEL:
+                # workaround documentation error
+                response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
+                response = response.split(&#39;,&#39;)[9]
+            geobeam = GeoBeam(int(response))
+        except NimoModemError:
+            pass
+    satellite_loc = get_satellite_location(modem_location, geobeam)
+    return satellite_loc if satellite_loc.azimuth else None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_satellite_status"><code class="name flex">
+<span>def <span class="ident">get_satellite_status</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the current satellite acquisition status.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_satellite_status(self) -&gt; int:
+    &#34;&#34;&#34;Get the current satellite acquisition status.&#34;&#34;&#34;
+    cmd = &#39;ATS54?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QREG?&#39;
+        prefix = &#39;+QREG:&#39;
+    try:
+        return int(self._at_command_response(cmd, prefix))
+    except NimoModemError as exc:
+        _log.error(exc)
+        return 0
+    except ValueError as exc:
+        raise NimoModemError(&#39;Parsing error: %s&#39;, exc) from exc</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_signal_quality"><code class="name flex">
+<span>def <span class="ident">get_signal_quality</span></span>(<span>self) ‑> <a title="pynimomodem.constants.SignalQuality" href="constants.html#pynimomodem.constants.SignalQuality">SignalQuality</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a qualitative indicator from 0..5 of the satellite signal.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_signal_quality(self) -&gt; SignalQuality:
+    &#34;&#34;&#34;Get a qualitative indicator from 0..5 of the satellite signal.&#34;&#34;&#34;
+    snr = self.get_rssi()
+    if snr &gt;= SignalLevelRegional.INVALID.value:
+        return SignalQuality.WARNING
+    if snr &gt;= SignalLevelRegional.BARS_5.value:
+        return SignalQuality.STRONG
+    if snr &gt;= SignalLevelRegional.BARS_4.value:
+        return SignalQuality.GOOD
+    if snr &gt;= SignalLevelRegional.BARS_3.value:
+        return SignalQuality.MID
+    if snr &gt;= SignalLevelRegional.BARS_2.value:
+        return SignalQuality.LOW
+    if snr &gt;= SignalLevelRegional.BARS_1.value:
+        return SignalQuality.WEAK
+    return SignalQuality.NONE</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_system_time"><code class="name flex">
+<span>def <span class="ident">get_system_time</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the system/GNSS time from the modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_system_time(self) -&gt; int:
+    &#34;&#34;&#34;Get the system/GNSS time from the modem.&#34;&#34;&#34;
+    try:
+        nimo_time = self._at_command_response(&#39;AT%UTC&#39;, &#39;%UTC:&#39;)
+        iso_time = nimo_time.replace(&#39; &#39;, &#39;T&#39;) + &#39;Z&#39;
+        return iso_to_ts(iso_time)
+    except NimoModemError:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_urc"><code class="name flex">
+<span>def <span class="ident">get_urc</span></span>(<span>self) ‑> UrcCode|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the pending Unsolicited Result Code if one is present.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_urc(self) -&gt; &#39;UrcCode|None&#39;:
+    &#34;&#34;&#34;Get the pending Unsolicited Result Code if one is present.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise ValueError(&#39;Modem does not support this feature&#39;)
+    eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
+    result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+    if result:
+        try:
+            if &#39;_&#39; in result:   # long code
+                return UrcCode[result]
+            return UrcCode(int(result))
+        except ValueError as exc:
+            _log.error(&#39;Parsing error: %s&#39;, exc)
+    return None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_urc_ctl"><code class="name flex">
+<span>def <span class="ident">get_urc_ctl</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the event list that trigger Unsolicited Report Codes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_urc_ctl(self) -&gt; int:
+    &#34;&#34;&#34;Get the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise ValueError(&#39;Modem does not support this feature&#39;)
+    cmd = &#39;AT+QURCCTL?&#39;
+    prefix = &#39;+QURCCTL:&#39;
+    try:
+        response = self._at_command_response(cmd, prefix)
+        return int(response, 16)
+    except NimoModemError:
+        return 0</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_wakeup_period"><code class="name flex">
+<span>def <span class="ident">get_wakeup_period</span></span>(<span>self) ‑> <a title="pynimomodem.constants.WakeupPeriod" href="constants.html#pynimomodem.constants.WakeupPeriod">WakeupPeriod</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's wakeup period configuration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_wakeup_period(self) -&gt; WakeupPeriod:
+    &#34;&#34;&#34;Get the modem&#39;s wakeup period configuration.&#34;&#34;&#34;
+    cmd = &#39;ATS51?&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QWKUPCFG?&#39;
+        prefix = &#39;+QWKUPCFG:&#39;
+    try:
+        if self._mfr == Manufacturer.QUECTEL:
+            return WakeupPeriod(int(
+                self._at_command_response(cmd, prefix).split(&#39;,&#39;)[0]))
+        return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+    except NimoModemError:
+        return WakeupPeriod.NONE</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_wakeup_way"><code class="name flex">
+<span>def <span class="ident">get_wakeup_way</span></span>(<span>self) ‑> <a title="pynimomodem.constants.WakeupWay" href="constants.html#pynimomodem.constants.WakeupWay">WakeupWay</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem wakeup method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_wakeup_way(self) -&gt; WakeupWay:
+    &#34;&#34;&#34;Get the modem wakeup method.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise IOError(&#39;Operation not supported on this modem type.&#39;)
+    try:
+        cmd = &#39;AT+QWKUPCFG?&#39;
+        prefix = &#39;+QWKUPCFG:&#39;
+        wakeup_way = self._at_command_response(cmd, prefix).split(&#39;,&#39;)[1]
+        return WakeupWay(int(wakeup_way))
+    except NimoModemError:
+        return WakeupWay.WAKEUP_PIN</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.get_workmode"><code class="name flex">
+<span>def <span class="ident">get_workmode</span></span>(<span>self) ‑> <a title="pynimomodem.constants.WorkMode" href="constants.html#pynimomodem.constants.WorkMode">WorkMode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem working mode.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_workmode(self) -&gt; WorkMode:
+    &#34;&#34;&#34;Get the modem working mode.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise IOError(&#39;Operation not supported on this modem type.&#39;)
+    cmd = &#39;AT+QMOD?&#39;
+    prefix = &#39;+QMOD:&#39;
+    try:
+        return WorkMode(int(self._at_command_response(cmd, prefix)))
+    except NimoModemError:
+        return WorkMode.WORKING</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.initialize"><code class="name flex">
+<span>def <span class="ident">initialize</span></span>(<span>self, echo: bool = True, verbose: bool = True) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialize the modem AT configuration for Echo and Verbose.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialize(self,
+               echo: bool = True,
+               verbose: bool = True,
+               ) -&gt; bool:
+    &#34;&#34;&#34;Initialize the modem AT configuration for Echo and Verbose.&#34;&#34;&#34;
+    at_command = (f&#39;ATZ;E{int(echo)};V{int(verbose)}&#39;)
+    try:
+        self._at_command_response(at_command)
+        return True
+    except NimoModemError as exc:
+        if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+            try:
+                _log.info(&#39;Retry initialization with CRC enabled&#39;)
+                self._at_command_response(at_command)
+                return True
+            except NimoModemError:
+                pass
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_blocked"><code class="name flex">
+<span>def <span class="ident">is_blocked</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if line-of-sight to the satellite is blocked.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_blocked(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if line-of-sight to the satellite is blocked.&#34;&#34;&#34;
+    return self.get_satellite_status() == 8</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_connected"><code class="name flex">
+<span>def <span class="ident">is_connected</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if the modem is responding to a basic AT query.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_connected(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if the modem is responding to a basic AT query.&#34;&#34;&#34;
+    try:
+        self._at_command_response(&#39;AT&#39;)
+        self._modem_booted = True
+        return True
+    except NimoModemError:
+        self._modem_booted = False
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_muted"><code class="name flex">
+<span>def <span class="ident">is_muted</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if the modem has been muted (disallowed to transmit data).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_muted(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if the modem has been muted (disallowed to transmit data).
+    &#34;&#34;&#34;
+    return self.get_satellite_status() == 7</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_transmit_allowed"><code class="name flex">
+<span>def <span class="ident">is_transmit_allowed</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if the modem is able to transmit data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_transmit_allowed(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if the modem is able to transmit data.&#34;&#34;&#34;
+    return self.get_satellite_status() == 5</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.is_updating_network"><code class="name flex">
+<span>def <span class="ident">is_updating_network</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Indicates if the modem is updating network information.</p>
+<p>The modem should not be powered down during a network update.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_updating_network(self) -&gt; bool:
+    &#34;&#34;&#34;Indicates if the modem is updating network information.
+    
+    The modem should not be powered down during a network update.
+    
+    &#34;&#34;&#34;
+    return self.get_satellite_status() == 4</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.power_down"><code class="name flex">
+<span>def <span class="ident">power_down</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prepare the modem for power-down.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def power_down(self) -&gt; bool:
+    &#34;&#34;&#34;Prepare the modem for power-down.&#34;&#34;&#34;
+    cmd = &#39;AT%OFF&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QPOWD=2&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.receive_data"><code class="name flex">
+<span>def <span class="ident">receive_data</span></span>(<span>self, message_name: str) ‑> bytes|None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the raw data from a mobile-terminated message.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def receive_data(self, message_name: str) -&gt; &#39;bytes|None&#39;:
+    &#34;&#34;&#34;Get the raw data from a mobile-terminated message.&#34;&#34;&#34;
+    message = self.get_mt_message(message_name)
+    if message:
+        return message.payload
+    return None</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.reset_factory_config"><code class="name flex">
+<span>def <span class="ident">reset_factory_config</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reset the modem's factory default configuration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset_factory_config(self) -&gt; bool:
+    &#34;&#34;&#34;Reset the modem&#39;s factory default configuration.&#34;&#34;&#34;
+    try:
+        self._at_command_response(&#39;AT&amp;F&#39;)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.retry_baudrate"><code class="name flex">
+<span>def <span class="ident">retry_baudrate</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def retry_baudrate(self) -&gt; bool:
+    &#34;&#34;&#34;&#34;&#34;&#34;
+    for baud in BAUDRATES:
+        self._modem.serial.baudrate = baud
+        if self.is_connected():
+            return True
+    return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.save_config"><code class="name flex">
+<span>def <span class="ident">save_config</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Store the current configuration to modem non-volatile memory.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_config(self) -&gt; bool:
+    &#34;&#34;&#34;Store the current configuration to modem non-volatile memory.&#34;&#34;&#34;
+    try:
+        self._at_command_response(&#39;AT&amp;W&#39;)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.send_data"><code class="name flex">
+<span>def <span class="ident">send_data</span></span>(<span>self, data: bytes, **kwargs) ‑> str|MoMessage</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Submits data to send as a mobile-originated message.</p>
+<p>If a <code>message_name</code> is not supplied one will be generated using the
+least significant 8 digits of unix timestamp.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>The data to send.</dd>
+</dl>
+<p>Keyword Args:
+message_name (str): Optional handle for message in Tx queue. Max 8
+characters for Orbcomm modem or 12 for Quectel.
+priority (int): Optional priority 1 (highest) .. 4 (low, default).
+May use <code>MessagePriority</code>.
+codec_sin (int): Optional first byte of payload to add as a codec
+service identifier, must be in range 16..255.
+codec_min (int): Optional second byte of payload to add as a codec
+message identifier, must be in range 0..255.
+return_message (bool): If set, returns a <code>MoMessage</code> instead of the
+message handle.</p>
+<h2 id="returns">Returns</h2>
+<p>Message handle (str) or <code>MoMessage</code> if <code>return_message</code> kwarg is set.</p>
+<h2 id="raises">Raises</h2>
+<p><code>ValueError</code></p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def send_data(self, data: bytes, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+    &#34;&#34;&#34;Submits data to send as a mobile-originated message.
+    
+    If a `message_name` is not supplied one will be generated using the
+    least significant 8 digits of unix timestamp.
+    
+    Args:
+        data (bytes): The data to send.
+    
+    Keyword Args:
+        message_name (str): Optional handle for message in Tx queue. Max 8
+            characters for Orbcomm modem or 12 for Quectel.
+        priority (int): Optional priority 1 (highest) .. 4 (low, default).
+            May use `MessagePriority`.
+        codec_sin (int): Optional first byte of payload to add as a codec
+            service identifier, must be in range 16..255.
+        codec_min (int): Optional second byte of payload to add as a codec
+            message identifier, must be in range 0..255.
+        return_message (bool): If set, returns a `MoMessage` instead of the
+            message handle.
+    
+    Returns:
+        Message handle (str) or `MoMessage` if `return_message` kwarg is set.
+    
+    Raises:
+        `ValueError`
+    
+    &#34;&#34;&#34;
+    data_size = len(data)
+    msg_payload_sin_min = b&#39;&#39;
+    message_name = kwargs.get(&#39;message_name&#39;, &#39;&#39;)
+    priority = MessagePriority(kwargs.get(&#39;priority&#39;,
+                                          MessagePriority.LOW.value))
+    codec_sin = kwargs.get(&#39;codec_sin&#39;, -1)
+    codec_min = kwargs.get(&#39;codec_min&#39;, -1)
+    if codec_sin &gt; -1:
+        data_size += 1
+        msg_payload_sin_min += codec_sin.to_bytes(1, &#39;big&#39;)
+    if codec_min &gt; -1:
+        data_size += 1
+        msg_payload_sin_min += codec_min.to_bytes(1, &#39;big&#39;)
+    if not 2 &lt;= data_size &lt;= MSG_MO_MAX_SIZE:
+        raise ValueError(&#39;Invalid mobile-originated message size&#39;)
+    if message_name and len(message_name) &gt; self._mo_msg_name_len_max:
+        raise ValueError(&#39;Message name too long&#39;)
+    data_index = 0
+    if codec_sin &lt;= -1:
+        codec_sin = data[0]
+        data_index += 1
+        data_size -= 1
+    if codec_sin not in range(16, 256):
+        raise ValueError(&#39;Illegal first payload byte SIN must be 16..255&#39;)
+    if codec_min &lt;= -1:
+        codec_min = data[1]
+        data_index += 1
+        data_size -= 1
+    if codec_min &gt; 255:
+        raise ValueError(&#39;Invalid second payload byte MIN must be 0..255&#39;)
+    max_name_len = self._mo_msg_name_len_max
+    if message_name and len(message_name) &gt; max_name_len:
+        raise ValueError(f&#39;Invalid message name longer than {max_name_len}&#39;)
+    if len(message_name) == 0:
+        message_name = f&#39;{int(time.time())}&#39;[-max_name_len:]
+    # Convert to base64 string for serial efficiency
+    #   no effect on OTA size, modem always decodes and sends raw bytes OTA
+    data_format = DataFormat.BASE64
+    formatted_data = base64.b64encode(data[2:]).decode(&#39;utf-8&#39;)
+    cmd = &#39;AT%MGRT=&#39;
+    codec_sep = &#39;.&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = &#39;AT+QSMGT=&#39;
+        codec_sep = &#39;,&#39;
+    cmd = (f&#39;{cmd}&#34;{message_name}&#34;,{priority},{codec_sin}{codec_sep}&#39;
+           f&#39;{codec_min},{data_format},{formatted_data}&#39;)
+    try:
+        self._at_command_response(cmd)
+        if kwargs.get(&#39;return_message&#39;, False) is True:
+            return MoMessage(message_name, priority, MessageState.TX_READY,
+                             payload=(msg_payload_sin_min + data))
+        return message_name
+    except NimoModemError:
+        return &#39;&#39;</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.send_text"><code class="name flex">
+<span>def <span class="ident">send_text</span></span>(<span>self, text: str, **kwargs) ‑> str|MoMessage</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Submits a text string to send as data.</p>
+<p>If <code>codec_sin</code> kwarg is not provided 128 is prepended as the first byte.
+If <code>codec_min</code> kwarg is not provided 1 is prepended as the second byte.
+Other kwargs as per <code>send_data</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
+<dd>The text message to send.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(str) The message name assigned or MoMessage if kwarg
+<code>return_message</code> is set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def send_text(self, text: str, **kwargs) -&gt; &#39;str|MoMessage&#39;:
+    &#34;&#34;&#34;Submits a text string to send as data.
+    
+    If `codec_sin` kwarg is not provided 128 is prepended as the first byte.
+    If `codec_min` kwarg is not provided 1 is prepended as the second byte.
+    Other kwargs as per `send_data`.
+    
+    Args:
+        text (str): The text message to send.
+    
+    Returns:
+        (str) The message name assigned or MoMessage if kwarg
+            `return_message` is set.
+    
+    &#34;&#34;&#34;
+    data = b&#39;&#39;
+    codec_sin = int(kwargs.get(&#39;codec_sin&#39;, 128))
+    data += codec_sin.to_bytes(1, &#39;big&#39;)
+    codec_min = int(kwargs.get(&#39;codec_min&#39;, 1))
+    data += codec_min.to_bytes(1, &#39;big&#39;)
+    data += text.encode()
+    flowthru = [&#39;message_name&#39;, &#39;priority&#39;, &#39;return_message&#39;]
+    next_kwargs = { k:v for k, v in kwargs if k in flowthru }
+    return self.send_data(data, **next_kwargs)</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_crc"><code class="name flex">
+<span>def <span class="ident">set_crc</span></span>(<span>self, enable: bool = False) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable or disable CRC error checking on the modem serial port.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_crc(self, enable: bool = False) -&gt; bool:
+    &#34;&#34;&#34;Enable or disable CRC error checking on the modem serial port.&#34;&#34;&#34;
+    try:
+        self._at_command_response(f&#39;AT%CRC={int(enable)}&#39;)
+        return True
+    except NimoModemError as exc:
+        if exc.args[0] == AtErrorCode.CRC_CONFIG_MISMATCH:
+            if ((self._modem.crc and enable) or
+                (not self._modem.crc and not enable)):
+                return True
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_deepsleep_enable"><code class="name flex">
+<span>def <span class="ident">set_deepsleep_enable</span></span>(<span>self, enable: bool) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the deepsleep configuration flag.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_deepsleep_enable(self, enable: bool) -&gt; bool:
+    &#34;&#34;&#34;Set the deepsleep configuration flag.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise IOError(&#39;Operation not supported on this modem type.&#39;)
+    try:
+        self._at_command_response(f&#39;AT+QSCLK={int(enable)}&#39;)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_event_mask"><code class="name flex">
+<span>def <span class="ident">set_event_mask</span></span>(<span>self, event_mask: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set monitored events that trigger event notification.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_event_mask(self, event_mask: int) -&gt; bool:
+    &#34;&#34;&#34;Set monitored events that trigger event notification.&#34;&#34;&#34;
+    max_bits = 12
+    if not isinstance(event_mask, int) or event_mask &gt; 2**max_bits-1:
+        raise ValueError(&#39;Invalid event bitmask&#39;)
+    cmd = f&#39;ATS88={event_mask}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_gnss_continuous"><code class="name flex">
+<span>def <span class="ident">set_gnss_continuous</span></span>(<span>self, interval: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the modem's GNSS continuous refresh interval in seconds.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>interval</code></strong> :&ensp;<code>int</code></dt>
+<dd>Automatic update interval 0..30 seconds.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>True</code> if successful.</p>
+<h2 id="raises">Raises</h2>
+<p><code>ValueError</code> if invalid interval is specified.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_gnss_continuous(self, interval: int) -&gt; bool:
+    &#34;&#34;&#34;Set the modem&#39;s GNSS continuous refresh interval in seconds.
+    
+    Args:
+        interval (int): Automatic update interval 0..30 seconds.
+    
+    Returns:
+        `True` if successful.
+    
+    Raises:
+        `ValueError` if invalid interval is specified.
+    
+    &#34;&#34;&#34;
+    if interval not in range (0, 31):
+        raise ValueError(&#39;Invalid GNSS refresh interval&#39;)
+    cmd = f&#39;ATS55={interval}&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = f&#39;AT+QGNSSCW={interval}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_gnss_mode"><code class="name flex">
+<span>def <span class="ident">set_gnss_mode</span></span>(<span>self, gnss_mode: <a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the modem's GNSS receiver mode.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_gnss_mode(self, gnss_mode: GnssMode) -&gt; bool:
+    &#34;&#34;&#34;Get the modem&#39;s GNSS receiver mode.&#34;&#34;&#34;
+    cmd = f&#39;ATS39={gnss_mode}&#39;
+    prefix = &#39;&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        if not GnssModeQuectel.is_valid(gnss_mode):
+            raise ValueError(&#39;Invalid GNSS mode&#39;)
+        cmd = f&#39;AT+QGNSSMOD={gnss_mode}&#39;
+        prefix = &#39;+QGNSSMOD:&#39;
+    else:
+        if not GnssModeOrbcomm.is_valid(gnss_mode):
+            raise ValueError(&#39;Invalid GNSS mode&#39;)
+    try:
+        self._at_command_response(cmd, prefix)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_power_mode"><code class="name flex">
+<span>def <span class="ident">set_power_mode</span></span>(<span>self, power_mode: <a title="pynimomodem.constants.PowerMode" href="constants.html#pynimomodem.constants.PowerMode">PowerMode</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the modem's power mode configuration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_power_mode(self, power_mode: PowerMode) -&gt; bool:
+    &#34;&#34;&#34;Set the modem&#39;s power mode configuration.&#34;&#34;&#34;
+    if not PowerMode.is_valid(power_mode):
+        raise ValueError(&#39;Invalid Power Mode&#39;)
+    cmd = f&#39;ATS50={power_mode}&#39;
+    if self._mfr == Manufacturer.QUECTEL:
+        cmd = f&#39;AT+QPMD={power_mode}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_register"><code class="name flex">
+<span>def <span class="ident">set_register</span></span>(<span>self, s_register_number: int, value: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a modem register value.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_register(self, s_register_number: int, value: int) -&gt; bool:
+    &#34;&#34;&#34;Set a modem register value.&#34;&#34;&#34;
+    cmd = f&#39;ATS{s_register_number}={value}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_urc_ctl"><code class="name flex">
+<span>def <span class="ident">set_urc_ctl</span></span>(<span>self, qurc_mask: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the event list that trigger Unsolicited Report Codes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_urc_ctl(self, qurc_mask: int) -&gt; bool:
+    &#34;&#34;&#34;Set the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise ValueError(&#39;Modem does not support this feature&#39;)
+    cmd = f&#39;AT+QURCCTL=0x{qurc_mask:04X}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_wakeup_period"><code class="name flex">
+<span>def <span class="ident">set_wakeup_period</span></span>(<span>self, wakeup_period: <a title="pynimomodem.constants.WakeupPeriod" href="constants.html#pynimomodem.constants.WakeupPeriod">WakeupPeriod</a>, wakeup_way: WakeupWay|None = None) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the modem's wakeup period configuration.</p>
+<p>The configuration does not update until confimed by the network.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_wakeup_period(self,
+                      wakeup_period: WakeupPeriod,
+                      wakeup_way: &#39;WakeupWay|None&#39; = None,
+                      ) -&gt; bool:
+    &#34;&#34;&#34;Set the modem&#39;s wakeup period configuration.
+    
+    The configuration does not update until confimed by the network.
+    
+    &#34;&#34;&#34;
+    if not WakeupPeriod.is_valid(wakeup_period):
+        raise ValueError(&#39;Invalid wakeup period&#39;)
+    cmd = f&#39;ATS51={wakeup_period}&#39;
+    try:
+        if self._mfr == Manufacturer.QUECTEL:
+            if wakeup_way is None:
+                query = self._at_command_response(&#39;AT+QWKUPCFG?&#39;, &#39;+QWKUPCFG:&#39;)
+                wakeup_way = WakeupWay(int(query.split(&#39;,&#39;)[1]))
+            cmd = f&#39;AT+QWKUPCFG={wakeup_period},{wakeup_way}&#39;
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.modem.NimoModem.set_workmode"><code class="name flex">
+<span>def <span class="ident">set_workmode</span></span>(<span>self, workmode: <a title="pynimomodem.constants.WorkMode" href="constants.html#pynimomodem.constants.WorkMode">WorkMode</a>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the modem working mode.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_workmode(self, workmode: WorkMode) -&gt; bool:
+    &#34;&#34;&#34;Set the modem working mode.&#34;&#34;&#34;
+    if self._mfr != Manufacturer.QUECTEL:
+        raise IOError(&#39;Operation not supported on this modem type.&#39;)
+    if not WorkMode.is_valid(workmode):
+        raise ValueError(&#39;Invalid workmode&#39;)
+    cmd = f&#39;AT+QMOD={workmode}&#39;
+    try:
+        self._at_command_response(cmd)
+        return True
+    except NimoModemError:
+        return False</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pynimomodem.modem.NimoModemError"><code class="flex name class">
+<span>class <span class="ident">NimoModemError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for NIMO modem errors.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NimoModemError(Exception):
+    &#34;&#34;&#34;Base class for NIMO modem errors.&#34;&#34;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
+</dd>
+<dt id="pynimomodem.modem.SatelliteAcquisitionDetail"><code class="flex name class">
+<span>class <span class="ident">SatelliteAcquisitionDetail</span></span>
+<span>(</span><span>ctrl_state: <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a> = ControlState.STOPPED, beam_state: <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a> = BeamState.IDLE, rssi: float = 0.0, vcid: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Details about the satellite acquisition state of the modem.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>ctrl_state</code></strong> :&ensp;<code>NimoControlState</code></dt>
+<dd>Primary network acquisition state.</dd>
+<dt><strong><code>beam_state</code></strong> :&ensp;<code>NimoBeamState</code></dt>
+<dd>Secondary beam acquistion state.</dd>
+<dt><strong><code>rssi</code></strong> :&ensp;<code>float</code></dt>
+<dd>Signal indicator Carrier to Noise ratio (dB-Hz).</dd>
+<dt><strong><code>vcid</code></strong> :&ensp;<code>int</code></dt>
+<dd>Virtual carrier identifier for low-level sanity check.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class SatelliteAcquisitionDetail:
+    &#34;&#34;&#34;Details about the satellite acquisition state of the modem.
+    
+    Attributes:
+        ctrl_state (NimoControlState): Primary network acquisition state.
+        beam_state (NimoBeamState): Secondary beam acquistion state.
+        rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
+        vcid (int): Virtual carrier identifier for low-level sanity check.
+    
+    &#34;&#34;&#34;
+    ctrl_state: ControlState = ControlState.STOPPED
+    beam_state: BeamState = BeamState.IDLE
+    rssi: float = 0.0
+    vcid: int = 0</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.beam_state"><code class="name">var <span class="ident">beam_state</span> : <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state"><code class="name">var <span class="ident">ctrl_state</span> : <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.rssi"><code class="name">var <span class="ident">rssi</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.vcid"><code class="name">var <span class="ident">vcid</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="pynimomodem" href="index.html">pynimomodem</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="pynimomodem.modem.Manufacturer" href="#pynimomodem.modem.Manufacturer">Manufacturer</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.modem.Manufacturer.NONE" href="#pynimomodem.modem.Manufacturer.NONE">NONE</a></code></li>
+<li><code><a title="pynimomodem.modem.Manufacturer.ORBCOMM" href="#pynimomodem.modem.Manufacturer.ORBCOMM">ORBCOMM</a></code></li>
+<li><code><a title="pynimomodem.modem.Manufacturer.QUECTEL" href="#pynimomodem.modem.Manufacturer.QUECTEL">QUECTEL</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.modem.NimoModem" href="#pynimomodem.modem.NimoModem">NimoModem</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.modem.NimoModem.await_boot" href="#pynimomodem.modem.NimoModem.await_boot">await_boot</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.baudrate" href="#pynimomodem.modem.NimoModem.baudrate">baudrate</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.cancel_mo_message" href="#pynimomodem.modem.NimoModem.cancel_mo_message">cancel_mo_message</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.crc_enabled" href="#pynimomodem.modem.NimoModem.crc_enabled">crc_enabled</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.delete_mt_message" href="#pynimomodem.modem.NimoModem.delete_mt_message">delete_mt_message</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_acquisition_detail" href="#pynimomodem.modem.NimoModem.get_acquisition_detail">get_acquisition_detail</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_all_registers" href="#pynimomodem.modem.NimoModem.get_all_registers">get_all_registers</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_deepsleep_enable" href="#pynimomodem.modem.NimoModem.get_deepsleep_enable">get_deepsleep_enable</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_event_mask" href="#pynimomodem.modem.NimoModem.get_event_mask">get_event_mask</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_events_asserted_mask" href="#pynimomodem.modem.NimoModem.get_events_asserted_mask">get_events_asserted_mask</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_firmware_version" href="#pynimomodem.modem.NimoModem.get_firmware_version">get_firmware_version</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_gnss_continuous" href="#pynimomodem.modem.NimoModem.get_gnss_continuous">get_gnss_continuous</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_gnss_mode" href="#pynimomodem.modem.NimoModem.get_gnss_mode">get_gnss_mode</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_last_error_code" href="#pynimomodem.modem.NimoModem.get_last_error_code">get_last_error_code</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_location" href="#pynimomodem.modem.NimoModem.get_location">get_location</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_manufacturer" href="#pynimomodem.modem.NimoModem.get_manufacturer">get_manufacturer</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_mo_message_states" href="#pynimomodem.modem.NimoModem.get_mo_message_states">get_mo_message_states</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_mobile_id" href="#pynimomodem.modem.NimoModem.get_mobile_id">get_mobile_id</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_mt_message" href="#pynimomodem.modem.NimoModem.get_mt_message">get_mt_message</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_mt_message_states" href="#pynimomodem.modem.NimoModem.get_mt_message_states">get_mt_message_states</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_nmea_data" href="#pynimomodem.modem.NimoModem.get_nmea_data">get_nmea_data</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_power_mode" href="#pynimomodem.modem.NimoModem.get_power_mode">get_power_mode</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_register" href="#pynimomodem.modem.NimoModem.get_register">get_register</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_rssi" href="#pynimomodem.modem.NimoModem.get_rssi">get_rssi</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_satellite_location" href="#pynimomodem.modem.NimoModem.get_satellite_location">get_satellite_location</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_satellite_status" href="#pynimomodem.modem.NimoModem.get_satellite_status">get_satellite_status</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_signal_quality" href="#pynimomodem.modem.NimoModem.get_signal_quality">get_signal_quality</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_system_time" href="#pynimomodem.modem.NimoModem.get_system_time">get_system_time</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_urc" href="#pynimomodem.modem.NimoModem.get_urc">get_urc</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_urc_ctl" href="#pynimomodem.modem.NimoModem.get_urc_ctl">get_urc_ctl</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_wakeup_period" href="#pynimomodem.modem.NimoModem.get_wakeup_period">get_wakeup_period</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_wakeup_way" href="#pynimomodem.modem.NimoModem.get_wakeup_way">get_wakeup_way</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_workmode" href="#pynimomodem.modem.NimoModem.get_workmode">get_workmode</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.initialize" href="#pynimomodem.modem.NimoModem.initialize">initialize</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_blocked" href="#pynimomodem.modem.NimoModem.is_blocked">is_blocked</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_connected" href="#pynimomodem.modem.NimoModem.is_connected">is_connected</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_muted" href="#pynimomodem.modem.NimoModem.is_muted">is_muted</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_ready" href="#pynimomodem.modem.NimoModem.is_ready">is_ready</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_transmit_allowed" href="#pynimomodem.modem.NimoModem.is_transmit_allowed">is_transmit_allowed</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.is_updating_network" href="#pynimomodem.modem.NimoModem.is_updating_network">is_updating_network</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.modem_booted" href="#pynimomodem.modem.NimoModem.modem_booted">modem_booted</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.power_down" href="#pynimomodem.modem.NimoModem.power_down">power_down</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.receive_data" href="#pynimomodem.modem.NimoModem.receive_data">receive_data</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.reset_factory_config" href="#pynimomodem.modem.NimoModem.reset_factory_config">reset_factory_config</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.retry_baudrate" href="#pynimomodem.modem.NimoModem.retry_baudrate">retry_baudrate</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.save_config" href="#pynimomodem.modem.NimoModem.save_config">save_config</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.send_data" href="#pynimomodem.modem.NimoModem.send_data">send_data</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.send_text" href="#pynimomodem.modem.NimoModem.send_text">send_text</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_crc" href="#pynimomodem.modem.NimoModem.set_crc">set_crc</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_deepsleep_enable" href="#pynimomodem.modem.NimoModem.set_deepsleep_enable">set_deepsleep_enable</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_event_mask" href="#pynimomodem.modem.NimoModem.set_event_mask">set_event_mask</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_gnss_continuous" href="#pynimomodem.modem.NimoModem.set_gnss_continuous">set_gnss_continuous</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_gnss_mode" href="#pynimomodem.modem.NimoModem.set_gnss_mode">set_gnss_mode</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_power_mode" href="#pynimomodem.modem.NimoModem.set_power_mode">set_power_mode</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_register" href="#pynimomodem.modem.NimoModem.set_register">set_register</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_urc_ctl" href="#pynimomodem.modem.NimoModem.set_urc_ctl">set_urc_ctl</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_wakeup_period" href="#pynimomodem.modem.NimoModem.set_wakeup_period">set_wakeup_period</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.set_workmode" href="#pynimomodem.modem.NimoModem.set_workmode">set_workmode</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.modem.NimoModemError" href="#pynimomodem.modem.NimoModemError">NimoModemError</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail" href="#pynimomodem.modem.SatelliteAcquisitionDetail">SatelliteAcquisitionDetail</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.beam_state" href="#pynimomodem.modem.SatelliteAcquisitionDetail.beam_state">beam_state</a></code></li>
+<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state" href="#pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state">ctrl_state</a></code></li>
+<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.rssi" href="#pynimomodem.modem.SatelliteAcquisitionDetail.rssi">rssi</a></code></li>
+<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.vcid" href="#pynimomodem.modem.SatelliteAcquisitionDetail.vcid">vcid</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

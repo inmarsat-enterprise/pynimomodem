@@ -1,7 +1,9 @@
 """Classes and methods for location, elevation and azimuth for NIMO modems.
 
-* Parse NMEA-0183 data into a `Location` object.
-* Calculate azimuth and elevation to a geostationary satellite.
+This module:
+
+* Parses NMEA-0183 data into a `ModemLocation` object.
+* Calculates azimuth and elevation to a geostationary `SatelliteLocation`.
 
 Thanks for Azimuth/Elevation derived from code at:
 https://github.com/sq3tle/altazrange/tree/master
