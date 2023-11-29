@@ -1,4 +1,8 @@
-"""Library to interface with a Viasat-approved NIMO modem for satellite IoT."""
+"""Library to interface with a Viasat-approved NIMO modem for satellite IoT.
+
+Depends on either Python/PySerial or Micropython/machine library.
+
+"""
 
 from .constants import (
     EventNotification,
