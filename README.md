@@ -21,6 +21,8 @@ Example NIMO modems available:
 
 * [API Documentation](https://inmarsat-enterprise.github.io/pynimomodem/)
 
+> [!NOTE] Obsoletes/replaces the `idpmodem` project.
+
 ## Background
 
 ### Overview
