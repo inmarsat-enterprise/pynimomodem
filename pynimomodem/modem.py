@@ -107,7 +107,7 @@ class NimoModem:
         
         """
         try:
-            self._serial = Serial(serial_port, kwargs.get('baudrate', 9600))
+            self._serial = Serial(serial_port, **kwargs)
         except Exception as exc:
             raise NimoModemError('Unable to connect to modem') from exc
         self._modem: AtCommandBuffer = AtCommandBuffer(self._serial)
