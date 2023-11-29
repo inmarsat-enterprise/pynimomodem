@@ -22,9 +22,8 @@ Example NIMO modems available:
 * [API Documentation](https://inmarsat-enterprise.github.io/pynimomodem/)
 
 > [!NOTE]
-> Obsoletes/replaces the Inmarsat `idpmodem` project,
-> when combined with the [`nimocodec`](github.com/inmarsat-enterprise/nimocodec)
-> library.
+> Obsoletes/replaces the Inmarsat `idpmodem` project, when combined with the
+> [`pynimcodec`](github.com/inmarsat-enterprise/pynimcodec) library.
 
 ## Background
 
