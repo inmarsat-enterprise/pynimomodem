@@ -7,7 +7,7 @@ import logging
 import os
 import time
 
-from pynimomodem.nimomodem import Serial, NimoModem, MessageState
+from pynimomodem import NimoModem, MessageState
 
 SERIAL_PORT = os.getenv('SERIAL_PORT', '/dev/ttyUSB0')
 BEACON_INTERVAL = 15   # minutes
@@ -18,11 +18,16 @@ logging.basicConfig(format='%(asctime)s [%(levelname)s]: %(message)s',
 
 
 def main():
-    modem = NimoModem(Serial(SERIAL_PORT))
+    modem = NimoModem(SERIAL_PORT)
     if not modem.is_connected():
-        modem.await_boot(30)
-    if not modem.is_connected() or not modem.initialize():
+        logging.warning('Retrying supported baud rates')
+        modem.retry_baudrate()
+        if not modem.is_connected():   # baudrate wasn't the issue
+            logging.warning('Check that modem is connected and powered')
+            modem.await_boot(30)
+    if not modem.initialize():
         raise ConnectionError
+    logging.info('Connected to NIMO!')
     while True:
         logging.info('Getting location to send beacon...')
         location = modem.get_location()
@@ -33,8 +38,10 @@ def main():
         message_payload += lat_int.to_bytes(4, 'big', signed=True)
         message_payload += lon_int.to_bytes(4, 'big', signed=True)
         message_name = modem.send_data(message_payload)
+        logging.info('Checking every 5 seconds to clear modem Transmit queue.')
         complete = False
         while not complete:
+            time.sleep(5)
             tx_queue = modem.get_mo_message_states()
             for msg in tx_queue:
                 if msg.name == message_name:
@@ -45,8 +52,6 @@ def main():
                             logging.info('Beacon sent!')
                         complete = True
                         break   # for loop
-            if not complete:
-                time.sleep(5)   # wait a frame length before checking again
         logging.info('Next beacon in %d minutes', BEACON_INTERVAL)
         time.sleep(BEACON_INTERVAL * 60)
 
