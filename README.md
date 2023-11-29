@@ -61,6 +61,15 @@ Global Navigation Satellite Systems (GNSS).
 1. After getting its location, the modem tunes to the correct frequency, then
 registers on the network.  Once registered it can communicate on the
 network.
+1. MO messages are submitted by a microcontroller or IoT Edge device, which
+then must monitor progress until the message is complete (either delivered or
+timed out/failed due to blockage). Completed messages must be cleared from the
+modem transmit queue by querying state(s) either periodically or when prompted
+by the modem's event notification pin if configured.
+1. MT messages that arrive are stored in the receive queue and the Edge device
+queries for *New* MT messages periodically or when prompted by the modem's
+event notification pin if configured.
+1. Network acquisition status can also be queried using AT commands.
 1. If the modem cannot find the target frequency it begins to search for other
 frequencies from a configuration map in its non-volatile memory. It will cycle
 through beam acquisition attempts for a period of time before falling back to
