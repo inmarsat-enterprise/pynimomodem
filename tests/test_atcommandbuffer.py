@@ -19,9 +19,9 @@ def command_buffer():
         raise OSError('Unable to connect to modem')
     atbuffer = AtCommandBuffer(serial)
     yield atbuffer
-    if atbuffer.crc:
-        atbuffer.send_at_command('AT%CRC=0')
-        atbuffer.read_at_response()
+    # reset defaults after use
+    atbuffer.send_at_command('AT&F;&W')
+    atbuffer.read_at_response()
 
 
 @pytest.mark.parametrize('timeout', [None, 5])
@@ -78,3 +78,23 @@ def test_crc(command_buffer: AtCommandBuffer):
     command_buffer.send_at_command('AT')
     result = command_buffer.read_at_response()
     assert result == AtErrorCode.OK
+
+
+def test_short_error(command_buffer: AtCommandBuffer):
+    """"""
+    command_buffer.send_at_command('ATV0')
+    command_buffer.read_at_response()
+    command_buffer.send_at_command('AT+FAKE')
+    result = command_buffer.read_at_response()
+    assert result == AtErrorCode.ERROR
+    assert command_buffer.get_response() == ''
+
+
+def test_short_error_crc(command_buffer: AtCommandBuffer):
+    """"""
+    command_buffer.send_at_command('AT V0;%CRC=1')
+    command_buffer.read_at_response()
+    command_buffer.send_at_command('AT+FAKE')
+    result = command_buffer.read_at_response()
+    assert result == AtErrorCode.ERROR
+    assert command_buffer.get_response() == ''
