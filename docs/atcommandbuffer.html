@@ -192,12 +192,6 @@ class AtCommandBuffer:
                 if last == &#39;\n&#39;:
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
-                        if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
-                            _log.debug(&#39;Command enabled CRC - set flag&#39;)
-                            self.crc = True
-                        elif self.crc and self.serial.in_waiting == 0:
-                            _log.debug(&#39;Command disabled CRC - reset flag&#39;)
-                            self.crc = False
                         parsing = self._parsing_ok()
                     elif self._rx_buffer.endswith(VRES_ERR):
                         parsing = self._parsing_error()
@@ -232,8 +226,11 @@ class AtCommandBuffer:
                         if old_parsing != parsing:
                             result_ok = parsing == AtParsingState.OK
                 else:
-                    if parsing == AtParsingState.CRC and last == &#39;*&#39;:
-                        crc_found = True
+                    if parsing == AtParsingState.CRC and not crc_found:
+                        if last == &#39;*&#39;:
+                            crc_found = True
+                        else:
+                            _log.warning(&#39;Unexpected CRC character %s&#39;, last)
             if parsing &gt;= AtParsingState.OK:
                 if vlog(VLOG_TAG):
                     _log.debug(&#39;Parsing complete&#39;)
@@ -339,11 +336,23 @@ class AtCommandBuffer:
     
     def _parsing_ok(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
-        return AtParsingState.CRC if self.crc else AtParsingState.OK
+        _log.debug(&#39;Result OK&#39;)
+        if not self.crc:
+            if &#39;CRC=1\r&#39; in self._pending_command.upper():
+                _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                self.crc = True
+                return AtParsingState.CRC
+        else:
+            if &#39;CRC=0\r&#39; in self._pending_command.upper():
+                _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+                self.crc = False
+            else:
+                return AtParsingState.CRC
+        return AtParsingState.OK
     
     def _parsing_error(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
-        _log.warning(&#39;Parsing error&#39;)
+        _log.warning(&#39;Result ERROR&#39;)
         if self.crc or self.serial.in_waiting &gt; 0:
             return AtParsingState.CRC
         else:
@@ -540,12 +549,6 @@ has completed or timed out.</dd>
                 if last == &#39;\n&#39;:
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
-                        if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
-                            _log.debug(&#39;Command enabled CRC - set flag&#39;)
-                            self.crc = True
-                        elif self.crc and self.serial.in_waiting == 0:
-                            _log.debug(&#39;Command disabled CRC - reset flag&#39;)
-                            self.crc = False
                         parsing = self._parsing_ok()
                     elif self._rx_buffer.endswith(VRES_ERR):
                         parsing = self._parsing_error()
@@ -580,8 +583,11 @@ has completed or timed out.</dd>
                         if old_parsing != parsing:
                             result_ok = parsing == AtParsingState.OK
                 else:
-                    if parsing == AtParsingState.CRC and last == &#39;*&#39;:
-                        crc_found = True
+                    if parsing == AtParsingState.CRC and not crc_found:
+                        if last == &#39;*&#39;:
+                            crc_found = True
+                        else:
+                            _log.warning(&#39;Unexpected CRC character %s&#39;, last)
             if parsing &gt;= AtParsingState.OK:
                 if vlog(VLOG_TAG):
                     _log.debug(&#39;Parsing complete&#39;)
@@ -687,11 +693,23 @@ has completed or timed out.</dd>
     
     def _parsing_ok(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
-        return AtParsingState.CRC if self.crc else AtParsingState.OK
+        _log.debug(&#39;Result OK&#39;)
+        if not self.crc:
+            if &#39;CRC=1\r&#39; in self._pending_command.upper():
+                _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                self.crc = True
+                return AtParsingState.CRC
+        else:
+            if &#39;CRC=0\r&#39; in self._pending_command.upper():
+                _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+                self.crc = False
+            else:
+                return AtParsingState.CRC
+        return AtParsingState.OK
     
     def _parsing_error(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
-        _log.warning(&#39;Parsing error&#39;)
+        _log.warning(&#39;Result ERROR&#39;)
         if self.crc or self.serial.in_waiting &gt; 0:
             return AtParsingState.CRC
         else:
@@ -856,12 +874,6 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
             if last == &#39;\n&#39;:
                 if self._rx_buffer.endswith(VRES_OK):
                     result_ok = True
-                    if not self.crc and &#39;%CRC=1&#39; in self._pending_command:
-                        _log.debug(&#39;Command enabled CRC - set flag&#39;)
-                        self.crc = True
-                    elif self.crc and self.serial.in_waiting == 0:
-                        _log.debug(&#39;Command disabled CRC - reset flag&#39;)
-                        self.crc = False
                     parsing = self._parsing_ok()
                 elif self._rx_buffer.endswith(VRES_ERR):
                     parsing = self._parsing_error()
@@ -896,8 +908,11 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
                     if old_parsing != parsing:
                         result_ok = parsing == AtParsingState.OK
             else:
-                if parsing == AtParsingState.CRC and last == &#39;*&#39;:
-                    crc_found = True
+                if parsing == AtParsingState.CRC and not crc_found:
+                    if last == &#39;*&#39;:
+                        crc_found = True
+                    else:
+                        _log.warning(&#39;Unexpected CRC character %s&#39;, last)
         if parsing &gt;= AtParsingState.OK:
             if vlog(VLOG_TAG):
                 _log.debug(&#39;Parsing complete&#39;)

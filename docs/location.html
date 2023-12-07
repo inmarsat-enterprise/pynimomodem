@@ -177,6 +177,7 @@ class SatelliteLocation:
     altitude: float = GEOSTATIONARY_DISTANCE_M
     azimuth: float = 0.0
     elevation: float = 0.0
+    geobeam: &#39;GeoBeam|None&#39; = None
 
 
 @dataclass
@@ -473,7 +474,8 @@ def get_satellite_location(modem_location: ModemLocation,
     mc = modem_location
     sc = SatelliteLocation(name=satellite.name,
                            longitude=satellite.value, 
-                           altitude=GEOSTATIONARY_DISTANCE_M)
+                           altitude=GEOSTATIONARY_DISTANCE_M,
+                           geobeam=geobeam)
     # modem and satellite Point location
     mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
     sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
@@ -737,7 +739,8 @@ assumed from fixed locations of satellites.</dd>
     mc = modem_location
     sc = SatelliteLocation(name=satellite.name,
                            longitude=satellite.value, 
-                           altitude=GEOSTATIONARY_DISTANCE_M)
+                           altitude=GEOSTATIONARY_DISTANCE_M,
+                           geobeam=geobeam)
     # modem and satellite Point location
     mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
     sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
@@ -1228,7 +1231,7 @@ def time_iso(self) -&gt; str:
 </dd>
 <dt id="pynimomodem.location.SatelliteLocation"><code class="flex name class">
 <span>class <span class="ident">SatelliteLocation</span></span>
-<span>(</span><span>name: str = '', latitude: float = 0.0, longitude: float = 180.0, altitude: float = 35786000, azimuth: float = 0.0, elevation: float = 0.0)</span>
+<span>(</span><span>name: str = '', latitude: float = 0.0, longitude: float = 180.0, altitude: float = 35786000, azimuth: float = 0.0, elevation: float = 0.0, geobeam: GeoBeam|None = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a geostationary satellite location relative to a modem.</p></div>
@@ -1244,7 +1247,8 @@ class SatelliteLocation:
     longitude: float = 180.0
     altitude: float = GEOSTATIONARY_DISTANCE_M
     azimuth: float = 0.0
-    elevation: float = 0.0</code></pre>
+    elevation: float = 0.0
+    geobeam: &#39;GeoBeam|None&#39; = None</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -1257,6 +1261,10 @@ class SatelliteLocation:
 <div class="desc"></div>
 </dd>
 <dt id="pynimomodem.location.SatelliteLocation.elevation"><code class="name">var <span class="ident">elevation</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.location.SatelliteLocation.geobeam"><code class="name">var <span class="ident">geobeam</span> : GeoBeam|None</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -1342,6 +1350,7 @@ class SatelliteLocation:
 <li><code><a title="pynimomodem.location.SatelliteLocation.altitude" href="#pynimomodem.location.SatelliteLocation.altitude">altitude</a></code></li>
 <li><code><a title="pynimomodem.location.SatelliteLocation.azimuth" href="#pynimomodem.location.SatelliteLocation.azimuth">azimuth</a></code></li>
 <li><code><a title="pynimomodem.location.SatelliteLocation.elevation" href="#pynimomodem.location.SatelliteLocation.elevation">elevation</a></code></li>
+<li><code><a title="pynimomodem.location.SatelliteLocation.geobeam" href="#pynimomodem.location.SatelliteLocation.geobeam">geobeam</a></code></li>
 <li><code><a title="pynimomodem.location.SatelliteLocation.latitude" href="#pynimomodem.location.SatelliteLocation.latitude">latitude</a></code></li>
 <li><code><a title="pynimomodem.location.SatelliteLocation.longitude" href="#pynimomodem.location.SatelliteLocation.longitude">longitude</a></code></li>
 <li><code><a title="pynimomodem.location.SatelliteLocation.name" href="#pynimomodem.location.SatelliteLocation.name">name</a></code></li>
