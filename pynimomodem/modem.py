@@ -35,6 +35,7 @@ from .constants import (
     GnssModeQuectel,
     MessagePriority,
     MessageState,
+    NetworkStatus,
     PowerMode,
     SignalLevelRegional,
     SignalQuality,
@@ -312,6 +313,20 @@ class NimoModem:
                 _log.warning('Cleared cached manufacturer')
         return self._manufacturer.name
     
+    def get_model(self) -> str:
+        """Get the manufacturer model name."""
+        cmd = 'ATI4'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = 'ATI'
+        try:
+            response = self._at_command_response(cmd)
+            if response:
+                if self._mfr == Manufacturer.QUECTEL:
+                    response = response.split('\n')[1]
+            return response
+        except NimoModemError:
+            return 'UNKNOWN'
+    
     def get_firmware_version(self) -> str:
         """Get the modem's firmware version."""
         # TODO: Firmware structure with hardware, firmware, software?
@@ -329,18 +344,25 @@ class NimoModem:
         except NimoModemError:
             return 0
     
+    def get_temperature(self) -> 'int|None':
+        """Get the processor temperature in Celsius."""
+        try:
+            return int(int(self._at_command_response('ATS85?')) / 10)
+        except NimoModemError:
+            return None
+    
     def is_transmit_allowed(self) -> bool:
         """Indicates if the modem is able to transmit data."""
-        return self.get_satellite_status() == 5
+        return self.get_network_status() == 5
     
     def is_blocked(self) -> bool:
         """Indicates if line-of-sight to the satellite is blocked."""
-        return self.get_satellite_status() == 8
+        return self.get_network_status() == 8
     
     def is_muted(self) -> bool:
         """Indicates if the modem has been muted (disallowed to transmit data).
         """
-        return self.get_satellite_status() == 7
+        return self.get_network_status() == 7
     
     def is_updating_network(self) -> bool:
         """Indicates if the modem is updating network information.
@@ -348,9 +370,9 @@ class NimoModem:
         The modem should not be powered down during a network update.
         
         """
-        return self.get_satellite_status() == 4
+        return self.get_network_status() == 4
     
-    def get_satellite_status(self) -> int:
+    def get_network_status(self) -> NetworkStatus:
         """Get the current satellite acquisition status."""
         cmd = 'ATS54?'
         prefix = ''
@@ -358,10 +380,10 @@ class NimoModem:
             cmd = 'AT+QREG?'
             prefix = '+QREG:'
         try:
-            return int(self._at_command_response(cmd, prefix))
+            return NetworkStatus(int(self._at_command_response(cmd, prefix)))
         except NimoModemError as exc:
             _log.error(exc)
-            return 0
+            return NetworkStatus.UNKNOWN
         except ValueError as exc:
             raise NimoModemError('Parsing error: %s', exc) from exc
     
@@ -958,6 +980,71 @@ class NimoModem:
             return 0
         except ValueError as exc:
             raise NimoModemError('Parsing error: %s', exc) from exc
+    
+    def get_trace_events(self) -> 'dict[str, list[tuple[int, int]]]':
+        """Get a dictionary of monitored and cached trace events."""
+        cmd = 'AT%EVMON'
+        prefix = '%EVMON:'
+        trace_events = {
+            'monitored': [],
+            'cached': []
+        }
+        try:
+            events = self._at_command_response(cmd, prefix).split(',')
+            for event in events:
+                trace_class = int(event.split('.')[0])
+                trace_subclass = int(event.split('.')[1].replace('*', ''))
+                trace_events['monitored'].append((trace_class, trace_subclass))
+                if event.endswith('*'):
+                    trace_events['cached'].append((trace_class, trace_subclass))
+        except NimoModemError:
+            pass
+        return trace_events
+    
+    def get_trace_events_monitor(self) -> 'list[tuple[int, int]]':
+        """Get a list of trace events monitored."""
+        return self.get_trace_events().get('monitored')
+    
+    def get_trace_events_cached(self) -> 'list[tuple[int, int]]':
+        """Get a list of trace events cached."""
+        return self.get_trace_events().get('cached')
+    
+    def get_trace_event_data(self,
+                             event: 'tuple[int, int]',
+                             meta: bool = False,
+                             ) -> 'str|None|dict[str, int]':
+        """Get the trace event data.
+        
+        Args:
+            event (tuple): The trace (class, subclass)
+            meta (bool): Decodes raw data to dictionary (not implemented)
+        
+        """
+        cmd = f'AT%EVNT={event[0]},{event[1]}'
+        prefix = '%EVNT:'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = cmd.replace('%EVNT', '+QEVNT')
+            prefix = '+QEVENT:'   # documented as +QEVNT
+        try:
+            trace = self._at_command_response(cmd, prefix)
+            if meta:
+                raise NotImplementedError
+            return trace
+        except NimoModemError:
+            return None
+            
+    def set_trace_event_monitor(self, events: 'list[tuple[int, int]]') -> bool:
+        """Set the list of monitored trace events."""
+        cmd = 'AT%EVMON='
+        for event in events:
+            if not cmd.endswith('='):
+                cmd += ','
+            cmd += f'{event[0].event[1]}'
+        try:
+            self._at_command_response(cmd)
+            return True
+        except NimoModemError:
+            return False
     
     def get_urc_ctl(self) -> int:
         """Get the event list that trigger Unsolicited Report Codes."""
