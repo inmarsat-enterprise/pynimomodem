@@ -141,6 +141,7 @@ class SatelliteLocation:
     altitude: float = GEOSTATIONARY_DISTANCE_M
     azimuth: float = 0.0
     elevation: float = 0.0
+    geobeam: 'GeoBeam|None' = None
 
 
 @dataclass
@@ -437,7 +438,8 @@ def get_satellite_location(modem_location: ModemLocation,
     mc = modem_location
     sc = SatelliteLocation(name=satellite.name,
                            longitude=satellite.value, 
-                           altitude=GEOSTATIONARY_DISTANCE_M)
+                           altitude=GEOSTATIONARY_DISTANCE_M,
+                           geobeam=geobeam)
     # modem and satellite Point location
     mp = location_to_point(mc.latitude, mc.longitude, mc.altitude)
     sp = location_to_point(sc.latitude, sc.longitude, sc.altitude)
