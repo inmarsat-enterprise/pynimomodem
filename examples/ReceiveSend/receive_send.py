@@ -8,7 +8,7 @@ from pynimomodem import (
     EventNotification,
     MessageState,
     NimoModem,
-    NimoModemError,
+    ModemError,
     UrcCode,
     UrcControl,
 )
@@ -101,7 +101,7 @@ def main():
             else:
                 logging.info('No message found from event %s',
                             'poll' if polling else 'trigger')
-        except NimoModemError:
+        except ModemError:
             # Serial parsing errors might prevent an event from being processed
             logging.error('Some parsing error occured - checking for messages')
         finally:

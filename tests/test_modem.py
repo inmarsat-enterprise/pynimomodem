@@ -19,7 +19,7 @@ from pynimomodem.modem import (
     MessageState,
     NimoMessage,
     NimoModem,
-    NimoModemError,
+    ModemError,
     SatelliteAcquisitionDetail,
     SatelliteLocation,
 )
@@ -44,11 +44,11 @@ def test_await_boot(modem: NimoModem):
 def test_get_last_error_code(modem: NimoModem):
     try:
         modem._at_command_response('AT+FAKE?')
-    except NimoModemError:
+    except ModemError:
         assert modem.get_last_error_code() == AtErrorCode.UNKNOWN_COMMAND
     try:
         modem._at_command_response('ATI0')
-    except NimoModemError:
+    except ModemError:
         assert modem.get_last_error_code() == AtErrorCode.ERROR
     assert True
 
