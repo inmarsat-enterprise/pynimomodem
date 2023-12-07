@@ -5,10 +5,14 @@ Depends on either Python/PySerial or Micropython/machine library.
 """
 
 from .constants import (
+    AtErrorCode,
+    BeamState,
+    ControlState,
     EventNotification,
     GnssMode,
     MessagePriority,
     MessageState,
+    NetworkStatus,
     PowerMode,
     SignalQuality,
     UrcCode,
@@ -29,6 +33,9 @@ from .modem import (
 )
 
 __all__ = [
+    'AtErrorCode',
+    'BeamState',
+    'ControlState',
     'GnssMode',
     'Manufacturer',
     'MessagePriority',
@@ -36,6 +43,7 @@ __all__ = [
     'ModemLocation',
     'MoMessage',
     'MtMessage',
+    'NetworkStatus',
     'NimoModem',
     'NimoModemError',
     'PowerMode',
