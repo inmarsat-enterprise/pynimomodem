@@ -1,6 +1,17 @@
 """Library to interface with a Viasat-approved NIMO modem for satellite IoT.
 
-Depends on either Python/PySerial or Micropython/machine library.
+This library abstracts various low-level AT command operations useful for
+interacting with a NIMO modem to send and receive data, check network status
+and get location-based information.
+
+Most `get` methods will raise a `ModemAtError` if a valid response is not
+received to a command/query.
+
+`ModemTimeout` will be raised if no response is received to a command within
+the default or specified timeout.
+
+AT command errors will raise `ModemAtError` with a property `error_code` to
+provide further details with the `AtErrorCode`.
 
 """
 
@@ -27,7 +38,7 @@ from .modem import (
     MoMessage,
     MtMessage,
     NimoModem,
-    NimoModemError,
+    ModemError,
     SatelliteAcquisitionDetail,
     SatelliteLocation,
 )
@@ -45,7 +56,7 @@ __all__ = [
     'MtMessage',
     'NetworkStatus',
     'NimoModem',
-    'NimoModemError',
+    'ModemError',
     'PowerMode',
     'SatelliteAcquisitionDetail',
     'SatelliteLocation',
