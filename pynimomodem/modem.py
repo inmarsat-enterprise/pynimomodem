@@ -66,12 +66,12 @@ class Manufacturer(IntEnum):
 
 
 @dataclass
-class SatelliteAcquisitionDetail:
+class AcquisitionInfo:
     """Details about the satellite acquisition state of the modem.
     
     Attributes:
-        ctrl_state (NimoControlState): Primary network acquisition state.
-        beam_state (NimoBeamState): Secondary beam acquistion state.
+        ctrl_state (ControlState): Primary network acquisition state.
+        beam_state (BeamState): Secondary beam acquistion state.
         rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
         vcid (int): Virtual carrier identifier for low-level sanity check.
     
@@ -447,7 +447,7 @@ class NimoModem:
             return SignalQuality.WEAK
         return SignalQuality.NONE
     
-    def get_acquisition_detail(self) -> SatelliteAcquisitionDetail:
+    def get_acquisition_detail(self) -> AcquisitionInfo:
         """Get the detailed satellite acquisition status.
         
         Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
@@ -477,7 +477,7 @@ class NimoModem:
             beam_state = BeamState(results[data0+23])
             rssi = float(results[data0+16]) / 100
             vcid = results[data0+1]
-        return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+        return AcquisitionInfo(ctrl_state, beam_state, rssi, vcid)
     
     def send_data(self, data: bytes, **kwargs) -> 'str|MoMessage':
         """Submits data to send as a mobile-originated message.
@@ -912,24 +912,17 @@ class NimoModem:
             return get_location_from_nmea_data(nmea_data)
         return None
     
-    def get_satellite_location(self,
-                               modem_location: ModemLocation = None,
-                               ) -> 'SatelliteLocation|None':
-        """Get the satellite's relative position as azimuth and elevation.
+    def get_satellite_info(self) -> 'SatelliteLocation|None':
+        """Get the satellite's information including azimuth and elevation.
         
         Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
         
-        Args:
-            modem_location (ModemLocation): Optional if known to speed up
-                response.
-        
         Returns:
-            SatelliteLocation object (azimuth, elevation) if determinable.
+            `SatelliteLocation` object (azimuth, elevation) if determinable.
         
         """
         geobeam = None
-        if modem_location is None:
-            modem_location = self.get_location()
+        modem_location = self.get_location()
         if (modem_location is not None and
             self.get_network_status() > NetworkStatus.RX_SEARCHING):
             # satellite has been found
@@ -971,54 +964,34 @@ class NimoModem:
         cmd = 'ATS89?'
         return int(self._at_command_response(cmd))
     
-    def get_trace_events(self) -> 'dict[str, list[tuple[int, int]]]':
-        """Get a dictionary of monitored and cached trace events."""
+    def get_trace_event_monitor(self,
+                                asserted_only: bool = False,
+                                ) -> 'list[tuple[int, int]]':
+        """Get the list of monitored Trace Events.
+        
+        Args:
+            asserted_only (bool): If True returns only asserted monitored events
+        
+        Returns:
+            A list of tuples (trace_class, trace_subclass)
+        
+        Raises:
+            `ModemError` if unsupported by the modem type.
+        
+        """
         if self._mfr != Manufacturer.ORBCOMM:
             raise ModemError('Operation not supported by this modem')
         cmd = 'AT%EVMON'
         prefix = '%EVMON:'
-        trace_events = {
-            'monitored': [],
-            'cached': []
-        }
+        trace_events = []
         events = self._at_command_response(cmd, prefix).split(',')
         for event in events:
             trace_class = int(event.split('.')[0])
             trace_subclass = int(event.split('.')[1].replace('*', ''))
-            trace_events['monitored'].append((trace_class, trace_subclass))
-            if event.endswith('*'):
-                trace_events['cached'].append((trace_class, trace_subclass))
+            if not asserted_only or event.endswith('*'):
+                trace_events.append((trace_class, trace_subclass))
         return trace_events
     
-    def get_trace_events_monitor(self) -> 'list[tuple[int, int]]':
-        """Get a list of trace events monitored."""
-        return self.get_trace_events().get('monitored')
-    
-    def get_trace_events_cached(self) -> 'list[tuple[int, int]]':
-        """Get a list of trace events cached."""
-        return self.get_trace_events().get('cached')
-    
-    def get_trace_event_data(self,
-                             event: 'tuple[int, int]',
-                             meta: bool = False,
-                             ) -> 'str|None|dict[str, int]':
-        """Get the trace event data.
-        
-        Args:
-            event (tuple): The trace (class, subclass)
-            meta (bool): Decodes raw data to dictionary (not implemented)
-        
-        """
-        cmd = f'AT%EVNT={event[0]},{event[1]}'
-        prefix = '%EVNT:'
-        if self._mfr == Manufacturer.QUECTEL:
-            cmd = cmd.replace('%EVNT', '+QEVNT')
-            prefix = '+QEVENT:'   # documented as +QEVNT
-        trace = self._at_command_response(cmd, prefix)
-        if meta:
-            raise NotImplementedError
-        return trace
-            
     def set_trace_event_monitor(self, events: 'list[tuple[int, int]]') -> None:
         """Set the list of monitored trace events."""
         cmd = 'AT%EVMON='
@@ -1028,6 +1001,31 @@ class NimoModem:
             cmd += f'{event[0].event[1]}'
         self._at_command_response(cmd)
     
+    def get_trace_events_cached(self) -> 'list[tuple[int, int]]':
+        """Get a list of trace events cached."""
+        return self.get_trace_event_monitor(True)
+    
+    def get_trace_event_data(self,
+                             event: 'tuple[int, int]',
+                             decode: bool = False,
+                             ) -> 'list[int]|dict[str, int]':
+        """Get the trace event data.
+        
+        Args:
+            event (tuple): The trace (class, subclass)
+            decode (bool): Decodes raw data to dictionary (not implemented)
+        
+        """
+        cmd = f'AT%EVNT={event[0]},{event[1]}'
+        prefix = '%EVNT:'
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = cmd.replace('%EVNT', '+QEVNT')
+            prefix = '+QEVENT:'   # documented as +QEVNT
+        trace = self._at_command_response(cmd, prefix)
+        if decode:
+            raise NotImplementedError
+        return [int(i) for i in trace.split(',')]
+            
     def get_urc_ctl(self) -> int:
         """Get the event list that trigger Unsolicited Report Codes."""
         if self._mfr != Manufacturer.QUECTEL:
@@ -1048,14 +1046,13 @@ class NimoModem:
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')
         eol = '\r\n' if self._modem.verbose else '\r'
-        result = self._modem.get_urc(prefix='+QURC:', read_until=eol)
+        result = self._modem.read_line(eol)
         if result:
+            result = result.replace('+QURC:', '').strip()
             try:
-                if '_' in result:   # long code
-                    return UrcCode[result]
                 return UrcCode(int(result))
-            except ValueError as exc:
-                _log.error('Parsing error: %s', exc)
+            except ValueError:
+                return UrcCode[result]
         return None
     
     def get_power_mode(self) -> PowerMode:
