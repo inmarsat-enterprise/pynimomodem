@@ -269,30 +269,19 @@ class AtCommandBuffer:
         self._rx_buffer = ''
         return response
     
-    def get_urc(self, prefix: str, read_until: str = '\r\n') -> 'int|None':
-        """Get the (next) Unsolicited Response Code if present.
-        
-        Returns:
-            An integer code if present, or `None`.
-        
-        """
-        if not isinstance(prefix, str) or not prefix:
-            raise ValueError('Invalid URC prefix')
+    def read_line(self, read_until: str = '\r\n') -> str:
+        """"""
         if vlog(VLOG_TAG) and not self.ready.is_set():
             _log.debug('Waiting for prior command/response completion')
         self.ready.wait()
         self.ready.clear()
-        urc = None
-        urc_buffer: str = ''
+        line: str = ''
         while self.serial.in_waiting > 0:
-            urc_buffer += self._read()
-            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
-                urc = int(urc_buffer.replace(prefix, '').strip())
+            line += self._read()
+            if line.endswith(read_until) and len(line) > len(read_until):
                 break
-        if vlog(VLOG_TAG) and urc is not None:
-            _log.debug('Found URC: %d', urc)
         self.ready.set()
-        return urc
+        return line.strip()
     
     def _read(self) -> str:
         """Read an ASCII character or generate a warning."""
