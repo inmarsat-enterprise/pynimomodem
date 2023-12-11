@@ -2,7 +2,7 @@
 """
 import os
 from datetime import datetime, timezone
-from typing import Generator
+from typing import Iterable
 
 
 def dprint(raw_string: str) -> str:
@@ -52,8 +52,8 @@ def iso_to_ts(iso_time: str, ms: bool = False) -> int:
     return ts
 
 
-def bits_in_bitmask(bitmask: int) -> Generator[int]:
-    """Yield the integer value of each bit in a bitmask."""
+def bits_in_bitmask(bitmask: int) -> Iterable[int]:
+    """Get iterable integer value of each bit in a bitmask."""
     while bitmask:
         bit = bitmask & (~bitmask+1)
         yield bit
