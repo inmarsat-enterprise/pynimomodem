@@ -214,11 +214,16 @@ class AtCommandBuffer:
         if vlog(VLOG_TAG) and self._rx_buffer:
             _log.debug('Raw response: %s', dprint(self._rx_buffer))
         if parsing < AtParsingState.OK:
-            _log.warning('AT command timeout during parsing')
-            if self.verbose and self._rx_buffer.endswith('\r'):
-                _log.info('Detected non-verbose - setting flag')
-                self.verbose = False
+            if result_ok:
+                if self.verbose and self._rx_buffer.endswith('\r'):
+                    _log.info('Detected non-verbose - setting flag')
+                    self.verbose = False
+                elif self.crc and not crc_found:
+                    _log.info('CRC expected but not found - clearing flag')
+                    self.crc = False
+                    error = AtErrorCode.CRC_CONFIG_MISMATCH
             else:
+                _log.warning('AT command timeout during parsing')
                 error = AtErrorCode.TIMEOUT
         elif parsing == AtParsingState.ERROR:
             error = AtErrorCode.ERROR
@@ -301,7 +306,9 @@ class AtCommandBuffer:
                 self.crc = True
                 return AtParsingState.CRC
         else:
-            if 'CRC=0\r' in self._pending_command.upper():
+            if ('CRC=0\r' in self._pending_command.upper() or
+                ('Z' in self._pending_command.upper() and
+                 not self.serial.in_waiting)):
                 _log.debug('Command disabled CRC - reset flag')
                 self.crc = False
             else:
