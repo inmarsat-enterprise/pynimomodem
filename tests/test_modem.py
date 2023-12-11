@@ -20,7 +20,7 @@ from pynimomodem.modem import (
     NimoMessage,
     NimoModem,
     ModemError,
-    SatelliteAcquisitionDetail,
+    AcquisitionInfo,
     SatelliteLocation,
 )
 
@@ -159,7 +159,7 @@ def test_get_signal_quality(modem: NimoModem):
 
 def test_get_acquisition_detail(modem: NimoModem):
     detail = modem.get_acquisition_detail()
-    assert isinstance(detail, SatelliteAcquisitionDetail)
+    assert isinstance(detail, AcquisitionInfo)
     assert isinstance(detail.ctrl_state, int)
     assert isinstance(detail.beam_state, int)
     assert isinstance(detail.rssi, float)
@@ -330,7 +330,7 @@ def test_get_location(modem: NimoModem):
 
 
 def test_get_satellite_location(modem: NimoModem):
-    satellite_location = modem.get_satellite_location()
+    satellite_location = modem.get_satellite_info()
     if satellite_location:
         assert isinstance(satellite_location, SatelliteLocation)
         assert satellite_location.azimuth > 0.0
