@@ -31,6 +31,7 @@
 &#34;&#34;&#34;
 import os
 from datetime import datetime, timezone
+from typing import Iterable
 
 
 def dprint(raw_string: str) -&gt; str:
@@ -77,7 +78,15 @@ def iso_to_ts(iso_time: str, ms: bool = False) -&gt; int:
     ts = (utc_dt - datetime(1970, 1, 1)).total_seconds()
     if not ms:
         ts = int(ts)
-    return ts</code></pre>
+    return ts
+
+
+def bits_in_bitmask(bitmask: int) -&gt; Iterable[int]:
+    &#34;&#34;&#34;Get iterable integer value of each bit in a bitmask.&#34;&#34;&#34;
+    while bitmask:
+        bit = bitmask &amp; (~bitmask+1)
+        yield bit
+        bitmask ^= bit</code></pre>
 </details>
 </section>
 <section>
@@ -87,6 +96,23 @@ def iso_to_ts(iso_time: str, ms: bool = False) -&gt; int:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="pynimomodem.nimoutils.bits_in_bitmask"><code class="name flex">
+<span>def <span class="ident">bits_in_bitmask</span></span>(<span>bitmask: int) ‑> Iterable[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get iterable integer value of each bit in a bitmask.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bits_in_bitmask(bitmask: int) -&gt; Iterable[int]:
+    &#34;&#34;&#34;Get iterable integer value of each bit in a bitmask.&#34;&#34;&#34;
+    while bitmask:
+        bit = bitmask &amp; (~bitmask+1)
+        yield bit
+        bitmask ^= bit</code></pre>
+</details>
+</dd>
 <dt id="pynimomodem.nimoutils.dprint"><code class="name flex">
 <span>def <span class="ident">dprint</span></span>(<span>raw_string: str) ‑> str</span>
 </code></dt>
@@ -206,6 +232,7 @@ def iso_to_ts(iso_time: str, ms: bool = False) -&gt; int:
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="pynimomodem.nimoutils.bits_in_bitmask" href="#pynimomodem.nimoutils.bits_in_bitmask">bits_in_bitmask</a></code></li>
 <li><code><a title="pynimomodem.nimoutils.dprint" href="#pynimomodem.nimoutils.dprint">dprint</a></code></li>
 <li><code><a title="pynimomodem.nimoutils.iso_to_ts" href="#pynimomodem.nimoutils.iso_to_ts">iso_to_ts</a></code></li>
 <li><code><a title="pynimomodem.nimoutils.ts_to_iso" href="#pynimomodem.nimoutils.ts_to_iso">ts_to_iso</a></code></li>

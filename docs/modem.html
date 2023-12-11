@@ -103,12 +103,12 @@ class Manufacturer(IntEnum):
 
 
 @dataclass
-class SatelliteAcquisitionDetail:
+class AcquisitionInfo:
     &#34;&#34;&#34;Details about the satellite acquisition state of the modem.
     
     Attributes:
-        ctrl_state (NimoControlState): Primary network acquisition state.
-        beam_state (NimoBeamState): Secondary beam acquistion state.
+        ctrl_state (ControlState): Primary network acquisition state.
+        beam_state (BeamState): Secondary beam acquistion state.
         rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
         vcid (int): Virtual carrier identifier for low-level sanity check.
     
@@ -484,7 +484,7 @@ class NimoModem:
             return SignalQuality.WEAK
         return SignalQuality.NONE
     
-    def get_acquisition_detail(self) -&gt; SatelliteAcquisitionDetail:
+    def get_acquisition_detail(self) -&gt; AcquisitionInfo:
         &#34;&#34;&#34;Get the detailed satellite acquisition status.
         
         Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
@@ -514,7 +514,7 @@ class NimoModem:
             beam_state = BeamState(results[data0+23])
             rssi = float(results[data0+16]) / 100
             vcid = results[data0+1]
-        return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+        return AcquisitionInfo(ctrl_state, beam_state, rssi, vcid)
     
     def send_data(self, data: bytes, **kwargs) -&gt; &#39;str|MoMessage&#39;:
         &#34;&#34;&#34;Submits data to send as a mobile-originated message.
@@ -949,24 +949,17 @@ class NimoModem:
             return get_location_from_nmea_data(nmea_data)
         return None
     
-    def get_satellite_location(self,
-                               modem_location: ModemLocation = None,
-                               ) -&gt; &#39;SatelliteLocation|None&#39;:
-        &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+    def get_satellite_info(self) -&gt; &#39;SatelliteLocation|None&#39;:
+        &#34;&#34;&#34;Get the satellite&#39;s information including azimuth and elevation.
         
         Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
         
-        Args:
-            modem_location (ModemLocation): Optional if known to speed up
-                response.
-        
         Returns:
-            SatelliteLocation object (azimuth, elevation) if determinable.
+            `SatelliteLocation` object (azimuth, elevation) if determinable.
         
         &#34;&#34;&#34;
         geobeam = None
-        if modem_location is None:
-            modem_location = self.get_location()
+        modem_location = self.get_location()
         if (modem_location is not None and
             self.get_network_status() &gt; NetworkStatus.RX_SEARCHING):
             # satellite has been found
@@ -1008,54 +1001,34 @@ class NimoModem:
         cmd = &#39;ATS89?&#39;
         return int(self._at_command_response(cmd))
     
-    def get_trace_events(self) -&gt; &#39;dict[str, list[tuple[int, int]]]&#39;:
-        &#34;&#34;&#34;Get a dictionary of monitored and cached trace events.&#34;&#34;&#34;
+    def get_trace_event_monitor(self,
+                                asserted_only: bool = False,
+                                ) -&gt; &#39;list[tuple[int, int]]&#39;:
+        &#34;&#34;&#34;Get the list of monitored Trace Events.
+        
+        Args:
+            asserted_only (bool): If True returns only asserted monitored events
+        
+        Returns:
+            A list of tuples (trace_class, trace_subclass)
+        
+        Raises:
+            `ModemError` if unsupported by the modem type.
+        
+        &#34;&#34;&#34;
         if self._mfr != Manufacturer.ORBCOMM:
             raise ModemError(&#39;Operation not supported by this modem&#39;)
         cmd = &#39;AT%EVMON&#39;
         prefix = &#39;%EVMON:&#39;
-        trace_events = {
-            &#39;monitored&#39;: [],
-            &#39;cached&#39;: []
-        }
+        trace_events = []
         events = self._at_command_response(cmd, prefix).split(&#39;,&#39;)
         for event in events:
             trace_class = int(event.split(&#39;.&#39;)[0])
             trace_subclass = int(event.split(&#39;.&#39;)[1].replace(&#39;*&#39;, &#39;&#39;))
-            trace_events[&#39;monitored&#39;].append((trace_class, trace_subclass))
-            if event.endswith(&#39;*&#39;):
-                trace_events[&#39;cached&#39;].append((trace_class, trace_subclass))
+            if not asserted_only or event.endswith(&#39;*&#39;):
+                trace_events.append((trace_class, trace_subclass))
         return trace_events
     
-    def get_trace_events_monitor(self) -&gt; &#39;list[tuple[int, int]]&#39;:
-        &#34;&#34;&#34;Get a list of trace events monitored.&#34;&#34;&#34;
-        return self.get_trace_events().get(&#39;monitored&#39;)
-    
-    def get_trace_events_cached(self) -&gt; &#39;list[tuple[int, int]]&#39;:
-        &#34;&#34;&#34;Get a list of trace events cached.&#34;&#34;&#34;
-        return self.get_trace_events().get(&#39;cached&#39;)
-    
-    def get_trace_event_data(self,
-                             event: &#39;tuple[int, int]&#39;,
-                             meta: bool = False,
-                             ) -&gt; &#39;str|None|dict[str, int]&#39;:
-        &#34;&#34;&#34;Get the trace event data.
-        
-        Args:
-            event (tuple): The trace (class, subclass)
-            meta (bool): Decodes raw data to dictionary (not implemented)
-        
-        &#34;&#34;&#34;
-        cmd = f&#39;AT%EVNT={event[0]},{event[1]}&#39;
-        prefix = &#39;%EVNT:&#39;
-        if self._mfr == Manufacturer.QUECTEL:
-            cmd = cmd.replace(&#39;%EVNT&#39;, &#39;+QEVNT&#39;)
-            prefix = &#39;+QEVENT:&#39;   # documented as +QEVNT
-        trace = self._at_command_response(cmd, prefix)
-        if meta:
-            raise NotImplementedError
-        return trace
-            
     def set_trace_event_monitor(self, events: &#39;list[tuple[int, int]]&#39;) -&gt; None:
         &#34;&#34;&#34;Set the list of monitored trace events.&#34;&#34;&#34;
         cmd = &#39;AT%EVMON=&#39;
@@ -1065,6 +1038,31 @@ class NimoModem:
             cmd += f&#39;{event[0].event[1]}&#39;
         self._at_command_response(cmd)
     
+    def get_trace_events_cached(self) -&gt; &#39;list[tuple[int, int]]&#39;:
+        &#34;&#34;&#34;Get a list of trace events cached.&#34;&#34;&#34;
+        return self.get_trace_event_monitor(True)
+    
+    def get_trace_event_data(self,
+                             event: &#39;tuple[int, int]&#39;,
+                             decode: bool = False,
+                             ) -&gt; &#39;list[int]|dict[str, int]&#39;:
+        &#34;&#34;&#34;Get the trace event data.
+        
+        Args:
+            event (tuple): The trace (class, subclass)
+            decode (bool): Decodes raw data to dictionary (not implemented)
+        
+        &#34;&#34;&#34;
+        cmd = f&#39;AT%EVNT={event[0]},{event[1]}&#39;
+        prefix = &#39;%EVNT:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = cmd.replace(&#39;%EVNT&#39;, &#39;+QEVNT&#39;)
+            prefix = &#39;+QEVENT:&#39;   # documented as +QEVNT
+        trace = self._at_command_response(cmd, prefix)
+        if decode:
+            raise NotImplementedError
+        return [int(i) for i in trace.split(&#39;,&#39;)]
+            
     def get_urc_ctl(self) -&gt; int:
         &#34;&#34;&#34;Get the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
         if self._mfr != Manufacturer.QUECTEL:
@@ -1085,14 +1083,13 @@ class NimoModem:
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError(&#39;Modem does not support this feature&#39;)
         eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
-        result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+        result = self._modem.read_line(eol)
         if result:
+            result = result.replace(&#39;+QURC:&#39;, &#39;&#39;).strip()
             try:
-                if &#39;_&#39; in result:   # long code
-                    return UrcCode[result]
                 return UrcCode(int(result))
-            except ValueError as exc:
-                _log.error(&#39;Parsing error: %s&#39;, exc)
+            except ValueError:
+                return UrcCode[result]
         return None
     
     def get_power_mode(self) -&gt; PowerMode:
@@ -1215,6 +1212,63 @@ class NimoModem:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pynimomodem.modem.AcquisitionInfo"><code class="flex name class">
+<span>class <span class="ident">AcquisitionInfo</span></span>
+<span>(</span><span>ctrl_state: <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a> = ControlState.STOPPED, beam_state: <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a> = BeamState.IDLE, rssi: float = 0.0, vcid: int = 0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Details about the satellite acquisition state of the modem.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>ctrl_state</code></strong> :&ensp;<code>ControlState</code></dt>
+<dd>Primary network acquisition state.</dd>
+<dt><strong><code>beam_state</code></strong> :&ensp;<code>BeamState</code></dt>
+<dd>Secondary beam acquistion state.</dd>
+<dt><strong><code>rssi</code></strong> :&ensp;<code>float</code></dt>
+<dd>Signal indicator Carrier to Noise ratio (dB-Hz).</dd>
+<dt><strong><code>vcid</code></strong> :&ensp;<code>int</code></dt>
+<dd>Virtual carrier identifier for low-level sanity check.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class AcquisitionInfo:
+    &#34;&#34;&#34;Details about the satellite acquisition state of the modem.
+    
+    Attributes:
+        ctrl_state (ControlState): Primary network acquisition state.
+        beam_state (BeamState): Secondary beam acquistion state.
+        rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
+        vcid (int): Virtual carrier identifier for low-level sanity check.
+    
+    &#34;&#34;&#34;
+    ctrl_state: ControlState = ControlState.STOPPED
+    beam_state: BeamState = BeamState.IDLE
+    rssi: float = 0.0
+    vcid: int = 0</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.modem.AcquisitionInfo.beam_state"><code class="name">var <span class="ident">beam_state</span> : <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.AcquisitionInfo.ctrl_state"><code class="name">var <span class="ident">ctrl_state</span> : <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.AcquisitionInfo.rssi"><code class="name">var <span class="ident">rssi</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.modem.AcquisitionInfo.vcid"><code class="name">var <span class="ident">vcid</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="pynimomodem.modem.Manufacturer"><code class="flex name class">
 <span>class <span class="ident">Manufacturer</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -1724,7 +1778,7 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
             return SignalQuality.WEAK
         return SignalQuality.NONE
     
-    def get_acquisition_detail(self) -&gt; SatelliteAcquisitionDetail:
+    def get_acquisition_detail(self) -&gt; AcquisitionInfo:
         &#34;&#34;&#34;Get the detailed satellite acquisition status.
         
         Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
@@ -1754,7 +1808,7 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
             beam_state = BeamState(results[data0+23])
             rssi = float(results[data0+16]) / 100
             vcid = results[data0+1]
-        return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)
+        return AcquisitionInfo(ctrl_state, beam_state, rssi, vcid)
     
     def send_data(self, data: bytes, **kwargs) -&gt; &#39;str|MoMessage&#39;:
         &#34;&#34;&#34;Submits data to send as a mobile-originated message.
@@ -2189,24 +2243,17 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
             return get_location_from_nmea_data(nmea_data)
         return None
     
-    def get_satellite_location(self,
-                               modem_location: ModemLocation = None,
-                               ) -&gt; &#39;SatelliteLocation|None&#39;:
-        &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+    def get_satellite_info(self) -&gt; &#39;SatelliteLocation|None&#39;:
+        &#34;&#34;&#34;Get the satellite&#39;s information including azimuth and elevation.
         
         Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
         
-        Args:
-            modem_location (ModemLocation): Optional if known to speed up
-                response.
-        
         Returns:
-            SatelliteLocation object (azimuth, elevation) if determinable.
+            `SatelliteLocation` object (azimuth, elevation) if determinable.
         
         &#34;&#34;&#34;
         geobeam = None
-        if modem_location is None:
-            modem_location = self.get_location()
+        modem_location = self.get_location()
         if (modem_location is not None and
             self.get_network_status() &gt; NetworkStatus.RX_SEARCHING):
             # satellite has been found
@@ -2248,54 +2295,34 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         cmd = &#39;ATS89?&#39;
         return int(self._at_command_response(cmd))
     
-    def get_trace_events(self) -&gt; &#39;dict[str, list[tuple[int, int]]]&#39;:
-        &#34;&#34;&#34;Get a dictionary of monitored and cached trace events.&#34;&#34;&#34;
+    def get_trace_event_monitor(self,
+                                asserted_only: bool = False,
+                                ) -&gt; &#39;list[tuple[int, int]]&#39;:
+        &#34;&#34;&#34;Get the list of monitored Trace Events.
+        
+        Args:
+            asserted_only (bool): If True returns only asserted monitored events
+        
+        Returns:
+            A list of tuples (trace_class, trace_subclass)
+        
+        Raises:
+            `ModemError` if unsupported by the modem type.
+        
+        &#34;&#34;&#34;
         if self._mfr != Manufacturer.ORBCOMM:
             raise ModemError(&#39;Operation not supported by this modem&#39;)
         cmd = &#39;AT%EVMON&#39;
         prefix = &#39;%EVMON:&#39;
-        trace_events = {
-            &#39;monitored&#39;: [],
-            &#39;cached&#39;: []
-        }
+        trace_events = []
         events = self._at_command_response(cmd, prefix).split(&#39;,&#39;)
         for event in events:
             trace_class = int(event.split(&#39;.&#39;)[0])
             trace_subclass = int(event.split(&#39;.&#39;)[1].replace(&#39;*&#39;, &#39;&#39;))
-            trace_events[&#39;monitored&#39;].append((trace_class, trace_subclass))
-            if event.endswith(&#39;*&#39;):
-                trace_events[&#39;cached&#39;].append((trace_class, trace_subclass))
+            if not asserted_only or event.endswith(&#39;*&#39;):
+                trace_events.append((trace_class, trace_subclass))
         return trace_events
     
-    def get_trace_events_monitor(self) -&gt; &#39;list[tuple[int, int]]&#39;:
-        &#34;&#34;&#34;Get a list of trace events monitored.&#34;&#34;&#34;
-        return self.get_trace_events().get(&#39;monitored&#39;)
-    
-    def get_trace_events_cached(self) -&gt; &#39;list[tuple[int, int]]&#39;:
-        &#34;&#34;&#34;Get a list of trace events cached.&#34;&#34;&#34;
-        return self.get_trace_events().get(&#39;cached&#39;)
-    
-    def get_trace_event_data(self,
-                             event: &#39;tuple[int, int]&#39;,
-                             meta: bool = False,
-                             ) -&gt; &#39;str|None|dict[str, int]&#39;:
-        &#34;&#34;&#34;Get the trace event data.
-        
-        Args:
-            event (tuple): The trace (class, subclass)
-            meta (bool): Decodes raw data to dictionary (not implemented)
-        
-        &#34;&#34;&#34;
-        cmd = f&#39;AT%EVNT={event[0]},{event[1]}&#39;
-        prefix = &#39;%EVNT:&#39;
-        if self._mfr == Manufacturer.QUECTEL:
-            cmd = cmd.replace(&#39;%EVNT&#39;, &#39;+QEVNT&#39;)
-            prefix = &#39;+QEVENT:&#39;   # documented as +QEVNT
-        trace = self._at_command_response(cmd, prefix)
-        if meta:
-            raise NotImplementedError
-        return trace
-            
     def set_trace_event_monitor(self, events: &#39;list[tuple[int, int]]&#39;) -&gt; None:
         &#34;&#34;&#34;Set the list of monitored trace events.&#34;&#34;&#34;
         cmd = &#39;AT%EVMON=&#39;
@@ -2305,6 +2332,31 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
             cmd += f&#39;{event[0].event[1]}&#39;
         self._at_command_response(cmd)
     
+    def get_trace_events_cached(self) -&gt; &#39;list[tuple[int, int]]&#39;:
+        &#34;&#34;&#34;Get a list of trace events cached.&#34;&#34;&#34;
+        return self.get_trace_event_monitor(True)
+    
+    def get_trace_event_data(self,
+                             event: &#39;tuple[int, int]&#39;,
+                             decode: bool = False,
+                             ) -&gt; &#39;list[int]|dict[str, int]&#39;:
+        &#34;&#34;&#34;Get the trace event data.
+        
+        Args:
+            event (tuple): The trace (class, subclass)
+            decode (bool): Decodes raw data to dictionary (not implemented)
+        
+        &#34;&#34;&#34;
+        cmd = f&#39;AT%EVNT={event[0]},{event[1]}&#39;
+        prefix = &#39;%EVNT:&#39;
+        if self._mfr == Manufacturer.QUECTEL:
+            cmd = cmd.replace(&#39;%EVNT&#39;, &#39;+QEVNT&#39;)
+            prefix = &#39;+QEVENT:&#39;   # documented as +QEVNT
+        trace = self._at_command_response(cmd, prefix)
+        if decode:
+            raise NotImplementedError
+        return [int(i) for i in trace.split(&#39;,&#39;)]
+            
     def get_urc_ctl(self) -&gt; int:
         &#34;&#34;&#34;Get the event list that trigger Unsolicited Report Codes.&#34;&#34;&#34;
         if self._mfr != Manufacturer.QUECTEL:
@@ -2325,14 +2377,13 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError(&#39;Modem does not support this feature&#39;)
         eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
-        result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+        result = self._modem.read_line(eol)
         if result:
+            result = result.replace(&#39;+QURC:&#39;, &#39;&#39;).strip()
             try:
-                if &#39;_&#39; in result:   # long code
-                    return UrcCode[result]
                 return UrcCode(int(result))
-            except ValueError as exc:
-                _log.error(&#39;Parsing error: %s&#39;, exc)
+            except ValueError:
+                return UrcCode[result]
         return None
     
     def get_power_mode(self) -&gt; PowerMode:
@@ -2649,7 +2700,7 @@ when instantiating <code><a title="pynimomodem.modem.NimoModem" href="#pynimomod
 </details>
 </dd>
 <dt id="pynimomodem.modem.NimoModem.get_acquisition_detail"><code class="name flex">
-<span>def <span class="ident">get_acquisition_detail</span></span>(<span>self) ‑> <a title="pynimomodem.modem.SatelliteAcquisitionDetail" href="#pynimomodem.modem.SatelliteAcquisitionDetail">SatelliteAcquisitionDetail</a></span>
+<span>def <span class="ident">get_acquisition_detail</span></span>(<span>self) ‑> <a title="pynimomodem.modem.AcquisitionInfo" href="#pynimomodem.modem.AcquisitionInfo">AcquisitionInfo</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the detailed satellite acquisition status.</p>
@@ -2659,7 +2710,7 @@ indicators.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_acquisition_detail(self) -&gt; SatelliteAcquisitionDetail:
+<pre><code class="python">def get_acquisition_detail(self) -&gt; AcquisitionInfo:
     &#34;&#34;&#34;Get the detailed satellite acquisition status.
     
     Includes `acquisition_state`, `beamsearch_state`, `vcid` and `snr`
@@ -2689,7 +2740,7 @@ indicators.</p></div>
         beam_state = BeamState(results[data0+23])
         rssi = float(results[data0+16]) / 100
         vcid = results[data0+1]
-    return SatelliteAcquisitionDetail(ctrl_state, beam_state, rssi, vcid)</code></pre>
+    return AcquisitionInfo(ctrl_state, beam_state, rssi, vcid)</code></pre>
 </details>
 </dd>
 <dt id="pynimomodem.modem.NimoModem.get_all_registers"><code class="name flex">
@@ -3183,42 +3234,29 @@ indicators.</p></div>
     return int(self._at_command_response(cmd, prefix)) / 100</code></pre>
 </details>
 </dd>
-<dt id="pynimomodem.modem.NimoModem.get_satellite_location"><code class="name flex">
-<span>def <span class="ident">get_satellite_location</span></span>(<span>self, modem_location: <a title="pynimomodem.location.ModemLocation" href="location.html#pynimomodem.location.ModemLocation">ModemLocation</a> = None) ‑> SatelliteLocation|None</span>
+<dt id="pynimomodem.modem.NimoModem.get_satellite_info"><code class="name flex">
+<span>def <span class="ident">get_satellite_info</span></span>(<span>self) ‑> SatelliteLocation|None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get the satellite's relative position as azimuth and elevation.</p>
+<div class="desc"><p>Get the satellite's information including azimuth and elevation.</p>
 <p>Derives which satellite/GeoBeam is used from trace class 3 subclass 5.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>modem_location</code></strong> :&ensp;<code>ModemLocation</code></dt>
-<dd>Optional if known to speed up
-response.</dd>
-</dl>
 <h2 id="returns">Returns</h2>
-<p>SatelliteLocation object (azimuth, elevation) if determinable.</p></div>
+<p><code>SatelliteLocation</code> object (azimuth, elevation) if determinable.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_satellite_location(self,
-                           modem_location: ModemLocation = None,
-                           ) -&gt; &#39;SatelliteLocation|None&#39;:
-    &#34;&#34;&#34;Get the satellite&#39;s relative position as azimuth and elevation.
+<pre><code class="python">def get_satellite_info(self) -&gt; &#39;SatelliteLocation|None&#39;:
+    &#34;&#34;&#34;Get the satellite&#39;s information including azimuth and elevation.
     
     Derives which satellite/GeoBeam is used from trace class 3 subclass 5.
     
-    Args:
-        modem_location (ModemLocation): Optional if known to speed up
-            response.
-    
     Returns:
-        SatelliteLocation object (azimuth, elevation) if determinable.
+        `SatelliteLocation` object (azimuth, elevation) if determinable.
     
     &#34;&#34;&#34;
     geobeam = None
-    if modem_location is None:
-        modem_location = self.get_location()
+    modem_location = self.get_location()
     if (modem_location is not None and
         self.get_network_status() &gt; NetworkStatus.RX_SEARCHING):
         # satellite has been found
@@ -3298,7 +3336,7 @@ response.</dd>
 </details>
 </dd>
 <dt id="pynimomodem.modem.NimoModem.get_trace_event_data"><code class="name flex">
-<span>def <span class="ident">get_trace_event_data</span></span>(<span>self, event: tuple[int, int], meta: bool = False) ‑> str|None|dict[str, int]</span>
+<span>def <span class="ident">get_trace_event_data</span></span>(<span>self, event: tuple[int, int], decode: bool = False) ‑> list[int]|dict[str, int]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Get the trace event data.</p>
@@ -3306,7 +3344,7 @@ response.</dd>
 <dl>
 <dt><strong><code>event</code></strong> :&ensp;<code>tuple</code></dt>
 <dd>The trace (class, subclass)</dd>
-<dt><strong><code>meta</code></strong> :&ensp;<code>bool</code></dt>
+<dt><strong><code>decode</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Decodes raw data to dictionary (not implemented)</dd>
 </dl></div>
 <details class="source">
@@ -3315,13 +3353,13 @@ response.</dd>
 </summary>
 <pre><code class="python">def get_trace_event_data(self,
                          event: &#39;tuple[int, int]&#39;,
-                         meta: bool = False,
-                         ) -&gt; &#39;str|None|dict[str, int]&#39;:
+                         decode: bool = False,
+                         ) -&gt; &#39;list[int]|dict[str, int]&#39;:
     &#34;&#34;&#34;Get the trace event data.
     
     Args:
         event (tuple): The trace (class, subclass)
-        meta (bool): Decodes raw data to dictionary (not implemented)
+        decode (bool): Decodes raw data to dictionary (not implemented)
     
     &#34;&#34;&#34;
     cmd = f&#39;AT%EVNT={event[0]},{event[1]}&#39;
@@ -3330,37 +3368,55 @@ response.</dd>
         cmd = cmd.replace(&#39;%EVNT&#39;, &#39;+QEVNT&#39;)
         prefix = &#39;+QEVENT:&#39;   # documented as +QEVNT
     trace = self._at_command_response(cmd, prefix)
-    if meta:
+    if decode:
         raise NotImplementedError
-    return trace</code></pre>
+    return [int(i) for i in trace.split(&#39;,&#39;)]</code></pre>
 </details>
 </dd>
-<dt id="pynimomodem.modem.NimoModem.get_trace_events"><code class="name flex">
-<span>def <span class="ident">get_trace_events</span></span>(<span>self) ‑> dict[str, list[tuple[int, int]]]</span>
+<dt id="pynimomodem.modem.NimoModem.get_trace_event_monitor"><code class="name flex">
+<span>def <span class="ident">get_trace_event_monitor</span></span>(<span>self, asserted_only: bool = False) ‑> list[tuple[int, int]]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get a dictionary of monitored and cached trace events.</p></div>
+<div class="desc"><p>Get the list of monitored Trace Events.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>asserted_only</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True returns only asserted monitored events</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A list of tuples (trace_class, trace_subclass)</p>
+<h2 id="raises">Raises</h2>
+<p><code><a title="pynimomodem.modem.ModemError" href="#pynimomodem.modem.ModemError">ModemError</a></code> if unsupported by the modem type.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_trace_events(self) -&gt; &#39;dict[str, list[tuple[int, int]]]&#39;:
-    &#34;&#34;&#34;Get a dictionary of monitored and cached trace events.&#34;&#34;&#34;
+<pre><code class="python">def get_trace_event_monitor(self,
+                            asserted_only: bool = False,
+                            ) -&gt; &#39;list[tuple[int, int]]&#39;:
+    &#34;&#34;&#34;Get the list of monitored Trace Events.
+    
+    Args:
+        asserted_only (bool): If True returns only asserted monitored events
+    
+    Returns:
+        A list of tuples (trace_class, trace_subclass)
+    
+    Raises:
+        `ModemError` if unsupported by the modem type.
+    
+    &#34;&#34;&#34;
     if self._mfr != Manufacturer.ORBCOMM:
         raise ModemError(&#39;Operation not supported by this modem&#39;)
     cmd = &#39;AT%EVMON&#39;
     prefix = &#39;%EVMON:&#39;
-    trace_events = {
-        &#39;monitored&#39;: [],
-        &#39;cached&#39;: []
-    }
+    trace_events = []
     events = self._at_command_response(cmd, prefix).split(&#39;,&#39;)
     for event in events:
         trace_class = int(event.split(&#39;.&#39;)[0])
         trace_subclass = int(event.split(&#39;.&#39;)[1].replace(&#39;*&#39;, &#39;&#39;))
-        trace_events[&#39;monitored&#39;].append((trace_class, trace_subclass))
-        if event.endswith(&#39;*&#39;):
-            trace_events[&#39;cached&#39;].append((trace_class, trace_subclass))
+        if not asserted_only or event.endswith(&#39;*&#39;):
+            trace_events.append((trace_class, trace_subclass))
     return trace_events</code></pre>
 </details>
 </dd>
@@ -3375,21 +3431,7 @@ response.</dd>
 </summary>
 <pre><code class="python">def get_trace_events_cached(self) -&gt; &#39;list[tuple[int, int]]&#39;:
     &#34;&#34;&#34;Get a list of trace events cached.&#34;&#34;&#34;
-    return self.get_trace_events().get(&#39;cached&#39;)</code></pre>
-</details>
-</dd>
-<dt id="pynimomodem.modem.NimoModem.get_trace_events_monitor"><code class="name flex">
-<span>def <span class="ident">get_trace_events_monitor</span></span>(<span>self) ‑> list[tuple[int, int]]</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get a list of trace events monitored.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_trace_events_monitor(self) -&gt; &#39;list[tuple[int, int]]&#39;:
-    &#34;&#34;&#34;Get a list of trace events monitored.&#34;&#34;&#34;
-    return self.get_trace_events().get(&#39;monitored&#39;)</code></pre>
+    return self.get_trace_event_monitor(True)</code></pre>
 </details>
 </dd>
 <dt id="pynimomodem.modem.NimoModem.get_urc"><code class="name flex">
@@ -3406,14 +3448,13 @@ response.</dd>
     if self._mfr != Manufacturer.QUECTEL:
         raise ValueError(&#39;Modem does not support this feature&#39;)
     eol = &#39;\r\n&#39; if self._modem.verbose else &#39;\r&#39;
-    result = self._modem.get_urc(prefix=&#39;+QURC:&#39;, read_until=eol)
+    result = self._modem.read_line(eol)
     if result:
+        result = result.replace(&#39;+QURC:&#39;, &#39;&#39;).strip()
         try:
-            if &#39;_&#39; in result:   # long code
-                return UrcCode[result]
             return UrcCode(int(result))
-        except ValueError as exc:
-            _log.error(&#39;Parsing error: %s&#39;, exc)
+        except ValueError:
+            return UrcCode[result]
     return None</code></pre>
 </details>
 </dd>
@@ -4083,63 +4124,6 @@ Other kwargs as per <code>send_data</code>.</p>
 </dd>
 </dl>
 </dd>
-<dt id="pynimomodem.modem.SatelliteAcquisitionDetail"><code class="flex name class">
-<span>class <span class="ident">SatelliteAcquisitionDetail</span></span>
-<span>(</span><span>ctrl_state: <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a> = ControlState.STOPPED, beam_state: <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a> = BeamState.IDLE, rssi: float = 0.0, vcid: int = 0)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Details about the satellite acquisition state of the modem.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>ctrl_state</code></strong> :&ensp;<code>NimoControlState</code></dt>
-<dd>Primary network acquisition state.</dd>
-<dt><strong><code>beam_state</code></strong> :&ensp;<code>NimoBeamState</code></dt>
-<dd>Secondary beam acquistion state.</dd>
-<dt><strong><code>rssi</code></strong> :&ensp;<code>float</code></dt>
-<dd>Signal indicator Carrier to Noise ratio (dB-Hz).</dd>
-<dt><strong><code>vcid</code></strong> :&ensp;<code>int</code></dt>
-<dd>Virtual carrier identifier for low-level sanity check.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@dataclass
-class SatelliteAcquisitionDetail:
-    &#34;&#34;&#34;Details about the satellite acquisition state of the modem.
-    
-    Attributes:
-        ctrl_state (NimoControlState): Primary network acquisition state.
-        beam_state (NimoBeamState): Secondary beam acquistion state.
-        rssi (float): Signal indicator Carrier to Noise ratio (dB-Hz).
-        vcid (int): Virtual carrier identifier for low-level sanity check.
-    
-    &#34;&#34;&#34;
-    ctrl_state: ControlState = ControlState.STOPPED
-    beam_state: BeamState = BeamState.IDLE
-    rssi: float = 0.0
-    vcid: int = 0</code></pre>
-</details>
-<h3>Class variables</h3>
-<dl>
-<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.beam_state"><code class="name">var <span class="ident">beam_state</span> : <a title="pynimomodem.constants.BeamState" href="constants.html#pynimomodem.constants.BeamState">BeamState</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state"><code class="name">var <span class="ident">ctrl_state</span> : <a title="pynimomodem.constants.ControlState" href="constants.html#pynimomodem.constants.ControlState">ControlState</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.rssi"><code class="name">var <span class="ident">rssi</span> : float</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pynimomodem.modem.SatelliteAcquisitionDetail.vcid"><code class="name">var <span class="ident">vcid</span> : int</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
 </dl>
 </section>
 </article>
@@ -4156,6 +4140,15 @@ class SatelliteAcquisitionDetail:
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pynimomodem.modem.AcquisitionInfo" href="#pynimomodem.modem.AcquisitionInfo">AcquisitionInfo</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.modem.AcquisitionInfo.beam_state" href="#pynimomodem.modem.AcquisitionInfo.beam_state">beam_state</a></code></li>
+<li><code><a title="pynimomodem.modem.AcquisitionInfo.ctrl_state" href="#pynimomodem.modem.AcquisitionInfo.ctrl_state">ctrl_state</a></code></li>
+<li><code><a title="pynimomodem.modem.AcquisitionInfo.rssi" href="#pynimomodem.modem.AcquisitionInfo.rssi">rssi</a></code></li>
+<li><code><a title="pynimomodem.modem.AcquisitionInfo.vcid" href="#pynimomodem.modem.AcquisitionInfo.vcid">vcid</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="pynimomodem.modem.Manufacturer" href="#pynimomodem.modem.Manufacturer">Manufacturer</a></code></h4>
 <ul class="">
@@ -4210,14 +4203,13 @@ class SatelliteAcquisitionDetail:
 <li><code><a title="pynimomodem.modem.NimoModem.get_power_mode" href="#pynimomodem.modem.NimoModem.get_power_mode">get_power_mode</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_register" href="#pynimomodem.modem.NimoModem.get_register">get_register</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_rssi" href="#pynimomodem.modem.NimoModem.get_rssi">get_rssi</a></code></li>
-<li><code><a title="pynimomodem.modem.NimoModem.get_satellite_location" href="#pynimomodem.modem.NimoModem.get_satellite_location">get_satellite_location</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_satellite_info" href="#pynimomodem.modem.NimoModem.get_satellite_info">get_satellite_info</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_signal_quality" href="#pynimomodem.modem.NimoModem.get_signal_quality">get_signal_quality</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_system_time" href="#pynimomodem.modem.NimoModem.get_system_time">get_system_time</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_temperature" href="#pynimomodem.modem.NimoModem.get_temperature">get_temperature</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_trace_event_data" href="#pynimomodem.modem.NimoModem.get_trace_event_data">get_trace_event_data</a></code></li>
-<li><code><a title="pynimomodem.modem.NimoModem.get_trace_events" href="#pynimomodem.modem.NimoModem.get_trace_events">get_trace_events</a></code></li>
+<li><code><a title="pynimomodem.modem.NimoModem.get_trace_event_monitor" href="#pynimomodem.modem.NimoModem.get_trace_event_monitor">get_trace_event_monitor</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_trace_events_cached" href="#pynimomodem.modem.NimoModem.get_trace_events_cached">get_trace_events_cached</a></code></li>
-<li><code><a title="pynimomodem.modem.NimoModem.get_trace_events_monitor" href="#pynimomodem.modem.NimoModem.get_trace_events_monitor">get_trace_events_monitor</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_urc" href="#pynimomodem.modem.NimoModem.get_urc">get_urc</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_urc_ctl" href="#pynimomodem.modem.NimoModem.get_urc_ctl">get_urc_ctl</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.get_wakeup_period" href="#pynimomodem.modem.NimoModem.get_wakeup_period">get_wakeup_period</a></code></li>
@@ -4249,15 +4241,6 @@ class SatelliteAcquisitionDetail:
 <li><code><a title="pynimomodem.modem.NimoModem.set_urc_ctl" href="#pynimomodem.modem.NimoModem.set_urc_ctl">set_urc_ctl</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.set_wakeup_period" href="#pynimomodem.modem.NimoModem.set_wakeup_period">set_wakeup_period</a></code></li>
 <li><code><a title="pynimomodem.modem.NimoModem.set_workmode" href="#pynimomodem.modem.NimoModem.set_workmode">set_workmode</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail" href="#pynimomodem.modem.SatelliteAcquisitionDetail">SatelliteAcquisitionDetail</a></code></h4>
-<ul class="">
-<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.beam_state" href="#pynimomodem.modem.SatelliteAcquisitionDetail.beam_state">beam_state</a></code></li>
-<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state" href="#pynimomodem.modem.SatelliteAcquisitionDetail.ctrl_state">ctrl_state</a></code></li>
-<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.rssi" href="#pynimomodem.modem.SatelliteAcquisitionDetail.rssi">rssi</a></code></li>
-<li><code><a title="pynimomodem.modem.SatelliteAcquisitionDetail.vcid" href="#pynimomodem.modem.SatelliteAcquisitionDetail.vcid">vcid</a></code></li>
 </ul>
 </li>
 </ul>

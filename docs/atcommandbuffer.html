@@ -300,30 +300,19 @@ class AtCommandBuffer:
         self._rx_buffer = &#39;&#39;
         return response
     
-    def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
-        &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
-        
-        Returns:
-            An integer code if present, or `None`.
-        
-        &#34;&#34;&#34;
-        if not isinstance(prefix, str) or not prefix:
-            raise ValueError(&#39;Invalid URC prefix&#39;)
+    def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
+        &#34;&#34;&#34;&#34;&#34;&#34;
         if vlog(VLOG_TAG) and not self.ready.is_set():
             _log.debug(&#39;Waiting for prior command/response completion&#39;)
         self.ready.wait()
         self.ready.clear()
-        urc = None
-        urc_buffer: str = &#39;&#39;
+        line: str = &#39;&#39;
         while self.serial.in_waiting &gt; 0:
-            urc_buffer += self._read()
-            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
-                urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
+            line += self._read()
+            if line.endswith(read_until) and len(line) &gt; len(read_until):
                 break
-        if vlog(VLOG_TAG) and urc is not None:
-            _log.debug(&#39;Found URC: %d&#39;, urc)
         self.ready.set()
-        return urc
+        return line.strip()
     
     def _read(self) -&gt; str:
         &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
@@ -657,30 +646,19 @@ has completed or timed out.</dd>
         self._rx_buffer = &#39;&#39;
         return response
     
-    def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
-        &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
-        
-        Returns:
-            An integer code if present, or `None`.
-        
-        &#34;&#34;&#34;
-        if not isinstance(prefix, str) or not prefix:
-            raise ValueError(&#39;Invalid URC prefix&#39;)
+    def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
+        &#34;&#34;&#34;&#34;&#34;&#34;
         if vlog(VLOG_TAG) and not self.ready.is_set():
             _log.debug(&#39;Waiting for prior command/response completion&#39;)
         self.ready.wait()
         self.ready.clear()
-        urc = None
-        urc_buffer: str = &#39;&#39;
+        line: str = &#39;&#39;
         while self.serial.in_waiting &gt; 0:
-            urc_buffer += self._read()
-            if urc_buffer.endswith(read_until) and prefix in urc_buffer:
-                urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
+            line += self._read()
+            if line.endswith(read_until) and len(line) &gt; len(read_until):
                 break
-        if vlog(VLOG_TAG) and urc is not None:
-            _log.debug(&#39;Found URC: %d&#39;, urc)
         self.ready.set()
-        return urc
+        return line.strip()
     
     def _read(self) -&gt; str:
         &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
@@ -749,43 +727,6 @@ has completed or timed out.</dd>
     response = self._rx_buffer
     self._rx_buffer = &#39;&#39;
     return response</code></pre>
-</details>
-</dd>
-<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc"><code class="name flex">
-<span>def <span class="ident">get_urc</span></span>(<span>self, prefix: str, read_until: str = '\r\n') ‑> int|None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get the (next) Unsolicited Response Code if present.</p>
-<h2 id="returns">Returns</h2>
-<p>An integer code if present, or <code>None</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_urc(self, prefix: str, read_until: str = &#39;\r\n&#39;) -&gt; &#39;int|None&#39;:
-    &#34;&#34;&#34;Get the (next) Unsolicited Response Code if present.
-    
-    Returns:
-        An integer code if present, or `None`.
-    
-    &#34;&#34;&#34;
-    if not isinstance(prefix, str) or not prefix:
-        raise ValueError(&#39;Invalid URC prefix&#39;)
-    if vlog(VLOG_TAG) and not self.ready.is_set():
-        _log.debug(&#39;Waiting for prior command/response completion&#39;)
-    self.ready.wait()
-    self.ready.clear()
-    urc = None
-    urc_buffer: str = &#39;&#39;
-    while self.serial.in_waiting &gt; 0:
-        urc_buffer += self._read()
-        if urc_buffer.endswith(read_until) and prefix in urc_buffer:
-            urc = int(urc_buffer.replace(prefix, &#39;&#39;).strip())
-            break
-    if vlog(VLOG_TAG) and urc is not None:
-        _log.debug(&#39;Found URC: %d&#39;, urc)
-    self.ready.set()
-    return urc</code></pre>
 </details>
 </dd>
 <dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting"><code class="name flex">
@@ -977,6 +918,30 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
     return error</code></pre>
 </details>
 </dd>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_line"><code class="name flex">
+<span>def <span class="ident">read_line</span></span>(<span>self, read_until: str = '\r\n') ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
+    &#34;&#34;&#34;&#34;&#34;&#34;
+    if vlog(VLOG_TAG) and not self.ready.is_set():
+        _log.debug(&#39;Waiting for prior command/response completion&#39;)
+    self.ready.wait()
+    self.ready.clear()
+    line: str = &#39;&#39;
+    while self.serial.in_waiting &gt; 0:
+        line += self._read()
+        if line.endswith(read_until) and len(line) &gt; len(read_until):
+            break
+    self.ready.set()
+    return line.strip()</code></pre>
+</details>
+</dd>
 <dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer"><code class="name flex">
 <span>def <span class="ident">read_rx_buffer</span></span>(<span>self, timeout: int = 0, read_until: str = '') ‑> str|None</span>
 </code></dt>
@@ -1088,9 +1053,9 @@ If 0, will stop reading when no character is waiting.</dd>
 <h4><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer">AtCommandBuffer</a></code></h4>
 <ul class="two-column">
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_response">get_response</a></code></li>
-<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_urc">get_urc</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting">is_data_waiting</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response">read_at_response</a></code></li>
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_line" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_line">read_line</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer">read_rx_buffer</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command">send_at_command</a></code></li>
 </ul>
