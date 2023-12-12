@@ -15,7 +15,6 @@ import logging
 import time
 from dataclasses import dataclass
 from enum import IntEnum
-from threading import Event
 
 from serial import Serial
 
@@ -104,7 +103,7 @@ class ModemAtError(ModemError):
 class NimoModem:
     """A class for NIMO satellite IoT modem interaction."""
     # __slots__ = ('_modem', '_mobile_id',
-    #              '_mfr_code', '_modem_booted', '_ready',
+    #              '_mfr_code', '_modem_booted',
     #              )
     
     def __init__(self, serial_port: str, **kwargs) -> None:
@@ -133,12 +132,10 @@ class NimoModem:
         self._modem_booted: bool = False
         self._mobile_id: str = ''
         self._manufacturer: Manufacturer = Manufacturer.NONE
-        self._ready = Event()
-        self._ready.set()
     
     @property
     def is_ready(self) -> bool:
-        return self._ready.is_set()
+        return self._modem.ready.is_set()
     
     @property
     def crc_enabled(self) -> bool:
@@ -182,22 +179,17 @@ class NimoModem:
             `ModemAtError` for other cases of errored response.
         
         """
-        self._ready.wait()
-        self._ready.clear()
-        try:
-            self._modem.send_at_command(command)
-            err = self._modem.read_at_response(prefix, timeout)
-            if err == AtErrorCode.OK:
-                return self._modem.get_response()
-            elif err == AtErrorCode.TIMEOUT:
-                raise ModemTimeout
-            elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
-                raise ModemCrcConfig
-            else:
-                err = self.get_last_error_code()
-                raise ModemAtError(err.name)
-        finally:
-            self._ready.set()
+        self._modem.send_at_command(command)
+        err = self._modem.read_at_response(prefix, timeout)
+        if err == AtErrorCode.OK:
+            return self._modem.get_response()
+        elif err == AtErrorCode.TIMEOUT:
+            raise ModemTimeout
+        elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
+            raise ModemCrcConfig
+        else:
+            err = self.get_last_error_code()
+            raise ModemAtError(err.name)
     
     def connect(self) -> None:
         """Attach to the modem via serial communications.
@@ -293,12 +285,10 @@ class NimoModem:
         try:
             self._at_command_response(at_command)
             return True
-        except ModemAtError as exc:
-            if exc.error_code == AtErrorCode.CRC_CONFIG_MISMATCH:
-                _log.info('Attempting re-initialize with CRC enabled')
-                self._at_command_response(at_command)
-                return True
-            raise
+        except ModemCrcConfig:
+            _log.info('Attempting re-initialize with CRC enabled')
+            self._at_command_response(at_command)
+            return True
     
     def set_crc(self, enable: bool = False) -> bool:
         """Enable or disable CRC error checking on the modem serial port."""
@@ -998,7 +988,7 @@ class NimoModem:
         for event in events:
             if not cmd.endswith('='):
                 cmd += ','
-            cmd += f'{event[0].event[1]}'
+            cmd += f'{event[0]}.{event[1]}'
         self._at_command_response(cmd)
     
     def get_trace_events_cached(self) -> 'list[tuple[int, int]]':
