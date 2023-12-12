@@ -294,7 +294,7 @@ class AtCommandBuffer:
         try:
             return char.decode()
         except UnicodeDecodeError as exc:
-            _log.error('Unable to decode [%d] (%s)', char, exc)
+            _log.error('Unable to decode [%d] (%s)', ord(char), exc)
             return ''
     
     def _parsing_ok(self) -> AtParsingState:
