@@ -99,8 +99,6 @@ class AtCommandBuffer:
             _log.debug('Waiting for prior command completion')
         self.ready.wait()
         self.ready.clear()
-        if 'ATS80?' in at_command:
-            _log.debug('Somebody is querying error state!')
         dump_buffer = self.read_rx_buffer()
         if dump_buffer:
             _log.warning('Dumping RX buffer: %s', dprint(dump_buffer))
@@ -299,7 +297,8 @@ class AtCommandBuffer:
     
     def _parsing_ok(self) -> AtParsingState:
         """Internal helper for parsing valid response."""
-        _log.debug('Result OK')
+        if vlog(VLOG_TAG):
+            _log.debug('Result OK for %s', dprint(self._pending_command))
         if not self.crc:
             if 'CRC=1\r' in self._pending_command.upper():
                 _log.debug('Command enabled CRC - set flag')
@@ -317,7 +316,7 @@ class AtCommandBuffer:
     
     def _parsing_error(self) -> AtParsingState:
         """Internal helper for parsing errored response."""
-        _log.warning('Result ERROR')
+        _log.warning('Result ERROR for: %s', dprint(self._pending_command))
         if self.crc or self.serial.in_waiting > 0:
             return AtParsingState.CRC
         else:
