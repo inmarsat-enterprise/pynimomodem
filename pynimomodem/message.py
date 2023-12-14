@@ -94,13 +94,13 @@ class NimoMessage:
     
     @property
     def codec_sin(self) -> int:
-        if self.payload and len(self.payload) > 2:
+        if self.payload and len(self.payload) > 0:
             return int(self.payload[0])
         return -1
         
     @property
     def codec_min(self) -> int:
-        if self.payload and len(self.payload) > 2:
+        if self.payload and len(self.payload) > 1:
             return int(self.payload[1])
         return -1
     
