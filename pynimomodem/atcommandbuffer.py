@@ -51,6 +51,7 @@ class AtCommandBuffer:
         self._char_delay: float = 8 / serial.baudrate
         self._pending_command: str = None
         self._rx_buffer: str = ''
+        self._orphaned: str = ''
         self.ready = threading.Event()
         self.ready.set()
     
@@ -96,20 +97,22 @@ class AtCommandBuffer:
         
         """
         if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug('Waiting for prior command completion')
+            _log.debug('%s waiting for prior command completion', at_command)
         self.ready.wait()
         self.ready.clear()
-        dump_buffer = self.read_rx_buffer()
-        if dump_buffer:
-            _log.warning('Dumping RX buffer: %s', dprint(dump_buffer))
         self._pending_command = at_command
         if self.crc and '*' not in at_command:
             self._pending_command = apply_crc(at_command)
         self._pending_command += '\r'
-        if vlog(VLOG_TAG):
-            _log.debug('Sending on serial: %s', dprint(self._pending_command))
+        dump_buffer = self.read_rx_buffer()
         self.serial.write(self._pending_command.encode())
         self.serial.flush()   # ensure it gets sent
+        if vlog(VLOG_TAG):
+            _log.debug('Sent on serial: %s', dprint(self._pending_command))
+        if dump_buffer:
+            _log.warning('Dumped RX buffer: %s (sending %s)',
+                         dprint(dump_buffer), dprint(self._pending_command))
+            self._orphaned += dump_buffer
     
     def read_at_response(self,
                          prefix: str = None,
@@ -157,6 +160,13 @@ class AtCommandBuffer:
                     self._rx_buffer += self._read()
                 last = self._rx_buffer[-1]
                 if last == '\n':
+                    if (parsing == AtParsingState.ECHO or
+                        not self._rx_buffer.startswith('\r\n')):
+                        xdata = self._rx_buffer.split('\n', 1)[0] + '\n'
+                        _log.warning('Orphaned pre-command data: %s',
+                                     dprint(xdata))
+                        self._orphaned += xdata
+                        self._rx_buffer = self._rx_buffer.replace(xdata, '', 1)
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
                         parsing = self._parsing_ok()
@@ -177,7 +187,13 @@ class AtCommandBuffer:
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == '\r':
-                    if self._rx_buffer == self._pending_command:
+                    if self._rx_buffer.endswith(self._pending_command):
+                        if self._rx_buffer != self._pending_command:
+                            xdata = self._rx_buffer.replace(
+                                self._pending_command, '')
+                            _log.warning('Orphaned pre-command data: %s',
+                                         dprint(xdata))
+                            self._orphaned += xdata
                         if vlog(VLOG_TAG):
                             _log.debug('Echo received - clearing RX buffer')
                         self._rx_buffer = ''
@@ -292,7 +308,7 @@ class AtCommandBuffer:
         try:
             return char.decode()
         except UnicodeDecodeError as exc:
-            _log.error('Unable to decode [%d] (%s)', ord(char), exc)
+            _log.error('Discarding undecodable [%d] (%s)', ord(char), exc)
             return ''
     
     def _parsing_ok(self) -> AtParsingState:
@@ -339,3 +355,9 @@ class AtCommandBuffer:
         if self._rx_buffer.endswith(RES_OK):
             return self._parsing_ok()
         return self._parsing_error()
+
+    def get_ophaned(self) -> str:
+        """Gets orphaned data and clears the orphaned buffer"""
+        orphaned = self._orphaned
+        self._orphaned = ''
+        return orphaned
