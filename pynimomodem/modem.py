@@ -89,6 +89,10 @@ class ModemTimeout(ModemError):
     """Serial response timeout."""
 
 
+class ModemCrc(ModemError):
+    """Error calculating response CRC."""
+
+
 class ModemCrcConfig(ModemError):
     """Request/response mismatch of CRC presence."""
 
@@ -187,6 +191,8 @@ class NimoModem:
             raise ModemTimeout
         elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
             raise ModemCrcConfig
+        elif err == AtErrorCode.INVALID_CRC:
+            raise ModemCrc
         else:
             err = self.get_last_error_code()
             raise ModemAtError(err.name)
