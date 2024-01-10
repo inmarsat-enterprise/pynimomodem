@@ -195,6 +195,8 @@ class NimoModem:
             raise ModemCrc
         else:
             err = self.get_last_error_code()
+            if err == AtErrorCode.INVALID_CRC:
+                raise ModemCrc
             raise ModemAtError(err.name)
     
     def connect(self) -> None:
