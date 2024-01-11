@@ -383,7 +383,10 @@ class NimoModem:
     
     def get_temperature(self) -> 'int|None':
         """Get the processor temperature in Celsius."""
-        return int(int(self._at_command_response('ATS85?')) / 10)
+        try:
+            return int(int(self._at_command_response('ATS85?')) / 10)
+        except ValueError:
+            return None
     
     def is_transmit_allowed(self) -> bool:
         """Indicates if the modem is able to transmit data."""
@@ -426,7 +429,10 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QSCN'
             prefix = '+QSCN:'
-        return int(self._at_command_response(cmd, prefix)) / 100
+        try:
+            return int(self._at_command_response(cmd, prefix)) / 100
+        except ValueError:
+            return 0
     
     def get_signal_quality(self) -> SignalQuality:
         """Get a qualitative indicator from 0..5 of the satellite signal."""
@@ -829,7 +835,10 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QGNSSCW?'
             prefix = '+QGNSSCW:'
-        return int(self._at_command_response(cmd, prefix))
+        try:
+            return int(self._at_command_response(cmd, prefix))
+        except ValueError:
+            return 0
     
     def set_gnss_continuous(self, interval: int) -> None:
         """Set the modem's GNSS continuous refresh interval in seconds.
@@ -943,7 +952,10 @@ class NimoModem:
         if self._mfr != Manufacturer.ORBCOMM:
             raise ModemError('Operation not supported by this modem')
         cmd = 'ATS88?'
-        return int(self._at_command_response(cmd))
+        try:
+            return int(self._at_command_response(cmd))
+        except ValueError:
+            return 0
     
     def set_event_mask(self, event_mask: int) -> None:
         """Set monitored events that trigger event notification."""
@@ -960,7 +972,10 @@ class NimoModem:
         if self._mfr != Manufacturer.ORBCOMM:
             raise ModemError('Operation not supported by this modem')
         cmd = 'ATS89?'
-        return int(self._at_command_response(cmd))
+        try:
+            return int(self._at_command_response(cmd))
+        except ValueError:
+            return 0
     
     def get_trace_event_monitor(self,
                                 asserted_only: bool = False,
@@ -1030,7 +1045,10 @@ class NimoModem:
             raise ValueError('Modem does not support this feature')
         cmd = 'AT+QURCCTL?'
         prefix = '+QURCCTL:'
-        return int(self._at_command_response(cmd, prefix), 16)
+        try:
+            return int(self._at_command_response(cmd, prefix), 16)
+        except ValueError:
+            return 0
     
     def set_urc_ctl(self, qurc_mask: int) -> None:
         """Set the event list that trigger Unsolicited Report Codes."""
@@ -1152,7 +1170,10 @@ class NimoModem:
     def get_register(self, s_register_number: int) -> 'int|None':
         """Get a modem register value."""
         cmd = f'ATS{s_register_number}?'
-        return int(self._at_command_response(cmd))
+        try:
+            return int(self._at_command_response(cmd))
+        except ValueError:
+            return None
     
     def set_register(self, s_register_number: int, value: int) -> None:
         """Set a modem register value."""
