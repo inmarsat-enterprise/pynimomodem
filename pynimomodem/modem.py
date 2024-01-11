@@ -510,8 +510,8 @@ class NimoModem:
         message_name = kwargs.get('message_name', '')
         priority = MessagePriority(kwargs.get('priority',
                                               MessagePriority.LOW.value))
-        codec_sin = kwargs.get('codec_sin', -1)
-        codec_min = kwargs.get('codec_min', -1)
+        codec_sin: int = kwargs.get('codec_sin', -1)
+        codec_min: int = kwargs.get('codec_min', -1)
         if codec_sin > -1:
             data_size += 1
             msg_payload_sin_min += codec_sin.to_bytes(1, 'big')
@@ -543,7 +543,7 @@ class NimoModem:
         # Convert to base64 string for serial efficiency
         #   no effect on OTA size, modem always decodes and sends raw bytes OTA
         data_format = DataFormat.BASE64
-        formatted_data = base64.b64encode(data[2:]).decode('utf-8')
+        formatted_data = base64.b64encode(data[data_index:]).decode('utf-8')
         cmd = 'AT%MGRT='
         codec_sep = '.'
         if self._mfr == Manufacturer.QUECTEL:
