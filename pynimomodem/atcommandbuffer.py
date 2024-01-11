@@ -345,8 +345,9 @@ class AtCommandBuffer:
         """Internal helper for parsing short code responses."""
         if vlog(VLOG_TAG):
             _log.debug('Check short response for: %s', dprint(self._rx_buffer))
-        if self._rx_buffer.startswith('\r\n'):
-            # indicates verbose just read too fast, keep parsing
+        if (self._rx_buffer.startswith('\r\n') or
+            not self._rx_buffer.endswith((RES_OK, RES_ERR))):
+            # just read too fast, keep parsing
             return current
         if self._rx_buffer.endswith((RES_OK, RES_ERR)):
             # check if it's really a response code or part of data
