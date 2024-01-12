@@ -719,15 +719,18 @@ class NimoModem:
         elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
             message_state.state = MessageState(int(field_data))
-            _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
         elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
             message_state.length = int(field_data)
-            _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
         elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
             message_state.bytes_delivered = int(field_data)
-            _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
         else:
             _log.warning(&#39;Unhandled field index %d (%s) for manufacturer %s&#39;,
                          field_idx, &#39;MO&#39; if is_mo else &#39;MT&#39;, mfr.name)
@@ -982,8 +985,8 @@ class NimoModem:
                 response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
                 response = response.split(&#39;,&#39;)[9]
             geobeam = GeoBeam(int(response))
-        satellite_loc = get_satellite_location(modem_location, geobeam)
-        return satellite_loc if satellite_loc.azimuth else None
+            return get_satellite_location(modem_location, geobeam)
+        return None
     
     def get_event_mask(self) -&gt; int:
         &#34;&#34;&#34;Get the set of monitored events that trigger event notification.&#34;&#34;&#34;
@@ -2051,15 +2054,18 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
             message_state.state = MessageState(int(field_data))
-            _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message state: %s&#39;, message_state.state.name)
         elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
             message_state.length = int(field_data)
-            _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Message size: %d bytes&#39;, message_state.length)
         elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
             message_state.bytes_delivered = int(field_data)
-            _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
+            if vlog(VLOG_TAG):
+                _log.debug(&#39;Bytes delivered: %d&#39;, message_state.bytes_delivered)
         else:
             _log.warning(&#39;Unhandled field index %d (%s) for manufacturer %s&#39;,
                          field_idx, &#39;MO&#39; if is_mo else &#39;MT&#39;, mfr.name)
@@ -2314,8 +2320,8 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
                 response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
                 response = response.split(&#39;,&#39;)[9]
             geobeam = GeoBeam(int(response))
-        satellite_loc = get_satellite_location(modem_location, geobeam)
-        return satellite_loc if satellite_loc.azimuth else None
+            return get_satellite_location(modem_location, geobeam)
+        return None
     
     def get_event_mask(self) -&gt; int:
         &#34;&#34;&#34;Get the set of monitored events that trigger event notification.&#34;&#34;&#34;
@@ -3344,8 +3350,8 @@ indicators.</p></div>
             response = response.replace(&#39;+QEVENT:&#39;, &#39;&#39;).strip()
             response = response.split(&#39;,&#39;)[9]
         geobeam = GeoBeam(int(response))
-    satellite_loc = get_satellite_location(modem_location, geobeam)
-    return satellite_loc if satellite_loc.azimuth else None</code></pre>
+        return get_satellite_location(modem_location, geobeam)
+    return None</code></pre>
 </details>
 </dd>
 <dt id="pynimomodem.modem.NimoModem.get_signal_quality"><code class="name flex">
