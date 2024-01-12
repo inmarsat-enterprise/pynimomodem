@@ -358,7 +358,12 @@ def get_satellite_location(modem_location: ModemLocation,
     Returns:
         `SatelliteLocation` including azimuth, elevation from the modem.
     
+    Raises:
+        `ValueError` if modem_location is not valid
+    
     """
+    if not isinstance(modem_location, ModemLocation):
+        raise ValueError('Invalid modem location')
     # internal helper functions
     def location_to_point(latitude: float,
                         longitude: float,

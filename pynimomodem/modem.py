@@ -682,15 +682,18 @@ class NimoModem:
         elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
             message_state.state = MessageState(int(field_data))
-            _log.debug('Message state: %s', message_state.state.name)
+            if vlog(VLOG_TAG):
+                _log.debug('Message state: %s', message_state.state.name)
         elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
             message_state.length = int(field_data)
-            _log.debug('Message size: %d bytes', message_state.length)
+            if vlog(VLOG_TAG):
+                _log.debug('Message size: %d bytes', message_state.length)
         elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
             message_state.bytes_delivered = int(field_data)
-            _log.debug('Bytes delivered: %d', message_state.bytes_delivered)
+            if vlog(VLOG_TAG):
+                _log.debug('Bytes delivered: %d', message_state.bytes_delivered)
         else:
             _log.warning('Unhandled field index %d (%s) for manufacturer %s',
                          field_idx, 'MO' if is_mo else 'MT', mfr.name)
@@ -945,8 +948,8 @@ class NimoModem:
                 response = response.replace('+QEVENT:', '').strip()
                 response = response.split(',')[9]
             geobeam = GeoBeam(int(response))
-        satellite_loc = get_satellite_location(modem_location, geobeam)
-        return satellite_loc if satellite_loc.azimuth else None
+            return get_satellite_location(modem_location, geobeam)
+        return None
     
     def get_event_mask(self) -> int:
         """Get the set of monitored events that trigger event notification."""
