@@ -136,12 +136,12 @@ class AtErrorCode(NimoIntEnum):
     ERROR = 4
     INVALID_CRC = 100
     UNKNOWN_COMMAND = 101
-    INVALID_COMMAND_PARAMETERS = 102
-    MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE = 103
+    INVALID_PARAMETER = 102
+    MESSAGE_LENGTH_MISMATCH = 103
     RESERVED_104 = 104
     SYSTEM_ERROR = 105
-    QUEUE_INSUFFICIENT_RESOURCES = 106
-    DUPLICATE_MESSAGE_NAME = 107
+    TX_QUEUE_FULL = 106
+    DUPLICATE_NAME = 107
     GNSS_TIMEOUT = 108
     MESSAGE_UNAVAILABLE = 109
     RESERVED_110 = 110
@@ -640,12 +640,12 @@ class GeoSatellite(NimoFloatEnum):
     ERROR = 4
     INVALID_CRC = 100
     UNKNOWN_COMMAND = 101
-    INVALID_COMMAND_PARAMETERS = 102
-    MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE = 103
+    INVALID_PARAMETER = 102
+    MESSAGE_LENGTH_MISMATCH = 103
     RESERVED_104 = 104
     SYSTEM_ERROR = 105
-    QUEUE_INSUFFICIENT_RESOURCES = 106
-    DUPLICATE_MESSAGE_NAME = 107
+    TX_QUEUE_FULL = 106
+    DUPLICATE_NAME = 107
     GNSS_TIMEOUT = 108
     MESSAGE_UNAVAILABLE = 109
     RESERVED_110 = 110
@@ -669,7 +669,7 @@ class GeoSatellite(NimoFloatEnum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME"><code class="name">var <span class="ident">DUPLICATE_MESSAGE_NAME</span></code></dt>
+<dt id="pynimomodem.constants.AtErrorCode.DUPLICATE_NAME"><code class="name">var <span class="ident">DUPLICATE_NAME</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -681,15 +681,15 @@ class GeoSatellite(NimoFloatEnum):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS"><code class="name">var <span class="ident">INVALID_COMMAND_PARAMETERS</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="pynimomodem.constants.AtErrorCode.INVALID_CRC"><code class="name">var <span class="ident">INVALID_CRC</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE"><code class="name">var <span class="ident">MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE</span></code></dt>
+<dt id="pynimomodem.constants.AtErrorCode.INVALID_PARAMETER"><code class="name">var <span class="ident">INVALID_PARAMETER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_MISMATCH"><code class="name">var <span class="ident">MESSAGE_LENGTH_MISMATCH</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -698,10 +698,6 @@ class GeoSatellite(NimoFloatEnum):
 <div class="desc"></div>
 </dd>
 <dt id="pynimomodem.constants.AtErrorCode.OK"><code class="name">var <span class="ident">OK</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES"><code class="name">var <span class="ident">QUEUE_INSUFFICIENT_RESOURCES</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -726,6 +722,10 @@ class GeoSatellite(NimoFloatEnum):
 <div class="desc"></div>
 </dd>
 <dt id="pynimomodem.constants.AtErrorCode.TIMEOUT"><code class="name">var <span class="ident">TIMEOUT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.TX_QUEUE_FULL"><code class="name">var <span class="ident">TX_QUEUE_FULL</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -3351,21 +3351,21 @@ mobile-terminated messages to be delivered by the network.</p></div>
 <h4><code><a title="pynimomodem.constants.AtErrorCode" href="#pynimomodem.constants.AtErrorCode">AtErrorCode</a></code></h4>
 <ul class="">
 <li><code><a title="pynimomodem.constants.AtErrorCode.CRC_CONFIG_MISMATCH" href="#pynimomodem.constants.AtErrorCode.CRC_CONFIG_MISMATCH">CRC_CONFIG_MISMATCH</a></code></li>
-<li><code><a title="pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME" href="#pynimomodem.constants.AtErrorCode.DUPLICATE_MESSAGE_NAME">DUPLICATE_MESSAGE_NAME</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.DUPLICATE_NAME" href="#pynimomodem.constants.AtErrorCode.DUPLICATE_NAME">DUPLICATE_NAME</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.ERROR" href="#pynimomodem.constants.AtErrorCode.ERROR">ERROR</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT" href="#pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT">GNSS_TIMEOUT</a></code></li>
-<li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS" href="#pynimomodem.constants.AtErrorCode.INVALID_COMMAND_PARAMETERS">INVALID_COMMAND_PARAMETERS</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_CRC" href="#pynimomodem.constants.AtErrorCode.INVALID_CRC">INVALID_CRC</a></code></li>
-<li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE" href="#pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE">MESSAGE_LENGTH_EXCEEDS_FORMAT_SIZE</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_PARAMETER" href="#pynimomodem.constants.AtErrorCode.INVALID_PARAMETER">INVALID_PARAMETER</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_MISMATCH" href="#pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_MISMATCH">MESSAGE_LENGTH_MISMATCH</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE" href="#pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE">MESSAGE_UNAVAILABLE</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.OK" href="#pynimomodem.constants.AtErrorCode.OK">OK</a></code></li>
-<li><code><a title="pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES" href="#pynimomodem.constants.AtErrorCode.QUEUE_INSUFFICIENT_RESOURCES">QUEUE_INSUFFICIENT_RESOURCES</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.READ_ONLY_PARAMETER" href="#pynimomodem.constants.AtErrorCode.READ_ONLY_PARAMETER">READ_ONLY_PARAMETER</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_104" href="#pynimomodem.constants.AtErrorCode.RESERVED_104">RESERVED_104</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_110" href="#pynimomodem.constants.AtErrorCode.RESERVED_110">RESERVED_110</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.RESERVED_111" href="#pynimomodem.constants.AtErrorCode.RESERVED_111">RESERVED_111</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.SYSTEM_ERROR" href="#pynimomodem.constants.AtErrorCode.SYSTEM_ERROR">SYSTEM_ERROR</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.TIMEOUT" href="#pynimomodem.constants.AtErrorCode.TIMEOUT">TIMEOUT</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.TX_QUEUE_FULL" href="#pynimomodem.constants.AtErrorCode.TX_QUEUE_FULL">TX_QUEUE_FULL</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.UNABLE_TO_DELETE" href="#pynimomodem.constants.AtErrorCode.UNABLE_TO_DELETE">UNABLE_TO_DELETE</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.UNKNOWN_COMMAND" href="#pynimomodem.constants.AtErrorCode.UNKNOWN_COMMAND">UNKNOWN_COMMAND</a></code></li>
 </ul>

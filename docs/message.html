@@ -131,13 +131,13 @@ class NimoMessage:
     
     @property
     def codec_sin(self) -&gt; int:
-        if self.payload and len(self.payload) &gt; 2:
+        if self.payload and len(self.payload) &gt; 0:
             return int(self.payload[0])
         return -1
         
     @property
     def codec_min(self) -&gt; int:
-        if self.payload and len(self.payload) &gt; 2:
+        if self.payload and len(self.payload) &gt; 1:
             return int(self.payload[1])
         return -1
     
@@ -409,13 +409,13 @@ def bytes_delivered(self) -&gt; int:
     
     @property
     def codec_sin(self) -&gt; int:
-        if self.payload and len(self.payload) &gt; 2:
+        if self.payload and len(self.payload) &gt; 0:
             return int(self.payload[0])
         return -1
         
     @property
     def codec_min(self) -&gt; int:
-        if self.payload and len(self.payload) &gt; 2:
+        if self.payload and len(self.payload) &gt; 1:
             return int(self.payload[1])
         return -1
     
@@ -479,7 +479,7 @@ def bytes_delivered(self) -&gt; int:
 </summary>
 <pre><code class="python">@property
 def codec_min(self) -&gt; int:
-    if self.payload and len(self.payload) &gt; 2:
+    if self.payload and len(self.payload) &gt; 1:
         return int(self.payload[1])
     return -1</code></pre>
 </details>
@@ -493,7 +493,7 @@ def codec_min(self) -&gt; int:
 </summary>
 <pre><code class="python">@property
 def codec_sin(self) -&gt; int:
-    if self.payload and len(self.payload) &gt; 2:
+    if self.payload and len(self.payload) &gt; 0:
         return int(self.payload[0])
     return -1</code></pre>
 </details>

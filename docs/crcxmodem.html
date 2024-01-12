@@ -64,9 +64,9 @@ def validate_crc(response: str, sep = CRCXMODEM_SEPARATOR) -&gt; bool:
         return False
     if vlog(VLOG_TAG):
         _log.debug(&#39;Validating CRC for %s&#39;, dprint(response))
-    response_crc = response.split(sep, 1)[1]
-    expected = _calculate_crc(response)
-    received = int(response_crc, 16)
+    res, res_crc = response.rsplit(sep, 1)
+    expected = _calculate_crc(res)
+    received = int(res_crc, 16)
     return expected == received
 
 
@@ -104,15 +104,11 @@ def _update_crc(crc: int, c: int) -&gt; int:
     crc = crc &amp; 0xFFFF
     return crc
 
-def _calculate_crc(string: str,
-                   initial_value: int = 0xFFFF,
-                   sep: str = CRCXMODEM_SEPARATOR) -&gt; int:
+def _calculate_crc(string: str, initial_value: int = 0xFFFF) -&gt; int:
     &#34;&#34;&#34;Calculates the CRC of a string.&#34;&#34;&#34;
     _initialize_crc_table()
     crc: int = initial_value
     for c in string:
-        if c == sep:
-            break
         crc = _update_crc(crc, ord(c))
     return crc</code></pre>
 </details>
@@ -158,9 +154,9 @@ def _calculate_crc(string: str,
         return False
     if vlog(VLOG_TAG):
         _log.debug(&#39;Validating CRC for %s&#39;, dprint(response))
-    response_crc = response.split(sep, 1)[1]
-    expected = _calculate_crc(response)
-    received = int(response_crc, 16)
+    res, res_crc = response.rsplit(sep, 1)
+    expected = _calculate_crc(res)
+    received = int(res_crc, 16)
     return expected == received</code></pre>
 </details>
 </dd>

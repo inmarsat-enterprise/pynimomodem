@@ -464,7 +464,7 @@ def get_satellite_location(modem_location: ModemLocation,
 
     azimuth = None
     elevation = None
-    if isinstance(geobeam, GeoBeam):
+    if isinstance(geobeam, GeoBeam) and geobeam &gt; 0:
         satellite_name = geobeam.name.split(&#39;_&#39;)[0]
         satellite = GeoSatellite[satellite_name]
     else:
@@ -729,7 +729,7 @@ assumed from fixed locations of satellites.</dd>
 
     azimuth = None
     elevation = None
-    if isinstance(geobeam, GeoBeam):
+    if isinstance(geobeam, GeoBeam) and geobeam &gt; 0:
         satellite_name = geobeam.name.split(&#39;_&#39;)[0]
         satellite = GeoSatellite[satellite_name]
     else:

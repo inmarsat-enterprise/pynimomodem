@@ -51,6 +51,7 @@ VRES_OK = &#39;\r\nOK\r\n&#39;
 VRES_ERR = &#39;\r\nERROR\r\n&#39;
 RES_OK = &#39;0\r&#39;
 RES_ERR = &#39;4\r&#39;
+ORPHAN_MAX_BYTES = 500
 
 _log = logging.getLogger(__name__)
 
@@ -82,14 +83,24 @@ class AtCommandBuffer:
         self._char_delay: float = 8 / serial.baudrate
         self._pending_command: str = None
         self._rx_buffer: str = &#39;&#39;
-        self.ready = threading.Event()
-        self.ready.set()
+        self._orphaned: str = &#39;&#39;
+        self._lock = threading.Lock()
     
     def is_data_waiting(self) -&gt; bool:
         &#34;&#34;&#34;Indicates if data is in the serial receive buffer.&#34;&#34;&#34;
         return self.serial.in_waiting &gt; 0
     
-    def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+    def _update_orphaned(self, to_add: str, max_size: int = ORPHAN_MAX_BYTES):
+        if len(self._orphaned) &gt; max_size:
+            _log.warning(&#39;Dumping orphaned data: %s&#39;, dprint(self._orphaned))
+            self._orphaned = &#39;&#39;
+        self._orphaned += to_add
+    
+    def read_rx_buffer(self,
+                       read_until: str = &#39;&#39;,
+                       timeout: int = 0,
+                       strip: bool = False,
+                       ) -&gt; &#39;str|None&#39;:
         &#34;&#34;&#34;Reads data from the serial receive buffer.
         
         Args:
@@ -102,47 +113,50 @@ class AtCommandBuffer:
         &#34;&#34;&#34;
         if not isinstance(timeout, int):
             timeout = 0
-        self.serial.flush()   # wait for anything sent prior to be done
-        rx_data = &#39;&#39;
-        start_time = time.time()
-        while (time.time() - start_time &lt; timeout or timeout == 0):
-            while (self.serial.in_waiting &gt; 0):
-                rx_data += self._read()
-            if timeout == 0 or rx_data.endswith(read_until):
-                break
+        with self._lock:
+            self.serial.flush()   # wait for anything sent prior to be done
+            rx = &#39;&#39;
+            start_time = time.time()
+            while (time.time() - start_time &lt; timeout or timeout == 0):
+                while (self.serial.in_waiting &gt; 0):
+                    rx += self._read()
+                if ((read_until and rx.endswith(read_until) and
+                     len(rx) &gt; len(read_until)) or timeout == 0):
+                    break
         if vlog(VLOG_TAG):
-            if rx_data:
-                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+            if rx:
+                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx))
             else:
                 _log.debug(&#39;No data waiting on serial buffer&#39;)
-        return rx_data
+        return rx.strip() if strip else rx
     
     def send_at_command(self, at_command: str) -&gt; None:
         &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
         
-        Use `read_at_response` then `get_resopnse` after sending the command.
+        Must be followed by `read_at_response`.
+        Use `get_response` to retrieve expected output (not OK or ERROR).
         
         Args:
             at_command: The command to send.
         
         &#34;&#34;&#34;
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug(&#39;Waiting for prior command completion&#39;)
-        self.ready.wait()
-        self.ready.clear()
-        if &#39;ATS80?&#39; in at_command:
-            _log.debug(&#39;Somebody is querying error state!&#39;)
         dump_buffer = self.read_rx_buffer()
-        if dump_buffer:
-            _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+        if self._lock.locked():
+            _log.debug(&#39;%s waiting for pending command %s&#39;,
+                       at_command, self._pending_command)
+        self._lock.acquire()
         self._pending_command = at_command
         if self.crc and &#39;*&#39; not in at_command:
             self._pending_command = apply_crc(at_command)
         self._pending_command += &#39;\r&#39;
-        if vlog(VLOG_TAG):
-            _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
         self.serial.write(self._pending_command.encode())
         self.serial.flush()   # ensure it gets sent
+        if dump_buffer:
+            _log.warning(&#39;Orphaned RX buffer: %s (sending %s)&#39;,
+                         dprint(dump_buffer), dprint(self._pending_command))
+            self._update_orphaned(dump_buffer)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Sent on serial: %s&#39;, dprint(self._pending_command))
     
     def read_at_response(self,
                          prefix: str = None,
@@ -190,6 +204,13 @@ class AtCommandBuffer:
                     self._rx_buffer += self._read()
                 last = self._rx_buffer[-1]
                 if last == &#39;\n&#39;:
+                    if (parsing == AtParsingState.ECHO or
+                        not self._rx_buffer.startswith(&#39;\r\n&#39;)):
+                        xdata = self._rx_buffer.split(&#39;\n&#39;, 1)[0] + &#39;\n&#39;
+                        _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                     dprint(xdata))
+                        self._update_orphaned(xdata)
+                        self._rx_buffer = self._rx_buffer.replace(xdata, &#39;&#39;, 1)
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
                         parsing = self._parsing_ok()
@@ -210,7 +231,13 @@ class AtCommandBuffer:
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == &#39;\r&#39;:
-                    if self._rx_buffer == self._pending_command:
+                    if self._rx_buffer.endswith(self._pending_command):
+                        if self._rx_buffer != self._pending_command:
+                            xdata = self._rx_buffer.replace(
+                                self._pending_command, &#39;&#39;)
+                            _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                         dprint(xdata))
+                            self._update_orphaned(xdata)
                         if vlog(VLOG_TAG):
                             _log.debug(&#39;Echo received - clearing RX buffer&#39;)
                         self._rx_buffer = &#39;&#39;
@@ -245,11 +272,16 @@ class AtCommandBuffer:
         if vlog(VLOG_TAG) and self._rx_buffer:
             _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
         if parsing &lt; AtParsingState.OK:
-            _log.warning(&#39;AT command timeout during parsing&#39;)
-            if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
-                _log.info(&#39;Detected non-verbose - setting flag&#39;)
-                self.verbose = False
+            if result_ok:
+                if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+                    _log.info(&#39;Detected non-verbose - setting flag&#39;)
+                    self.verbose = False
+                elif self.crc and not crc_found:
+                    _log.info(&#39;CRC expected but not found - clearing flag&#39;)
+                    self.crc = False
+                    error = AtErrorCode.CRC_CONFIG_MISMATCH
             else:
+                _log.warning(&#39;AT command timeout during parsing&#39;)
                 error = AtErrorCode.TIMEOUT
         elif parsing == AtParsingState.ERROR:
             error = AtErrorCode.ERROR
@@ -273,13 +305,11 @@ class AtCommandBuffer:
             to_remove = VRES_OK if self.verbose else RES_OK
             self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
             if vlog(VLOG_TAG):
-                _log.debug(&#39;Removed result code (%s): %s&#39;,
-                           dprint(to_remove), dprint(self._rx_buffer))
+                _log.debug(&#39;Removed result code: %s&#39;, dprint(self._rx_buffer))
             if prefix:
                 self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
                 if vlog(VLOG_TAG):
-                    _log.debug(&#39;Removed prefix (%s): %s&#39;,
-                               dprint(prefix), dprint(self._rx_buffer))
+                    _log.debug(&#39;Removed prefix: %s&#39;, dprint(self._rx_buffer))
             self._rx_buffer = self._rx_buffer.strip()
             if vlog(VLOG_TAG):
                 _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
@@ -291,7 +321,8 @@ class AtCommandBuffer:
                            dprint(self._rx_buffer))
         # cleanup
         self._pending_command = &#39;&#39;
-        self.ready.set()
+        if self._lock.locked():
+            self._lock.release()
         return error
     
     def get_response(self) -&gt; str:
@@ -300,40 +331,29 @@ class AtCommandBuffer:
         self._rx_buffer = &#39;&#39;
         return response
     
-    def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
-        &#34;&#34;&#34;&#34;&#34;&#34;
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug(&#39;Waiting for prior command/response completion&#39;)
-        self.ready.wait()
-        self.ready.clear()
-        line: str = &#39;&#39;
-        while self.serial.in_waiting &gt; 0:
-            line += self._read()
-            if line.endswith(read_until) and len(line) &gt; len(read_until):
-                break
-        self.ready.set()
-        return line.strip()
-    
     def _read(self) -&gt; str:
         &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
         char = self.serial.read()
         try:
             return char.decode()
         except UnicodeDecodeError as exc:
-            _log.error(&#39;Unable to decode [%d] (%s)&#39;, char, exc)
+            _log.error(&#39;Discarding undecodable [%d] (%s)&#39;, ord(char), exc)
             return &#39;&#39;
     
     def _parsing_ok(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
-        _log.debug(&#39;Result OK&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Result OK for %s&#39;, dprint(self._pending_command))
         if not self.crc:
             if &#39;CRC=1\r&#39; in self._pending_command.upper():
-                _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                _log.debug(&#39;%s enabled CRC - set flag&#39;, self._pending_command)
                 self.crc = True
                 return AtParsingState.CRC
         else:
-            if &#39;CRC=0\r&#39; in self._pending_command.upper():
-                _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+            if (&#39;CRC=0\r&#39; in self._pending_command.upper() or
+                (&#39;Z&#39; in self._pending_command.upper() and
+                 not self.serial.in_waiting)):
+                _log.debug(&#39;%s disabled CRC - reset flag&#39;, self._pending_command)
                 self.crc = False
             else:
                 return AtParsingState.CRC
@@ -341,7 +361,7 @@ class AtCommandBuffer:
     
     def _parsing_error(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
-        _log.warning(&#39;Result ERROR&#39;)
+        _log.warning(&#39;Result ERROR for: %s&#39;, dprint(self._pending_command))
         if self.crc or self.serial.in_waiting &gt; 0:
             return AtParsingState.CRC
         else:
@@ -352,18 +372,30 @@ class AtCommandBuffer:
     
     def _parsing_short(self, current: AtParsingState = None) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing short code responses.&#34;&#34;&#34;
-        if vlog(VLOG_TAG):
-            _log.debug(&#39;Check short response for: %s&#39;, dprint(self._rx_buffer))
-        if (not self._rx_buffer.endswith((RES_OK, RES_ERR)) or
-            (self.verbose and self._rx_buffer.startswith(&#39;\r\n&#39;))):
-            # just reading too fast, wait for next character
+        if (self._rx_buffer.startswith(&#39;\r\n&#39;) or
+            not self._rx_buffer.endswith((RES_OK, RES_ERR))):
+            # just read too fast, keep parsing
             return current
+        if self._rx_buffer.endswith((RES_OK, RES_ERR)):
+            # check if it&#39;s really a response code or part of data
+            rc = RES_OK if self._rx_buffer.endswith(RES_OK) else RES_ERR
+            if (&#39;\r\n&#39; in self._rx_buffer and
+                self._rx_buffer.split(&#39;\r\n&#39;)[-1] != rc):
+                # doesn&#39;t actually end in a result code, keep parsing
+                return current
         if self.verbose:
-            _log.warning(&#39;Clearing verbose flag due to short response match&#39;)
+            _log.warning(&#39;Clearing verbose flag due to short response: %s&#39;,
+                         dprint(self._rx_buffer))
             self.verbose = False
         if self._rx_buffer.endswith(RES_OK):
             return self._parsing_ok()
-        return self._parsing_error()</code></pre>
+        return self._parsing_error()
+
+    def get_ophaned(self) -&gt; str:
+        &#34;&#34;&#34;Gets orphaned data and clears the orphaned buffer&#34;&#34;&#34;
+        orphaned = self._orphaned
+        self._orphaned = &#39;&#39;
+        return orphaned</code></pre>
 </details>
 </section>
 <section>
@@ -428,14 +460,24 @@ has completed or timed out.</dd>
         self._char_delay: float = 8 / serial.baudrate
         self._pending_command: str = None
         self._rx_buffer: str = &#39;&#39;
-        self.ready = threading.Event()
-        self.ready.set()
+        self._orphaned: str = &#39;&#39;
+        self._lock = threading.Lock()
     
     def is_data_waiting(self) -&gt; bool:
         &#34;&#34;&#34;Indicates if data is in the serial receive buffer.&#34;&#34;&#34;
         return self.serial.in_waiting &gt; 0
     
-    def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+    def _update_orphaned(self, to_add: str, max_size: int = ORPHAN_MAX_BYTES):
+        if len(self._orphaned) &gt; max_size:
+            _log.warning(&#39;Dumping orphaned data: %s&#39;, dprint(self._orphaned))
+            self._orphaned = &#39;&#39;
+        self._orphaned += to_add
+    
+    def read_rx_buffer(self,
+                       read_until: str = &#39;&#39;,
+                       timeout: int = 0,
+                       strip: bool = False,
+                       ) -&gt; &#39;str|None&#39;:
         &#34;&#34;&#34;Reads data from the serial receive buffer.
         
         Args:
@@ -448,47 +490,50 @@ has completed or timed out.</dd>
         &#34;&#34;&#34;
         if not isinstance(timeout, int):
             timeout = 0
-        self.serial.flush()   # wait for anything sent prior to be done
-        rx_data = &#39;&#39;
-        start_time = time.time()
-        while (time.time() - start_time &lt; timeout or timeout == 0):
-            while (self.serial.in_waiting &gt; 0):
-                rx_data += self._read()
-            if timeout == 0 or rx_data.endswith(read_until):
-                break
+        with self._lock:
+            self.serial.flush()   # wait for anything sent prior to be done
+            rx = &#39;&#39;
+            start_time = time.time()
+            while (time.time() - start_time &lt; timeout or timeout == 0):
+                while (self.serial.in_waiting &gt; 0):
+                    rx += self._read()
+                if ((read_until and rx.endswith(read_until) and
+                     len(rx) &gt; len(read_until)) or timeout == 0):
+                    break
         if vlog(VLOG_TAG):
-            if rx_data:
-                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+            if rx:
+                _log.debug(&#39;Read from serial: %s&#39;, dprint(rx))
             else:
                 _log.debug(&#39;No data waiting on serial buffer&#39;)
-        return rx_data
+        return rx.strip() if strip else rx
     
     def send_at_command(self, at_command: str) -&gt; None:
         &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
         
-        Use `read_at_response` then `get_resopnse` after sending the command.
+        Must be followed by `read_at_response`.
+        Use `get_response` to retrieve expected output (not OK or ERROR).
         
         Args:
             at_command: The command to send.
         
         &#34;&#34;&#34;
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug(&#39;Waiting for prior command completion&#39;)
-        self.ready.wait()
-        self.ready.clear()
-        if &#39;ATS80?&#39; in at_command:
-            _log.debug(&#39;Somebody is querying error state!&#39;)
         dump_buffer = self.read_rx_buffer()
-        if dump_buffer:
-            _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+        if self._lock.locked():
+            _log.debug(&#39;%s waiting for pending command %s&#39;,
+                       at_command, self._pending_command)
+        self._lock.acquire()
         self._pending_command = at_command
         if self.crc and &#39;*&#39; not in at_command:
             self._pending_command = apply_crc(at_command)
         self._pending_command += &#39;\r&#39;
-        if vlog(VLOG_TAG):
-            _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
         self.serial.write(self._pending_command.encode())
         self.serial.flush()   # ensure it gets sent
+        if dump_buffer:
+            _log.warning(&#39;Orphaned RX buffer: %s (sending %s)&#39;,
+                         dprint(dump_buffer), dprint(self._pending_command))
+            self._update_orphaned(dump_buffer)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Sent on serial: %s&#39;, dprint(self._pending_command))
     
     def read_at_response(self,
                          prefix: str = None,
@@ -536,6 +581,13 @@ has completed or timed out.</dd>
                     self._rx_buffer += self._read()
                 last = self._rx_buffer[-1]
                 if last == &#39;\n&#39;:
+                    if (parsing == AtParsingState.ECHO or
+                        not self._rx_buffer.startswith(&#39;\r\n&#39;)):
+                        xdata = self._rx_buffer.split(&#39;\n&#39;, 1)[0] + &#39;\n&#39;
+                        _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                     dprint(xdata))
+                        self._update_orphaned(xdata)
+                        self._rx_buffer = self._rx_buffer.replace(xdata, &#39;&#39;, 1)
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
                         parsing = self._parsing_ok()
@@ -556,7 +608,13 @@ has completed or timed out.</dd>
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == &#39;\r&#39;:
-                    if self._rx_buffer == self._pending_command:
+                    if self._rx_buffer.endswith(self._pending_command):
+                        if self._rx_buffer != self._pending_command:
+                            xdata = self._rx_buffer.replace(
+                                self._pending_command, &#39;&#39;)
+                            _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                         dprint(xdata))
+                            self._update_orphaned(xdata)
                         if vlog(VLOG_TAG):
                             _log.debug(&#39;Echo received - clearing RX buffer&#39;)
                         self._rx_buffer = &#39;&#39;
@@ -591,11 +649,16 @@ has completed or timed out.</dd>
         if vlog(VLOG_TAG) and self._rx_buffer:
             _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
         if parsing &lt; AtParsingState.OK:
-            _log.warning(&#39;AT command timeout during parsing&#39;)
-            if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
-                _log.info(&#39;Detected non-verbose - setting flag&#39;)
-                self.verbose = False
+            if result_ok:
+                if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+                    _log.info(&#39;Detected non-verbose - setting flag&#39;)
+                    self.verbose = False
+                elif self.crc and not crc_found:
+                    _log.info(&#39;CRC expected but not found - clearing flag&#39;)
+                    self.crc = False
+                    error = AtErrorCode.CRC_CONFIG_MISMATCH
             else:
+                _log.warning(&#39;AT command timeout during parsing&#39;)
                 error = AtErrorCode.TIMEOUT
         elif parsing == AtParsingState.ERROR:
             error = AtErrorCode.ERROR
@@ -619,13 +682,11 @@ has completed or timed out.</dd>
             to_remove = VRES_OK if self.verbose else RES_OK
             self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
             if vlog(VLOG_TAG):
-                _log.debug(&#39;Removed result code (%s): %s&#39;,
-                           dprint(to_remove), dprint(self._rx_buffer))
+                _log.debug(&#39;Removed result code: %s&#39;, dprint(self._rx_buffer))
             if prefix:
                 self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
                 if vlog(VLOG_TAG):
-                    _log.debug(&#39;Removed prefix (%s): %s&#39;,
-                               dprint(prefix), dprint(self._rx_buffer))
+                    _log.debug(&#39;Removed prefix: %s&#39;, dprint(self._rx_buffer))
             self._rx_buffer = self._rx_buffer.strip()
             if vlog(VLOG_TAG):
                 _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
@@ -637,7 +698,8 @@ has completed or timed out.</dd>
                            dprint(self._rx_buffer))
         # cleanup
         self._pending_command = &#39;&#39;
-        self.ready.set()
+        if self._lock.locked():
+            self._lock.release()
         return error
     
     def get_response(self) -&gt; str:
@@ -646,40 +708,29 @@ has completed or timed out.</dd>
         self._rx_buffer = &#39;&#39;
         return response
     
-    def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
-        &#34;&#34;&#34;&#34;&#34;&#34;
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug(&#39;Waiting for prior command/response completion&#39;)
-        self.ready.wait()
-        self.ready.clear()
-        line: str = &#39;&#39;
-        while self.serial.in_waiting &gt; 0:
-            line += self._read()
-            if line.endswith(read_until) and len(line) &gt; len(read_until):
-                break
-        self.ready.set()
-        return line.strip()
-    
     def _read(self) -&gt; str:
         &#34;&#34;&#34;Read an ASCII character or generate a warning.&#34;&#34;&#34;
         char = self.serial.read()
         try:
             return char.decode()
         except UnicodeDecodeError as exc:
-            _log.error(&#39;Unable to decode [%d] (%s)&#39;, char, exc)
+            _log.error(&#39;Discarding undecodable [%d] (%s)&#39;, ord(char), exc)
             return &#39;&#39;
     
     def _parsing_ok(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing valid response.&#34;&#34;&#34;
-        _log.debug(&#39;Result OK&#39;)
+        if vlog(VLOG_TAG):
+            _log.debug(&#39;Result OK for %s&#39;, dprint(self._pending_command))
         if not self.crc:
             if &#39;CRC=1\r&#39; in self._pending_command.upper():
-                _log.debug(&#39;Command enabled CRC - set flag&#39;)
+                _log.debug(&#39;%s enabled CRC - set flag&#39;, self._pending_command)
                 self.crc = True
                 return AtParsingState.CRC
         else:
-            if &#39;CRC=0\r&#39; in self._pending_command.upper():
-                _log.debug(&#39;Command disabled CRC - reset flag&#39;)
+            if (&#39;CRC=0\r&#39; in self._pending_command.upper() or
+                (&#39;Z&#39; in self._pending_command.upper() and
+                 not self.serial.in_waiting)):
+                _log.debug(&#39;%s disabled CRC - reset flag&#39;, self._pending_command)
                 self.crc = False
             else:
                 return AtParsingState.CRC
@@ -687,7 +738,7 @@ has completed or timed out.</dd>
     
     def _parsing_error(self) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing errored response.&#34;&#34;&#34;
-        _log.warning(&#39;Result ERROR&#39;)
+        _log.warning(&#39;Result ERROR for: %s&#39;, dprint(self._pending_command))
         if self.crc or self.serial.in_waiting &gt; 0:
             return AtParsingState.CRC
         else:
@@ -698,21 +749,49 @@ has completed or timed out.</dd>
     
     def _parsing_short(self, current: AtParsingState = None) -&gt; AtParsingState:
         &#34;&#34;&#34;Internal helper for parsing short code responses.&#34;&#34;&#34;
-        if vlog(VLOG_TAG):
-            _log.debug(&#39;Check short response for: %s&#39;, dprint(self._rx_buffer))
-        if (not self._rx_buffer.endswith((RES_OK, RES_ERR)) or
-            (self.verbose and self._rx_buffer.startswith(&#39;\r\n&#39;))):
-            # just reading too fast, wait for next character
+        if (self._rx_buffer.startswith(&#39;\r\n&#39;) or
+            not self._rx_buffer.endswith((RES_OK, RES_ERR))):
+            # just read too fast, keep parsing
             return current
+        if self._rx_buffer.endswith((RES_OK, RES_ERR)):
+            # check if it&#39;s really a response code or part of data
+            rc = RES_OK if self._rx_buffer.endswith(RES_OK) else RES_ERR
+            if (&#39;\r\n&#39; in self._rx_buffer and
+                self._rx_buffer.split(&#39;\r\n&#39;)[-1] != rc):
+                # doesn&#39;t actually end in a result code, keep parsing
+                return current
         if self.verbose:
-            _log.warning(&#39;Clearing verbose flag due to short response match&#39;)
+            _log.warning(&#39;Clearing verbose flag due to short response: %s&#39;,
+                         dprint(self._rx_buffer))
             self.verbose = False
         if self._rx_buffer.endswith(RES_OK):
             return self._parsing_ok()
-        return self._parsing_error()</code></pre>
+        return self._parsing_error()
+
+    def get_ophaned(self) -&gt; str:
+        &#34;&#34;&#34;Gets orphaned data and clears the orphaned buffer&#34;&#34;&#34;
+        orphaned = self._orphaned
+        self._orphaned = &#39;&#39;
+        return orphaned</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.get_ophaned"><code class="name flex">
+<span>def <span class="ident">get_ophaned</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets orphaned data and clears the orphaned buffer</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_ophaned(self) -&gt; str:
+    &#34;&#34;&#34;Gets orphaned data and clears the orphaned buffer&#34;&#34;&#34;
+    orphaned = self._orphaned
+    self._orphaned = &#39;&#39;
+    return orphaned</code></pre>
+</details>
+</dd>
 <dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.get_response"><code class="name flex">
 <span>def <span class="ident">get_response</span></span>(<span>self) ‑> str</span>
 </code></dt>
@@ -813,6 +892,13 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
                 self._rx_buffer += self._read()
             last = self._rx_buffer[-1]
             if last == &#39;\n&#39;:
+                if (parsing == AtParsingState.ECHO or
+                    not self._rx_buffer.startswith(&#39;\r\n&#39;)):
+                    xdata = self._rx_buffer.split(&#39;\n&#39;, 1)[0] + &#39;\n&#39;
+                    _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                 dprint(xdata))
+                    self._update_orphaned(xdata)
+                    self._rx_buffer = self._rx_buffer.replace(xdata, &#39;&#39;, 1)
                 if self._rx_buffer.endswith(VRES_OK):
                     result_ok = True
                     parsing = self._parsing_ok()
@@ -833,7 +919,13 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
                             result_ok = False
                 # else response line terminator - keep parsing
             elif last == &#39;\r&#39;:
-                if self._rx_buffer == self._pending_command:
+                if self._rx_buffer.endswith(self._pending_command):
+                    if self._rx_buffer != self._pending_command:
+                        xdata = self._rx_buffer.replace(
+                            self._pending_command, &#39;&#39;)
+                        _log.warning(&#39;Orphaned pre-command data: %s&#39;,
+                                     dprint(xdata))
+                        self._update_orphaned(xdata)
                     if vlog(VLOG_TAG):
                         _log.debug(&#39;Echo received - clearing RX buffer&#39;)
                     self._rx_buffer = &#39;&#39;
@@ -868,11 +960,16 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
     if vlog(VLOG_TAG) and self._rx_buffer:
         _log.debug(&#39;Raw response: %s&#39;, dprint(self._rx_buffer))
     if parsing &lt; AtParsingState.OK:
-        _log.warning(&#39;AT command timeout during parsing&#39;)
-        if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
-            _log.info(&#39;Detected non-verbose - setting flag&#39;)
-            self.verbose = False
+        if result_ok:
+            if self.verbose and self._rx_buffer.endswith(&#39;\r&#39;):
+                _log.info(&#39;Detected non-verbose - setting flag&#39;)
+                self.verbose = False
+            elif self.crc and not crc_found:
+                _log.info(&#39;CRC expected but not found - clearing flag&#39;)
+                self.crc = False
+                error = AtErrorCode.CRC_CONFIG_MISMATCH
         else:
+            _log.warning(&#39;AT command timeout during parsing&#39;)
             error = AtErrorCode.TIMEOUT
     elif parsing == AtParsingState.ERROR:
         error = AtErrorCode.ERROR
@@ -896,13 +993,11 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
         to_remove = VRES_OK if self.verbose else RES_OK
         self._rx_buffer = self._rx_buffer.replace(to_remove, &#39;&#39;)
         if vlog(VLOG_TAG):
-            _log.debug(&#39;Removed result code (%s): %s&#39;,
-                       dprint(to_remove), dprint(self._rx_buffer))
+            _log.debug(&#39;Removed result code: %s&#39;, dprint(self._rx_buffer))
         if prefix:
             self._rx_buffer = self._rx_buffer.replace(prefix, &#39;&#39;, 1)
             if vlog(VLOG_TAG):
-                _log.debug(&#39;Removed prefix (%s): %s&#39;,
-                           dprint(prefix), dprint(self._rx_buffer))
+                _log.debug(&#39;Removed prefix: %s&#39;, dprint(self._rx_buffer))
         self._rx_buffer = self._rx_buffer.strip()
         if vlog(VLOG_TAG):
             _log.debug(&#39;Trimmed leading/trailing whitespace: %s&#39;,
@@ -914,36 +1009,13 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
                        dprint(self._rx_buffer))
     # cleanup
     self._pending_command = &#39;&#39;
-    self.ready.set()
+    if self._lock.locked():
+        self._lock.release()
     return error</code></pre>
 </details>
 </dd>
-<dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_line"><code class="name flex">
-<span>def <span class="ident">read_line</span></span>(<span>self, read_until: str = '\r\n') ‑> str</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def read_line(self, read_until: str = &#39;\r\n&#39;) -&gt; str:
-    &#34;&#34;&#34;&#34;&#34;&#34;
-    if vlog(VLOG_TAG) and not self.ready.is_set():
-        _log.debug(&#39;Waiting for prior command/response completion&#39;)
-    self.ready.wait()
-    self.ready.clear()
-    line: str = &#39;&#39;
-    while self.serial.in_waiting &gt; 0:
-        line += self._read()
-        if line.endswith(read_until) and len(line) &gt; len(read_until):
-            break
-    self.ready.set()
-    return line.strip()</code></pre>
-</details>
-</dd>
 <dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer"><code class="name flex">
-<span>def <span class="ident">read_rx_buffer</span></span>(<span>self, timeout: int = 0, read_until: str = '') ‑> str|None</span>
+<span>def <span class="ident">read_rx_buffer</span></span>(<span>self, read_until: str = '', timeout: int = 0, strip: bool = False) ‑> str|None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Reads data from the serial receive buffer.</p>
@@ -959,7 +1031,11 @@ If 0, will stop reading when no character is waiting.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def read_rx_buffer(self, timeout: int = 0, read_until: str = &#39;&#39;) -&gt; &#39;str|None&#39;:
+<pre><code class="python">def read_rx_buffer(self,
+                   read_until: str = &#39;&#39;,
+                   timeout: int = 0,
+                   strip: bool = False,
+                   ) -&gt; &#39;str|None&#39;:
     &#34;&#34;&#34;Reads data from the serial receive buffer.
     
     Args:
@@ -972,20 +1048,22 @@ If 0, will stop reading when no character is waiting.</dd>
     &#34;&#34;&#34;
     if not isinstance(timeout, int):
         timeout = 0
-    self.serial.flush()   # wait for anything sent prior to be done
-    rx_data = &#39;&#39;
-    start_time = time.time()
-    while (time.time() - start_time &lt; timeout or timeout == 0):
-        while (self.serial.in_waiting &gt; 0):
-            rx_data += self._read()
-        if timeout == 0 or rx_data.endswith(read_until):
-            break
+    with self._lock:
+        self.serial.flush()   # wait for anything sent prior to be done
+        rx = &#39;&#39;
+        start_time = time.time()
+        while (time.time() - start_time &lt; timeout or timeout == 0):
+            while (self.serial.in_waiting &gt; 0):
+                rx += self._read()
+            if ((read_until and rx.endswith(read_until) and
+                 len(rx) &gt; len(read_until)) or timeout == 0):
+                break
     if vlog(VLOG_TAG):
-        if rx_data:
-            _log.debug(&#39;Read from serial: %s&#39;, dprint(rx_data))
+        if rx:
+            _log.debug(&#39;Read from serial: %s&#39;, dprint(rx))
         else:
             _log.debug(&#39;No data waiting on serial buffer&#39;)
-    return rx_data</code></pre>
+    return rx.strip() if strip else rx</code></pre>
 </details>
 </dd>
 <dt id="pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command"><code class="name flex">
@@ -993,7 +1071,8 @@ If 0, will stop reading when no character is waiting.</dd>
 </code></dt>
 <dd>
 <div class="desc"><p>Submits an AT command to the NIMO modem to solicit a response.</p>
-<p>Use <code>read_at_response</code> then <code>get_resopnse</code> after sending the command.</p>
+<p>Must be followed by <code>read_at_response</code>.
+Use <code>get_response</code> to retrieve expected output (not OK or ERROR).</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>at_command</code></strong></dt>
@@ -1006,29 +1085,30 @@ If 0, will stop reading when no character is waiting.</dd>
 <pre><code class="python">def send_at_command(self, at_command: str) -&gt; None:
     &#34;&#34;&#34;Submits an AT command to the NIMO modem to solicit a response.
     
-    Use `read_at_response` then `get_resopnse` after sending the command.
+    Must be followed by `read_at_response`.
+    Use `get_response` to retrieve expected output (not OK or ERROR).
     
     Args:
         at_command: The command to send.
     
     &#34;&#34;&#34;
-    if vlog(VLOG_TAG) and not self.ready.is_set():
-        _log.debug(&#39;Waiting for prior command completion&#39;)
-    self.ready.wait()
-    self.ready.clear()
-    if &#39;ATS80?&#39; in at_command:
-        _log.debug(&#39;Somebody is querying error state!&#39;)
     dump_buffer = self.read_rx_buffer()
-    if dump_buffer:
-        _log.warning(&#39;Dumping RX buffer: %s&#39;, dprint(dump_buffer))
+    if self._lock.locked():
+        _log.debug(&#39;%s waiting for pending command %s&#39;,
+                   at_command, self._pending_command)
+    self._lock.acquire()
     self._pending_command = at_command
     if self.crc and &#39;*&#39; not in at_command:
         self._pending_command = apply_crc(at_command)
     self._pending_command += &#39;\r&#39;
-    if vlog(VLOG_TAG):
-        _log.debug(&#39;Sending on serial: %s&#39;, dprint(self._pending_command))
     self.serial.write(self._pending_command.encode())
-    self.serial.flush()   # ensure it gets sent</code></pre>
+    self.serial.flush()   # ensure it gets sent
+    if dump_buffer:
+        _log.warning(&#39;Orphaned RX buffer: %s (sending %s)&#39;,
+                     dprint(dump_buffer), dprint(self._pending_command))
+        self._update_orphaned(dump_buffer)
+    if vlog(VLOG_TAG):
+        _log.debug(&#39;Sent on serial: %s&#39;, dprint(self._pending_command))</code></pre>
 </details>
 </dd>
 </dl>
@@ -1052,10 +1132,10 @@ If 0, will stop reading when no character is waiting.</dd>
 <li>
 <h4><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer">AtCommandBuffer</a></code></h4>
 <ul class="two-column">
+<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_ophaned" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_ophaned">get_ophaned</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.get_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.get_response">get_response</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.is_data_waiting">is_data_waiting</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_at_response">read_at_response</a></code></li>
-<li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_line" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_line">read_line</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.read_rx_buffer">read_rx_buffer</a></code></li>
 <li><code><a title="pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command" href="#pynimomodem.atcommandbuffer.AtCommandBuffer.send_at_command">send_at_command</a></code></li>
 </ul>
