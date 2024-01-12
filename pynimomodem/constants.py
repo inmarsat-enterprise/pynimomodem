@@ -121,6 +121,7 @@ class AtErrorCode(NimoIntEnum):
     TIMEOUT = 255
     CRC_CONFIG_MISMATCH = 254
     UNABLE_TO_DELETE = 253
+    INVALID_RESPONSE_CRC = 252
 
 
 class PowerMode(NimoIntEnum):

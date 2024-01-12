@@ -196,7 +196,7 @@ class AtCommandBuffer:
                             else:
                                 _log.error('Invalid CRC')
                                 parsing = AtParsingState.ERROR
-                                error = AtErrorCode.INVALID_CRC
+                                error = AtErrorCode.INVALID_RESPONSE_CRC
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == '\r':

@@ -189,15 +189,16 @@ class NimoModem:
         if err == AtErrorCode.OK:
             return self._modem.get_response()
         elif err == AtErrorCode.TIMEOUT:
-            raise ModemTimeout
+            raise ModemTimeout(f'AT response timed out after {timeout} seconds')
         elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
-            raise ModemCrcConfig
-        elif err == AtErrorCode.INVALID_CRC:
-            raise ModemCrc
+            raise ModemCrcConfig('Reponse checksum {}expected'.format(
+                                 '' if self.crc_enabled else 'un'))
+        elif err == AtErrorCode.INVALID_RESPONSE_CRC:
+            raise ModemCrc(err.name)
         else:
             err = self.get_last_error_code()
             if err == AtErrorCode.INVALID_CRC:
-                raise ModemCrc
+                raise ModemCrc(err.name)
             raise ModemAtError(err.name)
     
     def connect(self) -> None:
