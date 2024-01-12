@@ -153,8 +153,8 @@ class NimoModem:
     def _mfr(self) -> Manufacturer:
         """Used internally to support different manufacturer commands."""
         if not self._manufacturer:
-            _log.debug('Querying manufacturer for command structure')
             self.get_manufacturer()
+            _log.debug('Using %s manufacturer commands', self._manufacturer)
         return self._manufacturer
     
     @property
