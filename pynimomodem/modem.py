@@ -139,7 +139,7 @@ class NimoModem:
     
     @property
     def is_ready(self) -> bool:
-        return self._modem.ready.is_set()
+        return not self._modem._lock.locked()
     
     @property
     def crc_enabled(self) -> bool:
@@ -153,6 +153,7 @@ class NimoModem:
     def _mfr(self) -> Manufacturer:
         """Used internally to support different manufacturer commands."""
         if not self._manufacturer:
+            _log.debug('Querying manufacturer for command structure')
             self.get_manufacturer()
         return self._manufacturer
     
@@ -1062,7 +1063,7 @@ class NimoModem:
         if self._mfr != Manufacturer.QUECTEL:
             raise ValueError('Modem does not support this feature')
         eol = '\r\n' if self._modem.verbose else '\r'
-        result = self._modem.read_line(eol)
+        result = self._modem.read_rx_buffer(read_until=eol)
         if result:
             result = result.replace('+QURC:', '').strip()
             try:

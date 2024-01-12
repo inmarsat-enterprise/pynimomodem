@@ -20,6 +20,7 @@ VRES_OK = '\r\nOK\r\n'
 VRES_ERR = '\r\nERROR\r\n'
 RES_OK = '0\r'
 RES_ERR = '4\r'
+ORPHAN_MAX_BYTES = 500
 
 _log = logging.getLogger(__name__)
 
@@ -52,14 +53,23 @@ class AtCommandBuffer:
         self._pending_command: str = None
         self._rx_buffer: str = ''
         self._orphaned: str = ''
-        self.ready = threading.Event()
-        self.ready.set()
+        self._lock = threading.Lock()
     
     def is_data_waiting(self) -> bool:
         """Indicates if data is in the serial receive buffer."""
         return self.serial.in_waiting > 0
     
-    def read_rx_buffer(self, timeout: int = 0, read_until: str = '') -> 'str|None':
+    def _update_orphaned(self, to_add: str, max_size: int = ORPHAN_MAX_BYTES):
+        if len(self._orphaned) > max_size:
+            _log.warning('Dumping orphaned data: %s', dprint(self._orphaned))
+            self._orphaned = ''
+        self._orphaned += to_add
+    
+    def read_rx_buffer(self,
+                       read_until: str = '',
+                       timeout: int = 0,
+                       strip: bool = False,
+                       ) -> 'str|None':
         """Reads data from the serial receive buffer.
         
         Args:
@@ -72,47 +82,50 @@ class AtCommandBuffer:
         """
         if not isinstance(timeout, int):
             timeout = 0
-        self.serial.flush()   # wait for anything sent prior to be done
-        rx_data = ''
-        start_time = time.time()
-        while (time.time() - start_time < timeout or timeout == 0):
-            while (self.serial.in_waiting > 0):
-                rx_data += self._read()
-            if timeout == 0 or rx_data.endswith(read_until):
-                break
+        with self._lock:
+            self.serial.flush()   # wait for anything sent prior to be done
+            rx = ''
+            start_time = time.time()
+            while (time.time() - start_time < timeout or timeout == 0):
+                while (self.serial.in_waiting > 0):
+                    rx += self._read()
+                if ((read_until and rx.endswith(read_until) and
+                     len(rx) > len(read_until)) or timeout == 0):
+                    break
         if vlog(VLOG_TAG):
-            if rx_data:
-                _log.debug('Read from serial: %s', dprint(rx_data))
+            if rx:
+                _log.debug('Read from serial: %s', dprint(rx))
             else:
                 _log.debug('No data waiting on serial buffer')
-        return rx_data
+        return rx.strip() if strip else rx
     
     def send_at_command(self, at_command: str) -> None:
         """Submits an AT command to the NIMO modem to solicit a response.
         
-        Use `read_at_response` then `get_resopnse` after sending the command.
+        Must be followed by `read_at_response`.
+        Use `get_response` to retrieve expected output (not OK or ERROR).
         
         Args:
             at_command: The command to send.
         
         """
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug('%s waiting for prior command completion', at_command)
-        self.ready.wait()
-        self.ready.clear()
+        dump_buffer = self.read_rx_buffer()
+        if self._lock.locked():
+            _log.debug('%s waiting for pending command %s',
+                       at_command, self._pending_command)
+        self._lock.acquire()
         self._pending_command = at_command
         if self.crc and '*' not in at_command:
             self._pending_command = apply_crc(at_command)
         self._pending_command += '\r'
-        dump_buffer = self.read_rx_buffer()
         self.serial.write(self._pending_command.encode())
         self.serial.flush()   # ensure it gets sent
+        if dump_buffer:
+            _log.warning('Orphaned RX buffer: %s (sending %s)',
+                         dprint(dump_buffer), dprint(self._pending_command))
+            self._update_orphaned(dump_buffer)
         if vlog(VLOG_TAG):
             _log.debug('Sent on serial: %s', dprint(self._pending_command))
-        if dump_buffer:
-            _log.warning('Dumped RX buffer: %s (sending %s)',
-                         dprint(dump_buffer), dprint(self._pending_command))
-            self._orphaned += dump_buffer
     
     def read_at_response(self,
                          prefix: str = None,
@@ -165,7 +178,7 @@ class AtCommandBuffer:
                         xdata = self._rx_buffer.split('\n', 1)[0] + '\n'
                         _log.warning('Orphaned pre-command data: %s',
                                      dprint(xdata))
-                        self._orphaned += xdata
+                        self._update_orphaned(xdata)
                         self._rx_buffer = self._rx_buffer.replace(xdata, '', 1)
                     if self._rx_buffer.endswith(VRES_OK):
                         result_ok = True
@@ -193,7 +206,7 @@ class AtCommandBuffer:
                                 self._pending_command, '')
                             _log.warning('Orphaned pre-command data: %s',
                                          dprint(xdata))
-                            self._orphaned += xdata
+                            self._update_orphaned(xdata)
                         if vlog(VLOG_TAG):
                             _log.debug('Echo received - clearing RX buffer')
                         self._rx_buffer = ''
@@ -261,13 +274,11 @@ class AtCommandBuffer:
             to_remove = VRES_OK if self.verbose else RES_OK
             self._rx_buffer = self._rx_buffer.replace(to_remove, '')
             if vlog(VLOG_TAG):
-                _log.debug('Removed result code (%s): %s',
-                           dprint(to_remove), dprint(self._rx_buffer))
+                _log.debug('Removed result code: %s', dprint(self._rx_buffer))
             if prefix:
                 self._rx_buffer = self._rx_buffer.replace(prefix, '', 1)
                 if vlog(VLOG_TAG):
-                    _log.debug('Removed prefix (%s): %s',
-                               dprint(prefix), dprint(self._rx_buffer))
+                    _log.debug('Removed prefix: %s', dprint(self._rx_buffer))
             self._rx_buffer = self._rx_buffer.strip()
             if vlog(VLOG_TAG):
                 _log.debug('Trimmed leading/trailing whitespace: %s',
@@ -279,7 +290,8 @@ class AtCommandBuffer:
                            dprint(self._rx_buffer))
         # cleanup
         self._pending_command = ''
-        self.ready.set()
+        if self._lock.locked():
+            self._lock.release()
         return error
     
     def get_response(self) -> str:
@@ -287,20 +299,6 @@ class AtCommandBuffer:
         response = self._rx_buffer
         self._rx_buffer = ''
         return response
-    
-    def read_line(self, read_until: str = '\r\n') -> str:
-        """"""
-        if vlog(VLOG_TAG) and not self.ready.is_set():
-            _log.debug('Waiting for prior command/response completion')
-        self.ready.wait()
-        self.ready.clear()
-        line: str = ''
-        while self.serial.in_waiting > 0:
-            line += self._read()
-            if line.endswith(read_until) and len(line) > len(read_until):
-                break
-        self.ready.set()
-        return line.strip()
     
     def _read(self) -> str:
         """Read an ASCII character or generate a warning."""
@@ -317,14 +315,14 @@ class AtCommandBuffer:
             _log.debug('Result OK for %s', dprint(self._pending_command))
         if not self.crc:
             if 'CRC=1\r' in self._pending_command.upper():
-                _log.debug('Command enabled CRC - set flag')
+                _log.debug('%s enabled CRC - set flag', self._pending_command)
                 self.crc = True
                 return AtParsingState.CRC
         else:
             if ('CRC=0\r' in self._pending_command.upper() or
                 ('Z' in self._pending_command.upper() and
                  not self.serial.in_waiting)):
-                _log.debug('Command disabled CRC - reset flag')
+                _log.debug('%s disabled CRC - reset flag', self._pending_command)
                 self.crc = False
             else:
                 return AtParsingState.CRC
@@ -343,8 +341,6 @@ class AtCommandBuffer:
     
     def _parsing_short(self, current: AtParsingState = None) -> AtParsingState:
         """Internal helper for parsing short code responses."""
-        if vlog(VLOG_TAG):
-            _log.debug('Check short response for: %s', dprint(self._rx_buffer))
         if (self._rx_buffer.startswith('\r\n') or
             not self._rx_buffer.endswith((RES_OK, RES_ERR))):
             # just read too fast, keep parsing
@@ -357,7 +353,8 @@ class AtCommandBuffer:
                 # doesn't actually end in a result code, keep parsing
                 return current
         if self.verbose:
-            _log.warning('Clearing verbose flag due to short response match')
+            _log.warning('Clearing verbose flag due to short response: %s',
+                         dprint(self._rx_buffer))
             self.verbose = False
         if self._rx_buffer.endswith(RES_OK):
             return self._parsing_ok()
