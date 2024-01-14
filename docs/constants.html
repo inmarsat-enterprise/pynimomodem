@@ -151,6 +151,7 @@ class AtErrorCode(NimoIntEnum):
     TIMEOUT = 255
     CRC_CONFIG_MISMATCH = 254
     UNABLE_TO_DELETE = 253
+    INVALID_RESPONSE_CRC = 252
 
 
 class PowerMode(NimoIntEnum):
@@ -654,7 +655,8 @@ class GeoSatellite(NimoFloatEnum):
     # Extensions for additional situations
     TIMEOUT = 255
     CRC_CONFIG_MISMATCH = 254
-    UNABLE_TO_DELETE = 253</code></pre>
+    UNABLE_TO_DELETE = 253
+    INVALID_RESPONSE_CRC = 252</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -686,6 +688,10 @@ class GeoSatellite(NimoFloatEnum):
 <div class="desc"></div>
 </dd>
 <dt id="pynimomodem.constants.AtErrorCode.INVALID_PARAMETER"><code class="name">var <span class="ident">INVALID_PARAMETER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.constants.AtErrorCode.INVALID_RESPONSE_CRC"><code class="name">var <span class="ident">INVALID_RESPONSE_CRC</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -3356,6 +3362,7 @@ mobile-terminated messages to be delivered by the network.</p></div>
 <li><code><a title="pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT" href="#pynimomodem.constants.AtErrorCode.GNSS_TIMEOUT">GNSS_TIMEOUT</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_CRC" href="#pynimomodem.constants.AtErrorCode.INVALID_CRC">INVALID_CRC</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_PARAMETER" href="#pynimomodem.constants.AtErrorCode.INVALID_PARAMETER">INVALID_PARAMETER</a></code></li>
+<li><code><a title="pynimomodem.constants.AtErrorCode.INVALID_RESPONSE_CRC" href="#pynimomodem.constants.AtErrorCode.INVALID_RESPONSE_CRC">INVALID_RESPONSE_CRC</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_MISMATCH" href="#pynimomodem.constants.AtErrorCode.MESSAGE_LENGTH_MISMATCH">MESSAGE_LENGTH_MISMATCH</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE" href="#pynimomodem.constants.AtErrorCode.MESSAGE_UNAVAILABLE">MESSAGE_UNAVAILABLE</a></code></li>
 <li><code><a title="pynimomodem.constants.AtErrorCode.OK" href="#pynimomodem.constants.AtErrorCode.OK">OK</a></code></li>

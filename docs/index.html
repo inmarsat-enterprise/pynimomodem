@@ -59,7 +59,11 @@ from .constants import (
     ControlState,
     DataFormat,
     EventNotification,
+    GeoBeam,
+    GeoSatellite,
     GnssMode,
+    GnssModeOrbcomm,
+    GnssModeQuectel,
     MessagePriority,
     MessageState,
     NetworkStatus,
@@ -91,7 +95,11 @@ __all__ = [
     &#39;BeamState&#39;,
     &#39;ControlState&#39;,
     &#39;DataFormat&#39;,
+    &#39;GeoBeam&#39;,
+    &#39;GeoSatellite&#39;,
     &#39;GnssMode&#39;,
+    &#39;GnssModeOrbcomm&#39;,
+    &#39;GnssModeQuectel&#39;,
     &#39;Manufacturer&#39;,
     &#39;MessagePriority&#39;,
     &#39;MessageState&#39;,
@@ -250,7 +258,8 @@ class AcquisitionInfo:
     # Extensions for additional situations
     TIMEOUT = 255
     CRC_CONFIG_MISMATCH = 254
-    UNABLE_TO_DELETE = 253</code></pre>
+    UNABLE_TO_DELETE = 253
+    INVALID_RESPONSE_CRC = 252</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -282,6 +291,10 @@ class AcquisitionInfo:
 <div class="desc"></div>
 </dd>
 <dt id="pynimomodem.AtErrorCode.INVALID_PARAMETER"><code class="name">var <span class="ident">INVALID_PARAMETER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.AtErrorCode.INVALID_RESPONSE_CRC"><code class="name">var <span class="ident">INVALID_RESPONSE_CRC</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -671,6 +684,538 @@ def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
 </dd>
 </dl>
 </dd>
+<dt id="pynimomodem.GeoBeam"><code class="flex name class">
+<span>class <span class="ident">GeoBeam</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Geographic Beam identifiers mapped to readable names.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GeoBeam(NimoIntEnum):
+    &#34;&#34;&#34;Geographic Beam identifiers mapped to readable names.&#34;&#34;&#34;
+    GLOBAL_BB = 0
+    AMER_RB1 = 1
+    AMER_RB2 = 2
+    AMER_RB3 = 3
+    AMER_RB4 = 4
+    AMER_RB5 = 5
+    AMER_RB6 = 6
+    AMER_RB7 = 7
+    AMER_RB8 = 8
+    AMER_RB9 = 9
+    AMER_RB10 = 10
+    AMER_RB11 = 11
+    AMER_RB12 = 12
+    AMER_RB13 = 13
+    AMER_RB14 = 14
+    AMER_RB15 = 15
+    AMER_RB16 = 16
+    AMER_RB17 = 17
+    AMER_RB18 = 18
+    AMER_RB19 = 19
+    AORW_SC = 61
+    EMEA_RB1 = 21
+    EMEA_RB2 = 22
+    EMEA_RB3 = 23
+    EMEA_RB4 = 24
+    EMEA_RB5 = 25
+    EMEA_RB6 = 26
+    EMEA_RB7 = 27
+    EMEA_RB8 = 28
+    EMEA_RB9 = 29
+    EMEA_RB10 = 30
+    EMEA_RB11 = 31
+    EMEA_RB12 = 32
+    EMEA_RB13 = 33
+    EMEA_RB14 = 34
+    EMEA_RB15 = 35
+    EMEA_RB16 = 36
+    EMEA_RB17 = 37
+    EMEA_RB18 = 38
+    EMEA_RB19 = 39
+    APAC_RB1 = 41
+    APAC_RB2 = 42
+    APAC_RB3 = 43
+    APAC_RB4 = 44
+    APAC_RB5 = 45
+    APAC_RB6 = 46
+    APAC_RB7 = 47
+    APAC_RB8 = 48
+    APAC_RB9 = 49
+    APAC_RB10 = 50
+    APAC_RB11 = 51
+    APAC_RB12 = 52
+    APAC_RB13 = 53
+    APAC_RB14 = 54
+    APAC_RB15 = 55
+    APAC_RB16 = 56
+    APAC_RB17 = 57
+    APAC_RB18 = 58
+    APAC_RB19 = 59
+    # MEAS_RB10 = 90   # replaced by IOE
+    # MEAS_RB11 = 91   # replaced by IOE
+    # MEAS_RB12 = 92   # replaced by IOE
+    # MEAS_RB15 = 93   # replaced by IOE
+    IOE_RB1 = 101
+    IOE_RB2 = 102
+    IOE_RB3 = 103
+    IOE_RB4 = 104
+    IOE_RB5 = 105
+    IOE_RB6 = 106
+    IOE_RB7 = 107
+    IOE_RB8 = 108
+    IOE_RB9 = 109
+    IOE_RB10 = 110
+    IOE_RB11 = 111
+    IOE_RB12 = 112
+    IOE_RB13 = 113
+    IOE_RB14 = 114
+    IOE_RB15 = 115
+    IOE_RB16 = 116
+    IOE_RB17 = 117
+    IOE_RB18 = 118
+    IOE_RB19 = 119
+
+    @property
+    def satellite(self):
+        return self.name.split(&#39;_&#39;)[0]
+
+    @property
+    def beam(self):
+        return self.name.split(&#39;_&#39;)[1]
+    
+    @property
+    def id(self):
+        return self.value</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.GeoBeam.AMER_RB1"><code class="name">var <span class="ident">AMER_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB10"><code class="name">var <span class="ident">AMER_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB11"><code class="name">var <span class="ident">AMER_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB12"><code class="name">var <span class="ident">AMER_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB13"><code class="name">var <span class="ident">AMER_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB14"><code class="name">var <span class="ident">AMER_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB15"><code class="name">var <span class="ident">AMER_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB16"><code class="name">var <span class="ident">AMER_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB17"><code class="name">var <span class="ident">AMER_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB18"><code class="name">var <span class="ident">AMER_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB19"><code class="name">var <span class="ident">AMER_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB2"><code class="name">var <span class="ident">AMER_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB3"><code class="name">var <span class="ident">AMER_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB4"><code class="name">var <span class="ident">AMER_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB5"><code class="name">var <span class="ident">AMER_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB6"><code class="name">var <span class="ident">AMER_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB7"><code class="name">var <span class="ident">AMER_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB8"><code class="name">var <span class="ident">AMER_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AMER_RB9"><code class="name">var <span class="ident">AMER_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.AORW_SC"><code class="name">var <span class="ident">AORW_SC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB1"><code class="name">var <span class="ident">APAC_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB10"><code class="name">var <span class="ident">APAC_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB11"><code class="name">var <span class="ident">APAC_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB12"><code class="name">var <span class="ident">APAC_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB13"><code class="name">var <span class="ident">APAC_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB14"><code class="name">var <span class="ident">APAC_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB15"><code class="name">var <span class="ident">APAC_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB16"><code class="name">var <span class="ident">APAC_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB17"><code class="name">var <span class="ident">APAC_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB18"><code class="name">var <span class="ident">APAC_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB19"><code class="name">var <span class="ident">APAC_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB2"><code class="name">var <span class="ident">APAC_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB3"><code class="name">var <span class="ident">APAC_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB4"><code class="name">var <span class="ident">APAC_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB5"><code class="name">var <span class="ident">APAC_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB6"><code class="name">var <span class="ident">APAC_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB7"><code class="name">var <span class="ident">APAC_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB8"><code class="name">var <span class="ident">APAC_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.APAC_RB9"><code class="name">var <span class="ident">APAC_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB1"><code class="name">var <span class="ident">EMEA_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB10"><code class="name">var <span class="ident">EMEA_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB11"><code class="name">var <span class="ident">EMEA_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB12"><code class="name">var <span class="ident">EMEA_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB13"><code class="name">var <span class="ident">EMEA_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB14"><code class="name">var <span class="ident">EMEA_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB15"><code class="name">var <span class="ident">EMEA_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB16"><code class="name">var <span class="ident">EMEA_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB17"><code class="name">var <span class="ident">EMEA_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB18"><code class="name">var <span class="ident">EMEA_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB19"><code class="name">var <span class="ident">EMEA_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB2"><code class="name">var <span class="ident">EMEA_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB3"><code class="name">var <span class="ident">EMEA_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB4"><code class="name">var <span class="ident">EMEA_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB5"><code class="name">var <span class="ident">EMEA_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB6"><code class="name">var <span class="ident">EMEA_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB7"><code class="name">var <span class="ident">EMEA_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB8"><code class="name">var <span class="ident">EMEA_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.EMEA_RB9"><code class="name">var <span class="ident">EMEA_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.GLOBAL_BB"><code class="name">var <span class="ident">GLOBAL_BB</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB1"><code class="name">var <span class="ident">IOE_RB1</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB10"><code class="name">var <span class="ident">IOE_RB10</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB11"><code class="name">var <span class="ident">IOE_RB11</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB12"><code class="name">var <span class="ident">IOE_RB12</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB13"><code class="name">var <span class="ident">IOE_RB13</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB14"><code class="name">var <span class="ident">IOE_RB14</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB15"><code class="name">var <span class="ident">IOE_RB15</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB16"><code class="name">var <span class="ident">IOE_RB16</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB17"><code class="name">var <span class="ident">IOE_RB17</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB18"><code class="name">var <span class="ident">IOE_RB18</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB19"><code class="name">var <span class="ident">IOE_RB19</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB2"><code class="name">var <span class="ident">IOE_RB2</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB3"><code class="name">var <span class="ident">IOE_RB3</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB4"><code class="name">var <span class="ident">IOE_RB4</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB5"><code class="name">var <span class="ident">IOE_RB5</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB6"><code class="name">var <span class="ident">IOE_RB6</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB7"><code class="name">var <span class="ident">IOE_RB7</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB8"><code class="name">var <span class="ident">IOE_RB8</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoBeam.IOE_RB9"><code class="name">var <span class="ident">IOE_RB9</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pynimomodem.GeoBeam.beam"><code class="name">var <span class="ident">beam</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def beam(self):
+    return self.name.split(&#39;_&#39;)[1]</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.GeoBeam.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def id(self):
+    return self.value</code></pre>
+</details>
+</dd>
+<dt id="pynimomodem.GeoBeam.satellite"><code class="name">var <span class="ident">satellite</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def satellite(self):
+    return self.name.split(&#39;_&#39;)[0]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.GeoSatellite"><code class="flex name class">
+<span>class <span class="ident">GeoSatellite</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Maps the Viasat/Inmarsat geostationary longitude supporting NIMO.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GeoSatellite(NimoFloatEnum):
+    &#34;&#34;&#34;Maps the Viasat/Inmarsat geostationary longitude supporting NIMO.&#34;&#34;&#34;
+    AMER = -98.0   # Inmarsat 4F3
+    AORWSC = -54.0   # Inmarsat 3F5
+    EMEA = 24.9   # Inmarsat 4AF4 aka Alphasat XL
+    IOE = 63.5   # Inmarsat 6F1 previously IOR 3F1, MEAS 4F2
+    APAC = 143.5   # Inmarsat 4F2 previously 4F1</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.NimoFloatEnum" href="constants.html#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.GeoSatellite.AMER"><code class="name">var <span class="ident">AMER</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoSatellite.AORWSC"><code class="name">var <span class="ident">AORWSC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoSatellite.APAC"><code class="name">var <span class="ident">APAC</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoSatellite.EMEA"><code class="name">var <span class="ident">EMEA</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GeoSatellite.IOE"><code class="name">var <span class="ident">IOE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.NimoFloatEnum" href="constants.html#pynimomodem.constants.NimoFloatEnum">NimoFloatEnum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.NimoFloatEnum.is_valid" href="constants.html#pynimomodem.constants.NimoFloatEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="pynimomodem.GnssMode"><code class="flex name class">
 <span>class <span class="ident">GnssMode</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -701,6 +1246,146 @@ def get_events(cls, event_mask: int) -&gt; &#39;list[EventNotification]&#39;:
 <li><code><b><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></b></code>:
 <ul class="hlist">
 <li><code><a title="pynimomodem.constants.NimoIntEnum.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm"><code class="flex name class">
+<span>class <span class="ident">GnssModeOrbcomm</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The operating mode setting for the built-in GNSS in a NIMO modem.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssModeOrbcomm(GnssMode):
+    &#34;&#34;&#34;The operating mode setting for the built-in GNSS in a NIMO modem.&#34;&#34;&#34;
+    GPS = 0
+    GLONASS = 1
+    BEIDOU = 2
+    GALILEO = 3
+    GPS_GLONASS = 10
+    GPS_BEIDOU = 11
+    GLONASS_BEIDOU = 12
+    GPS_GALILEO = 13
+    GLONASS_GALILEO = 14
+    BEIDOU_GALILEO = 15</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.GnssModeOrbcomm.BEIDOU"><code class="name">var <span class="ident">BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.BEIDOU_GALILEO"><code class="name">var <span class="ident">BEIDOU_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GALILEO"><code class="name">var <span class="ident">GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GLONASS"><code class="name">var <span class="ident">GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GLONASS_BEIDOU"><code class="name">var <span class="ident">GLONASS_BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GLONASS_GALILEO"><code class="name">var <span class="ident">GLONASS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GPS"><code class="name">var <span class="ident">GPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GPS_BEIDOU"><code class="name">var <span class="ident">GPS_BEIDOU</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GPS_GALILEO"><code class="name">var <span class="ident">GPS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeOrbcomm.GPS_GLONASS"><code class="name">var <span class="ident">GPS_GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.GnssMode.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="pynimomodem.GnssModeQuectel"><code class="flex name class">
+<span>class <span class="ident">GnssModeQuectel</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GnssModeQuectel(GnssMode):
+    GPS = 0
+    GPS_BDS = 1
+    GPS_GLONASS = 2
+    GPS_GALILEO = 3
+    GPS_GLONASS_GALILEO_BDS = 4</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a></li>
+<li><a title="pynimomodem.constants.NimoIntEnum" href="constants.html#pynimomodem.constants.NimoIntEnum">NimoIntEnum</a></li>
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pynimomodem.GnssModeQuectel.GPS"><code class="name">var <span class="ident">GPS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeQuectel.GPS_BDS"><code class="name">var <span class="ident">GPS_BDS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeQuectel.GPS_GALILEO"><code class="name">var <span class="ident">GPS_GALILEO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeQuectel.GPS_GLONASS"><code class="name">var <span class="ident">GPS_GLONASS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pynimomodem.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS"><code class="name">var <span class="ident">GPS_GLONASS_GALILEO_BDS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pynimomodem.constants.GnssMode" href="constants.html#pynimomodem.constants.GnssMode">GnssMode</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pynimomodem.constants.GnssMode.is_valid" href="constants.html#pynimomodem.constants.NimoIntEnum.is_valid">is_valid</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1367,8 +2052,8 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
     def _mfr(self) -&gt; Manufacturer:
         &#34;&#34;&#34;Used internally to support different manufacturer commands.&#34;&#34;&#34;
         if not self._manufacturer:
-            _log.debug(&#39;Querying manufacturer for command structure&#39;)
             self.get_manufacturer()
+            _log.debug(&#39;Using %s manufacturer commands&#39;, self._manufacturer)
         return self._manufacturer
     
     @property
@@ -1403,15 +2088,16 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         if err == AtErrorCode.OK:
             return self._modem.get_response()
         elif err == AtErrorCode.TIMEOUT:
-            raise ModemTimeout
+            raise ModemTimeout(f&#39;AT response timed out after {timeout} seconds&#39;)
         elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
-            raise ModemCrcConfig
-        elif err == AtErrorCode.INVALID_CRC:
-            raise ModemCrc
+            raise ModemCrcConfig(&#39;Reponse checksum {}expected&#39;.format(
+                                 &#39;&#39; if self.crc_enabled else &#39;un&#39;))
+        elif err == AtErrorCode.INVALID_RESPONSE_CRC:
+            raise ModemCrc(err.name)
         else:
             err = self.get_last_error_code()
             if err == AtErrorCode.INVALID_CRC:
-                raise ModemCrc
+                raise ModemCrc(err.name)
             raise ModemAtError(err.name)
     
     def connect(self) -&gt; None:
@@ -4257,7 +4943,7 @@ consumption against speed of recovery from line of sight blockages.</p></div>
 </dd>
 <dt id="pynimomodem.SatelliteLocation"><code class="flex name class">
 <span>class <span class="ident">SatelliteLocation</span></span>
-<span>(</span><span>name: str = '', latitude: float = 0.0, longitude: float = 180.0, altitude: float = 35786000, azimuth: float = 0.0, elevation: float = 0.0, geobeam: GeoBeam|None = None)</span>
+<span>(</span><span>name: str = '', latitude: float = 0.0, longitude: float = 180.0, altitude: float = 35786000, azimuth: float = 0.0, elevation: float = 0.0, geobeam: <a title="pynimomodem.GeoBeam" href="#pynimomodem.GeoBeam">GeoBeam</a>|None = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Represents a geostationary satellite location relative to a modem.</p></div>
@@ -4290,7 +4976,7 @@ class SatelliteLocation:
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pynimomodem.SatelliteLocation.geobeam"><code class="name">var <span class="ident">geobeam</span> : GeoBeam|None</code></dt>
+<dt id="pynimomodem.SatelliteLocation.geobeam"><code class="name">var <span class="ident">geobeam</span> : <a title="pynimomodem.GeoBeam" href="#pynimomodem.GeoBeam">GeoBeam</a>|None</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -4787,6 +5473,7 @@ mobile-terminated messages to be delivered by the network.</p></div>
 <li><code><a title="pynimomodem.AtErrorCode.GNSS_TIMEOUT" href="#pynimomodem.AtErrorCode.GNSS_TIMEOUT">GNSS_TIMEOUT</a></code></li>
 <li><code><a title="pynimomodem.AtErrorCode.INVALID_CRC" href="#pynimomodem.AtErrorCode.INVALID_CRC">INVALID_CRC</a></code></li>
 <li><code><a title="pynimomodem.AtErrorCode.INVALID_PARAMETER" href="#pynimomodem.AtErrorCode.INVALID_PARAMETER">INVALID_PARAMETER</a></code></li>
+<li><code><a title="pynimomodem.AtErrorCode.INVALID_RESPONSE_CRC" href="#pynimomodem.AtErrorCode.INVALID_RESPONSE_CRC">INVALID_RESPONSE_CRC</a></code></li>
 <li><code><a title="pynimomodem.AtErrorCode.MESSAGE_LENGTH_MISMATCH" href="#pynimomodem.AtErrorCode.MESSAGE_LENGTH_MISMATCH">MESSAGE_LENGTH_MISMATCH</a></code></li>
 <li><code><a title="pynimomodem.AtErrorCode.MESSAGE_UNAVAILABLE" href="#pynimomodem.AtErrorCode.MESSAGE_UNAVAILABLE">MESSAGE_UNAVAILABLE</a></code></li>
 <li><code><a title="pynimomodem.AtErrorCode.OK" href="#pynimomodem.AtErrorCode.OK">OK</a></code></li>
@@ -4860,7 +5547,128 @@ mobile-terminated messages to be delivered by the network.</p></div>
 </ul>
 </li>
 <li>
+<h4><code><a title="pynimomodem.GeoBeam" href="#pynimomodem.GeoBeam">GeoBeam</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB1" href="#pynimomodem.GeoBeam.AMER_RB1">AMER_RB1</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB10" href="#pynimomodem.GeoBeam.AMER_RB10">AMER_RB10</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB11" href="#pynimomodem.GeoBeam.AMER_RB11">AMER_RB11</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB12" href="#pynimomodem.GeoBeam.AMER_RB12">AMER_RB12</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB13" href="#pynimomodem.GeoBeam.AMER_RB13">AMER_RB13</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB14" href="#pynimomodem.GeoBeam.AMER_RB14">AMER_RB14</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB15" href="#pynimomodem.GeoBeam.AMER_RB15">AMER_RB15</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB16" href="#pynimomodem.GeoBeam.AMER_RB16">AMER_RB16</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB17" href="#pynimomodem.GeoBeam.AMER_RB17">AMER_RB17</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB18" href="#pynimomodem.GeoBeam.AMER_RB18">AMER_RB18</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB19" href="#pynimomodem.GeoBeam.AMER_RB19">AMER_RB19</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB2" href="#pynimomodem.GeoBeam.AMER_RB2">AMER_RB2</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB3" href="#pynimomodem.GeoBeam.AMER_RB3">AMER_RB3</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB4" href="#pynimomodem.GeoBeam.AMER_RB4">AMER_RB4</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB5" href="#pynimomodem.GeoBeam.AMER_RB5">AMER_RB5</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB6" href="#pynimomodem.GeoBeam.AMER_RB6">AMER_RB6</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB7" href="#pynimomodem.GeoBeam.AMER_RB7">AMER_RB7</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB8" href="#pynimomodem.GeoBeam.AMER_RB8">AMER_RB8</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AMER_RB9" href="#pynimomodem.GeoBeam.AMER_RB9">AMER_RB9</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.AORW_SC" href="#pynimomodem.GeoBeam.AORW_SC">AORW_SC</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB1" href="#pynimomodem.GeoBeam.APAC_RB1">APAC_RB1</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB10" href="#pynimomodem.GeoBeam.APAC_RB10">APAC_RB10</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB11" href="#pynimomodem.GeoBeam.APAC_RB11">APAC_RB11</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB12" href="#pynimomodem.GeoBeam.APAC_RB12">APAC_RB12</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB13" href="#pynimomodem.GeoBeam.APAC_RB13">APAC_RB13</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB14" href="#pynimomodem.GeoBeam.APAC_RB14">APAC_RB14</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB15" href="#pynimomodem.GeoBeam.APAC_RB15">APAC_RB15</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB16" href="#pynimomodem.GeoBeam.APAC_RB16">APAC_RB16</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB17" href="#pynimomodem.GeoBeam.APAC_RB17">APAC_RB17</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB18" href="#pynimomodem.GeoBeam.APAC_RB18">APAC_RB18</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB19" href="#pynimomodem.GeoBeam.APAC_RB19">APAC_RB19</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB2" href="#pynimomodem.GeoBeam.APAC_RB2">APAC_RB2</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB3" href="#pynimomodem.GeoBeam.APAC_RB3">APAC_RB3</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB4" href="#pynimomodem.GeoBeam.APAC_RB4">APAC_RB4</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB5" href="#pynimomodem.GeoBeam.APAC_RB5">APAC_RB5</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB6" href="#pynimomodem.GeoBeam.APAC_RB6">APAC_RB6</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB7" href="#pynimomodem.GeoBeam.APAC_RB7">APAC_RB7</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB8" href="#pynimomodem.GeoBeam.APAC_RB8">APAC_RB8</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.APAC_RB9" href="#pynimomodem.GeoBeam.APAC_RB9">APAC_RB9</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB1" href="#pynimomodem.GeoBeam.EMEA_RB1">EMEA_RB1</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB10" href="#pynimomodem.GeoBeam.EMEA_RB10">EMEA_RB10</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB11" href="#pynimomodem.GeoBeam.EMEA_RB11">EMEA_RB11</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB12" href="#pynimomodem.GeoBeam.EMEA_RB12">EMEA_RB12</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB13" href="#pynimomodem.GeoBeam.EMEA_RB13">EMEA_RB13</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB14" href="#pynimomodem.GeoBeam.EMEA_RB14">EMEA_RB14</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB15" href="#pynimomodem.GeoBeam.EMEA_RB15">EMEA_RB15</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB16" href="#pynimomodem.GeoBeam.EMEA_RB16">EMEA_RB16</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB17" href="#pynimomodem.GeoBeam.EMEA_RB17">EMEA_RB17</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB18" href="#pynimomodem.GeoBeam.EMEA_RB18">EMEA_RB18</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB19" href="#pynimomodem.GeoBeam.EMEA_RB19">EMEA_RB19</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB2" href="#pynimomodem.GeoBeam.EMEA_RB2">EMEA_RB2</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB3" href="#pynimomodem.GeoBeam.EMEA_RB3">EMEA_RB3</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB4" href="#pynimomodem.GeoBeam.EMEA_RB4">EMEA_RB4</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB5" href="#pynimomodem.GeoBeam.EMEA_RB5">EMEA_RB5</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB6" href="#pynimomodem.GeoBeam.EMEA_RB6">EMEA_RB6</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB7" href="#pynimomodem.GeoBeam.EMEA_RB7">EMEA_RB7</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB8" href="#pynimomodem.GeoBeam.EMEA_RB8">EMEA_RB8</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.EMEA_RB9" href="#pynimomodem.GeoBeam.EMEA_RB9">EMEA_RB9</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.GLOBAL_BB" href="#pynimomodem.GeoBeam.GLOBAL_BB">GLOBAL_BB</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB1" href="#pynimomodem.GeoBeam.IOE_RB1">IOE_RB1</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB10" href="#pynimomodem.GeoBeam.IOE_RB10">IOE_RB10</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB11" href="#pynimomodem.GeoBeam.IOE_RB11">IOE_RB11</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB12" href="#pynimomodem.GeoBeam.IOE_RB12">IOE_RB12</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB13" href="#pynimomodem.GeoBeam.IOE_RB13">IOE_RB13</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB14" href="#pynimomodem.GeoBeam.IOE_RB14">IOE_RB14</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB15" href="#pynimomodem.GeoBeam.IOE_RB15">IOE_RB15</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB16" href="#pynimomodem.GeoBeam.IOE_RB16">IOE_RB16</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB17" href="#pynimomodem.GeoBeam.IOE_RB17">IOE_RB17</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB18" href="#pynimomodem.GeoBeam.IOE_RB18">IOE_RB18</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB19" href="#pynimomodem.GeoBeam.IOE_RB19">IOE_RB19</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB2" href="#pynimomodem.GeoBeam.IOE_RB2">IOE_RB2</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB3" href="#pynimomodem.GeoBeam.IOE_RB3">IOE_RB3</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB4" href="#pynimomodem.GeoBeam.IOE_RB4">IOE_RB4</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB5" href="#pynimomodem.GeoBeam.IOE_RB5">IOE_RB5</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB6" href="#pynimomodem.GeoBeam.IOE_RB6">IOE_RB6</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB7" href="#pynimomodem.GeoBeam.IOE_RB7">IOE_RB7</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB8" href="#pynimomodem.GeoBeam.IOE_RB8">IOE_RB8</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.IOE_RB9" href="#pynimomodem.GeoBeam.IOE_RB9">IOE_RB9</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.beam" href="#pynimomodem.GeoBeam.beam">beam</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.id" href="#pynimomodem.GeoBeam.id">id</a></code></li>
+<li><code><a title="pynimomodem.GeoBeam.satellite" href="#pynimomodem.GeoBeam.satellite">satellite</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.GeoSatellite" href="#pynimomodem.GeoSatellite">GeoSatellite</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.GeoSatellite.AMER" href="#pynimomodem.GeoSatellite.AMER">AMER</a></code></li>
+<li><code><a title="pynimomodem.GeoSatellite.AORWSC" href="#pynimomodem.GeoSatellite.AORWSC">AORWSC</a></code></li>
+<li><code><a title="pynimomodem.GeoSatellite.APAC" href="#pynimomodem.GeoSatellite.APAC">APAC</a></code></li>
+<li><code><a title="pynimomodem.GeoSatellite.EMEA" href="#pynimomodem.GeoSatellite.EMEA">EMEA</a></code></li>
+<li><code><a title="pynimomodem.GeoSatellite.IOE" href="#pynimomodem.GeoSatellite.IOE">IOE</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="pynimomodem.GnssMode" href="#pynimomodem.GnssMode">GnssMode</a></code></h4>
+</li>
+<li>
+<h4><code><a title="pynimomodem.GnssModeOrbcomm" href="#pynimomodem.GnssModeOrbcomm">GnssModeOrbcomm</a></code></h4>
+<ul class="two-column">
+<li><code><a title="pynimomodem.GnssModeOrbcomm.BEIDOU" href="#pynimomodem.GnssModeOrbcomm.BEIDOU">BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.BEIDOU_GALILEO" href="#pynimomodem.GnssModeOrbcomm.BEIDOU_GALILEO">BEIDOU_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GALILEO" href="#pynimomodem.GnssModeOrbcomm.GALILEO">GALILEO</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GLONASS" href="#pynimomodem.GnssModeOrbcomm.GLONASS">GLONASS</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GLONASS_BEIDOU" href="#pynimomodem.GnssModeOrbcomm.GLONASS_BEIDOU">GLONASS_BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GLONASS_GALILEO" href="#pynimomodem.GnssModeOrbcomm.GLONASS_GALILEO">GLONASS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GPS" href="#pynimomodem.GnssModeOrbcomm.GPS">GPS</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GPS_BEIDOU" href="#pynimomodem.GnssModeOrbcomm.GPS_BEIDOU">GPS_BEIDOU</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GPS_GALILEO" href="#pynimomodem.GnssModeOrbcomm.GPS_GALILEO">GPS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.GnssModeOrbcomm.GPS_GLONASS" href="#pynimomodem.GnssModeOrbcomm.GPS_GLONASS">GPS_GLONASS</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pynimomodem.GnssModeQuectel" href="#pynimomodem.GnssModeQuectel">GnssModeQuectel</a></code></h4>
+<ul class="">
+<li><code><a title="pynimomodem.GnssModeQuectel.GPS" href="#pynimomodem.GnssModeQuectel.GPS">GPS</a></code></li>
+<li><code><a title="pynimomodem.GnssModeQuectel.GPS_BDS" href="#pynimomodem.GnssModeQuectel.GPS_BDS">GPS_BDS</a></code></li>
+<li><code><a title="pynimomodem.GnssModeQuectel.GPS_GALILEO" href="#pynimomodem.GnssModeQuectel.GPS_GALILEO">GPS_GALILEO</a></code></li>
+<li><code><a title="pynimomodem.GnssModeQuectel.GPS_GLONASS" href="#pynimomodem.GnssModeQuectel.GPS_GLONASS">GPS_GLONASS</a></code></li>
+<li><code><a title="pynimomodem.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS" href="#pynimomodem.GnssModeQuectel.GPS_GLONASS_GALILEO_BDS">GPS_GLONASS_GALILEO_BDS</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="pynimomodem.Manufacturer" href="#pynimomodem.Manufacturer">Manufacturer</a></code></h4>

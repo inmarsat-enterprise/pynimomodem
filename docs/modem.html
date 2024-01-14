@@ -190,8 +190,8 @@ class NimoModem:
     def _mfr(self) -&gt; Manufacturer:
         &#34;&#34;&#34;Used internally to support different manufacturer commands.&#34;&#34;&#34;
         if not self._manufacturer:
-            _log.debug(&#39;Querying manufacturer for command structure&#39;)
             self.get_manufacturer()
+            _log.debug(&#39;Using %s manufacturer commands&#39;, self._manufacturer)
         return self._manufacturer
     
     @property
@@ -226,15 +226,16 @@ class NimoModem:
         if err == AtErrorCode.OK:
             return self._modem.get_response()
         elif err == AtErrorCode.TIMEOUT:
-            raise ModemTimeout
+            raise ModemTimeout(f&#39;AT response timed out after {timeout} seconds&#39;)
         elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
-            raise ModemCrcConfig
-        elif err == AtErrorCode.INVALID_CRC:
-            raise ModemCrc
+            raise ModemCrcConfig(&#39;Reponse checksum {}expected&#39;.format(
+                                 &#39;&#39; if self.crc_enabled else &#39;un&#39;))
+        elif err == AtErrorCode.INVALID_RESPONSE_CRC:
+            raise ModemCrc(err.name)
         else:
             err = self.get_last_error_code()
             if err == AtErrorCode.INVALID_CRC:
-                raise ModemCrc
+                raise ModemCrc(err.name)
             raise ModemAtError(err.name)
     
     def connect(self) -&gt; None:
@@ -1525,8 +1526,8 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
     def _mfr(self) -&gt; Manufacturer:
         &#34;&#34;&#34;Used internally to support different manufacturer commands.&#34;&#34;&#34;
         if not self._manufacturer:
-            _log.debug(&#39;Querying manufacturer for command structure&#39;)
             self.get_manufacturer()
+            _log.debug(&#39;Using %s manufacturer commands&#39;, self._manufacturer)
         return self._manufacturer
     
     @property
@@ -1561,15 +1562,16 @@ baudrate (int): The baud rate of the modem (default 9600)</p>
         if err == AtErrorCode.OK:
             return self._modem.get_response()
         elif err == AtErrorCode.TIMEOUT:
-            raise ModemTimeout
+            raise ModemTimeout(f&#39;AT response timed out after {timeout} seconds&#39;)
         elif err == AtErrorCode.CRC_CONFIG_MISMATCH:
-            raise ModemCrcConfig
-        elif err == AtErrorCode.INVALID_CRC:
-            raise ModemCrc
+            raise ModemCrcConfig(&#39;Reponse checksum {}expected&#39;.format(
+                                 &#39;&#39; if self.crc_enabled else &#39;un&#39;))
+        elif err == AtErrorCode.INVALID_RESPONSE_CRC:
+            raise ModemCrc(err.name)
         else:
             err = self.get_last_error_code()
             if err == AtErrorCode.INVALID_CRC:
-                raise ModemCrc
+                raise ModemCrc(err.name)
             raise ModemAtError(err.name)
     
     def connect(self) -&gt; None:

@@ -227,7 +227,7 @@ class AtCommandBuffer:
                             else:
                                 _log.error(&#39;Invalid CRC&#39;)
                                 parsing = AtParsingState.ERROR
-                                error = AtErrorCode.INVALID_CRC
+                                error = AtErrorCode.INVALID_RESPONSE_CRC
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == &#39;\r&#39;:
@@ -604,7 +604,7 @@ has completed or timed out.</dd>
                             else:
                                 _log.error(&#39;Invalid CRC&#39;)
                                 parsing = AtParsingState.ERROR
-                                error = AtErrorCode.INVALID_CRC
+                                error = AtErrorCode.INVALID_RESPONSE_CRC
                                 result_ok = False
                     # else response line terminator - keep parsing
                 elif last == &#39;\r&#39;:
@@ -915,7 +915,7 @@ Use <code>get_response</code> to retrieve the parsed response.</p>
                         else:
                             _log.error(&#39;Invalid CRC&#39;)
                             parsing = AtParsingState.ERROR
-                            error = AtErrorCode.INVALID_CRC
+                            error = AtErrorCode.INVALID_RESPONSE_CRC
                             result_ok = False
                 # else response line terminator - keep parsing
             elif last == &#39;\r&#39;:
