@@ -39,6 +39,9 @@ class AtParsingState(NimoIntEnum):
     OK = 3
     ERROR = 4
 
+class AtProtocol(NimoIntEnum):
+    IDP = 8
+    OGX = 10
 
 class MessagePriority(NimoIntEnum):
     """Message priorities for NIMO modem messages."""
@@ -66,14 +69,14 @@ class ControlState(NimoIntEnum):
     BEAM_ACQUIRED = 5
     BEAM_SWITCH = 6
     REGISTERING = 7
-    RECEIVE_ONLY = 8
+    RECEIVE_ONLY = 8    
     BB_DOWNLOAD = 9
     ACTIVE = 10
     BLOCKED = 11
     CONFIRM_PREVIOUS_BEAM = 12
     CONFIRM_REQUESTED_BEAM = 13
     CONNECT_CONFIRMED_BEAM = 14
-
+    
 
 class BeamState(NimoIntEnum):
     """States of the NIMO modem satellite beam internal selection process."""
@@ -97,7 +100,38 @@ class MessageState(NimoIntEnum):
     TX_COMPLETE = 6
     TX_FAILED = 7
     TX_CANCELLED = 8
+    
+    @property
+    def ogx(self):
+        to_ogx = self.value
+        if self.value == 4:
+            to_ogx = 3
+        elif self.value == 8:
+            to_ogx = 14         # TX_CANCELLED
+        return to_ogx
+    
+    @ogx.setter
+    def ogx(self,value):
+        if value <= 2:
+            self.value = 1
+        elif value == 3:
+            self.value = 4
 
+class MessageStateOGx(NimoIntEnum):
+    INITIALIZING = 1
+    OFFLINE = 2
+    TX_READY = 3
+    TX_SENDING = 4
+    RX_COMPLETED = 5
+    TX_COMPLETED = 6
+    TX_FAILED = 7
+    TX_EXPIRED = 8
+    TX_CANCELLED = 14
+
+class MessageClosed(NimoIntEnum):
+    """Message closed status of NIMO modem message."""
+    NOT_COMPLETED = 0
+    FINAL_STATE = 1
 
 class AtErrorCode(NimoIntEnum):
     """AT command error codes for NIMO modems."""
@@ -214,6 +248,10 @@ class WakeupWay(NimoIntEnum):
     WAKEUP_PIN = 0
     UART = 1
 
+class ReceiveOnSend(NimoIntEnum):
+    """ORBCOMM OGX Receive on Send (optional)"""
+    DISABLE = 0
+    ENABLE = 1
 
 class WorkMode(NimoIntEnum):
     """Quectel CC200A-LB working modes."""
@@ -318,22 +356,80 @@ class SignalQuality(NimoIntEnum):
     GOOD = 4
     STRONG = 5
     WARNING = 6
+    
+    def ogx(value):
+        if value == 1:
+            return SignalQuality.NONE
+        elif value == 2:
+            return SignalQuality.WEAK
+        elif value == 3:
+            return SignalQuality.LOW
+        elif value == 4:
+            return SignalQuality.MID
+        elif value == 5:
+            return SignalQuality.GOOD
+        elif value == 6:
+            return SignalQuality.STRONG
+        elif value == 7:
+            return SignalQuality.STRONG
+        else:
+            return SignalQuality.WARNING
+    
+class SignalQualityOGx(NimoIntEnum):
+    """Qualitative descriptor corresponding to an OGx SignalLevel"""
+    UNKNOWN = 0
+    NONE = 1
+    VERY_POOR = 2
+    POOR = 3
+    FAIR = 4
+    GOOD = 5
+    VERY_GOOD = 6
+    EXCELLENT = 7
 
+class SignalQualityTypeOGx(NimoIntEnum):
+    ILC_NOM_FL = 1
+    ILC_NOM_RL = 2
+    SAM_GB = 3
+    SAM_RB = 4
+    ILC_CFG = 5
+    ILC_REG = 6
+
+class SignalQualityParameters(NimoIntEnum):
+    TYPE = 0
+    SAT_ID = 1
+    BEAM_ID = 2
+    CHANNEL_ID = 3
+    ILC_ID = 4
+    SESSION_ID = 5
+    SUCCESS_COUNT = 6
+    LAST_SUCCESS_TIME = 7
+    ATTEMPT_COUNT = 8
+    LAST_ATTEMPT_TIME = 9
+    LAST_CNO = 10
+    MEAN_CNO = 11
+    MIN_CNO = 12
+    MAX_CNO = 13
+    STD_DEV = 14
+    MIN_PER_CNO = 15
+    SQ = 16
 
 class EventNotification(IntFlag):
     """Bitmask enumerated values for NIMO modem events."""
-    GNSS_FIX_NEW =              0b000000000001
-    MESSAGE_MT_RECEIVED =       0b000000000010
-    MESSAGE_MO_COMPLETE =       0b000000000100
-    NETWORK_REGISTERED =        0b000000001000
-    MODEM_RESET_COMPLETE =      0b000000010000
-    JAMMING_ANTENNA_CHANGE =    0b000000100000
-    MODEM_RESET_PENDING =       0b000001000000
-    WAKEUP_PERIOD_CHANGE =      0b000010000000
-    UTC_TIME_SYNC =             0b000100000000
-    GNSS_FIX_TIMEOUT =          0b001000000000
-    EVENT_TRACE_CACHED =        0b010000000000
-    NETWORK_PING_ACKNOWLEDGED = 0b100000000000
+    GNSS_FIX_NEW =              0b000000000000001
+    MESSAGE_MT_RECEIVED =       0b000000000000010
+    MESSAGE_MO_COMPLETE =       0b000000000000100
+    NETWORK_REGISTERED =        0b000000000001000
+    MODEM_RESET_COMPLETE =      0b000000000010000
+    JAMMING_ANTENNA_CHANGE =    0b000000000100000
+    MODEM_RESET_PENDING =       0b000000001000000
+    WAKEUP_PERIOD_CHANGE =      0b000000010000000
+    UTC_TIME_SYNC =             0b000000100000000
+    GNSS_FIX_TIMEOUT =          0b000001000000000
+    EVENT_TRACE_CACHED =        0b000010000000000
+    NETWORK_PING_ACKNOWLEDGED = 0b000100000000000
+    TX_MESSAGE_TRANSMITTING =   0b001000000000000
+    SATCOM_STATE_CHANGE =       0b010000000000000
+    NETWORK_INFO_UPDATE =       0b100000000000000
     
     @classmethod
     def get_events(cls, event_mask: int) -> 'list[EventNotification]':
@@ -352,7 +448,28 @@ class NetworkStatus(NimoIntEnum):
     SUSPENDED = 6
     MUTED = 7
     BLOCKED = 8
+    
+    def ogx(value):
+        if value == 6:
+            return NetworkStatus.OK
+        else:
+            return NetworkStatus.UNKNOWN
 
+class NetworkStateOGx(NimoIntEnum):
+    OFFLINE = 0
+    WAITING_GNSS = 1
+    WAITING_SIGNAL = 2
+    DOWNLOADING_CHANNEL_CONFIG = 3
+    REGISTERING = 4
+    CONFIRMING_CHANNEL = 5
+    CONNECTED = 6
+
+class NetworkInfoParametersOGx(NimoIntEnum):
+    REGISTRATION_STATUS = 0
+    NETWORK_STATUS = 1
+    TX_STATE = 2
+    RX_IN_PROGRESS = 3
+    TX_IN_PROGRESS = 4
 
 class EventTraceClass(NimoIntEnum):
     """Event Trace categories for the NIMO modem."""
@@ -583,3 +700,36 @@ class GeoSatellite(NimoFloatEnum):
     EMEA = 24.9   # Inmarsat 4AF4 aka Alphasat XL
     IOE = 63.5   # Inmarsat 6F1 previously IOR 3F1, MEAS 4F2
     APAC = 143.5   # Inmarsat 4F2 previously 4F1
+
+class FromMobilePing:
+    def __init__(self,
+                 datetime_request: str,
+                 to_gateway: int,
+                 from_gateway: int) -> None:
+        """Defines a PING request sent from the mobile
+        
+        Args:
+            datetime_request: The datetime ('yyyy-mm-dd hh:mm:ss') of the ping request
+            to_gateway: number of seconds to reach the gateway
+            from_gateway: number of seconds from the gateway to the mobile
+        """
+        self.datetime_request: str = datetime_request
+        self.to_gateway: int = to_gateway
+        self.from_gateway: int = from_gateway
+    
+class EventTrace:
+    def __init__(self,
+                 trace_class: EventTraceClass,
+                 trace_subclass: EventTraceSubclass,
+                 data: 'tuple[str, str|dict|IntEnum]') -> None:
+        """Defines an event trace.
+        
+        Args:
+            trace_class: The enumerated class
+            trace_subclass: The enumerated subclass dependent on the class
+            data: The set of (name, meta) where meta defines either a
+                data type (e.g. `uint`) or a mapping (`dict` or `IntEnum`)
+        """
+        self.trace_class: EventTraceClass = trace_class
+        self.trace_subclass: EventTraceSubclass = trace_subclass
+        self.data: 'tuple[str, str|dict|IntEnum]' = data

@@ -213,7 +213,7 @@ def parse_nmea_to_location(location: ModemLocation, nmea_sentence: str) -> None:
         elif i == 3:
             if nmea_type == 'RMC':
                 location.latitude = (float(field_data[0:2]) +
-                                     float(field_data[2]) / 60.0)
+                                     float(field_data[2:]) / 60.0)
         elif i == 4:
             if nmea_type == 'RMC':
                 if field_data == 'S':
@@ -223,7 +223,7 @@ def parse_nmea_to_location(location: ModemLocation, nmea_sentence: str) -> None:
         elif i == 5:
             if nmea_type == 'RMC':
                 location.longitude = (float(field_data[0:3]) +
-                                      float(field_data[3]) / 60.0)
+                                      float(field_data[3:]) / 60.0)
         elif i == 6:
             if nmea_type == 'RMC':
                 if field_data == 'W':

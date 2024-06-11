@@ -16,6 +16,7 @@ from .constants import (
     MSG_MO_NAME_QMAX_LEN,
     MessagePriority,
     MessageState,
+    MessageClosed,
 )
 from .nimoutils import vlog
 
@@ -44,6 +45,8 @@ class NimoMessage:
                  length: int = 0,
                  bytes_delivered: int = 0,
                  payload: bytes = b'',
+                 closed: MessageClosed = MessageClosed.NOT_COMPLETED,
+                 lifetime: int = 0,
                  ) -> None:
         self._message_name: str = ''
         if name:
@@ -55,11 +58,17 @@ class NimoMessage:
         if state is not None:
             self.state = state
         self._length: int = 0
+        self._closed = MessageClosed.NOT_COMPLETED
+        if closed is not None:
+            self.closed = closed
         if length:
             self.length = length
         self._bytes_delivered: int = 0
         if bytes_delivered:
             self.bytes_delivered = bytes_delivered
+        self._lifetime: int = 0
+        if lifetime:
+            self._lifetime = lifetime
         self.payload: bytes = payload
     
     @property
@@ -89,8 +98,18 @@ class NimoMessage:
     @state.setter
     def state(self, value: MessageState):
         if not MessageState.is_valid(value):
-            raise ValueError('Invalid MessagePriority')
+            raise ValueError('Invalid MessageState')
         self._state = MessageState(value)
+    
+    @property
+    def closed(self) -> MessageClosed:
+        return self._closed
+    
+    @state.setter
+    def closed(self, value: MessageClosed):
+        if not MessageClosed.is_valid(value):
+            raise ValueError('Invalid MessageClosed')
+        self._closed = MessageClosed(value)
     
     @property
     def codec_sin(self) -> int:
@@ -136,6 +155,15 @@ class NimoMessage:
             return
         self._bytes_delivered = value
 
+    @property
+    def lifetime(self) -> int:
+        return self._lifetime
+    
+    @lifetime.setter
+    def lifetime(self, value: int):
+        if not isinstance(value, int) or value < 0 or value > 65535:
+            raise ValueError('Invalid lifetime')
+        self._lifetime = value
 
 class MoMessage(NimoMessage):
     """A Mobile-Originated Message."""

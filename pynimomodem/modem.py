@@ -14,7 +14,7 @@ import base64
 import logging
 import time
 from dataclasses import dataclass
-from enum import IntEnum
+from enum import Enum,IntEnum
 
 from serial import Serial
 
@@ -25,19 +25,27 @@ from .constants import (
     MSG_MO_NAME_MAX_LEN,
     MSG_MO_NAME_QMAX_LEN,
     AtErrorCode,
+    AtProtocol,
     BeamState,
     ControlState,
     DataFormat,
+    FromMobilePing,
     GeoBeam,
     GnssMode,
     GnssModeOrbcomm,
     GnssModeQuectel,
+    MessageClosed,
     MessagePriority,
     MessageState,
+    MessageStateOGx,
+    NetworkInfoParametersOGx,
+    NetworkStateOGx,
     NetworkStatus,
     PowerMode,
+    ReceiveOnSend,
     SignalLevelRegional,
     SignalQuality,
+    SignalQualityParameters,
     UrcCode,
     WakeupPeriod,
     WakeupWay,
@@ -62,7 +70,7 @@ class Manufacturer(IntEnum):
     NONE = 0
     ORBCOMM = 1
     QUECTEL = 2
-
+    ORBCOMM_OGX = 3
 
 @dataclass
 class AcquisitionInfo:
@@ -346,7 +354,12 @@ class NimoModem:
                     if not any(m in mfr.lower()
                                for m in ['orbcomm', 'skywave']):
                         _log.warning('Unsupported manufacturer %s', mfr)
-                    self._manufacturer = Manufacturer.ORBCOMM
+                    at_protocol = int(self._at_command_response('ATI5'))
+                    if at_protocol == AtProtocol.OGX.value:
+                        self._manufacturer = Manufacturer.ORBCOMM_OGX
+                    else:
+                        self._manufacturer = Manufacturer.ORBCOMM
+                        
                 if vlog(VLOG_TAG):
                     _log.debug('Caching manufacturer: %s',
                                self._manufacturer.name)
@@ -365,6 +378,8 @@ class NimoModem:
             if response:
                 if self._mfr == Manufacturer.QUECTEL:
                     response = response.split('\n')[1]
+                elif self._mfr == Manufacturer.ORBCOMM_OGX:
+                    response += "(OGx)"
             return response
         except ModemError:
             return ''
@@ -418,7 +433,16 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QREG?'
             prefix = '+QREG:'
-        return NetworkStatus(int(self._at_command_response(cmd, prefix)))
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%NETINFO'
+            prefix = '%NETINFO:'
+        
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            response_str = self._at_command_response(cmd, prefix)
+            parameters = [x for x in response_str.split(',')]
+            return NetworkStatus.ogx(int(parameters[NetworkInfoParametersOGx.NETWORK_STATUS]))
+        else:
+            return NetworkStatus(int(self._at_command_response(cmd, prefix)))
     
     def get_rssi(self) -> float:
         """Get the current Received Signal Strength Indicator.
@@ -431,27 +455,51 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QSCN'
             prefix = '+QSCN:'
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%SIGQ'
+            prefix = '%SIGQ:'
         try:
-            return int(self._at_command_response(cmd, prefix)) / 100
+            cno = 0
+            if self._mfr == Manufacturer.ORBCOMM_OGX:
+                response_str = self._at_command_response(cmd, prefix)
+                parameters = [x for x in response_str.split(',')]
+                if len(parameters) <= 1:
+                    raise ValueError(f'No signal quality information returned!')
+                cno = parameters[SignalQualityParameters.MEAN_CNO.value]
+                _log.debug('CNO Value: %s', cno)
+            else:
+                cno = self._at_command_response(cmd, prefix)
+            return int(cno) / 100
         except ValueError:
             return 0
     
     def get_signal_quality(self) -> SignalQuality:
-        """Get a qualitative indicator from 0..5 of the satellite signal."""
-        snr = self.get_rssi()
-        if snr >= SignalLevelRegional.INVALID.value:
-            return SignalQuality.WARNING
-        if snr >= SignalLevelRegional.BARS_5.value:
-            return SignalQuality.STRONG
-        if snr >= SignalLevelRegional.BARS_4.value:
-            return SignalQuality.GOOD
-        if snr >= SignalLevelRegional.BARS_3.value:
-            return SignalQuality.MID
-        if snr >= SignalLevelRegional.BARS_2.value:
-            return SignalQuality.LOW
-        if snr >= SignalLevelRegional.BARS_1.value:
-            return SignalQuality.WEAK
-        return SignalQuality.NONE
+        """Get a qualitative indicator from 0..7 of the satellite signal."""
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            try:
+                cmd = 'AT%SIGQ'
+                prefix = '%SIGQ:'
+                response_str = self._at_command_response(cmd, prefix)
+                parameters = [x for x in response_str.split(',')]
+                return SignalQuality.ogx(int(parameters[SignalQualityParameters.SQ.value]))
+            except Exception as exc:
+                _log.warn('Unable to retrieve Signal Quality: %s', exc) 
+                return SignalQuality.NONE
+        else:
+            snr = self.get_rssi()
+            if snr >= SignalLevelRegional.INVALID.value:
+                return SignalQuality.WARNING
+            if snr >= SignalLevelRegional.BARS_5.value:
+                return SignalQuality.STRONG
+            if snr >= SignalLevelRegional.BARS_4.value:
+                return SignalQuality.GOOD
+            if snr >= SignalLevelRegional.BARS_3.value:
+                return SignalQuality.MID
+            if snr >= SignalLevelRegional.BARS_2.value:
+                return SignalQuality.LOW
+            if snr >= SignalLevelRegional.BARS_1.value:
+                return SignalQuality.WEAK
+            return SignalQuality.NONE
     
     def get_acquisition_detail(self) -> AcquisitionInfo:
         """Get the detailed satellite acquisition status.
@@ -465,38 +513,67 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QEVNT=3,1'
             prefix = '+QEVNT:'
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%NETINFO'
+            prefix = '%NETINFO:'
         result_str = self._at_command_response(cmd, prefix, timeout=10)
-        if self._mfr == Manufacturer.ORBCOMM:
-            results = [int(x) for x in result_str.split('\n')]
-            ctrl_state = ControlState(results[0])
-            beam_state = BeamState(results[1])
-            rssi = float(results[2]) / 100
-            vcid = results[3]
-        elif self._mfr == Manufacturer.QUECTEL:
-            # Workaround Quectel 20230731 documentation error says +QEVNT:
-            result_str = result_str.replace('+QEVENT:', '').strip()
-            results = [int(x) for x in result_str.split(',')]
-            # <dataCount>,<signedBitmask>,<MTID>,<timestamp>,
-            #   <class>,<subclass>,<priority>,<data0>,...
-            data0 = 7   # list index where trace data starts
-            ctrl_state = ControlState(results[data0+22])
-            beam_state = BeamState(results[data0+23])
-            rssi = float(results[data0+16]) / 100
-            vcid = results[data0+1]
+        try:
+            if self._mfr == Manufacturer.ORBCOMM:
+                results = [int(x) for x in result_str.split('\n')]
+                ctrl_state = ControlState(results[0])
+                beam_state = BeamState(results[1])
+                rssi = float(results[2]) / 100
+                vcid = results[3]
+            elif self._mfr == Manufacturer.QUECTEL:
+                # Workaround Quectel 20230731 documentation error says +QEVNT:
+                result_str = result_str.replace('+QEVENT:', '').strip()
+                results = [int(x) for x in result_str.split(',')]
+                # <dataCount>,<signedBitmask>,<MTID>,<timestamp>,
+                #   <class>,<subclass>,<priority>,<data0>,...
+                data0 = 7   # list index where trace data starts
+                ctrl_state = ControlState(results[data0+22])
+                beam_state = BeamState(results[data0+23])
+                rssi = float(results[data0+16]) / 100
+                vcid = results[data0+1]
+            elif self._mfr == Manufacturer.ORBCOMM_OGX:
+                results = [int(x) for x in result_str.split(',')]
+                network_state = results[1]
+                # Map from OGx NetworkState to ControlState
+                if network_state == 2:
+                    network_state = 3
+                elif network_state == 3:
+                    network_state = 9
+                elif network_state == 4:
+                    network_state = 7
+                elif network_state == 5:
+                    network_state = 13
+                elif network_state == 6:
+                    network_state = 10
+                ctrl_state = ControlState(network_state)
+                beam_state = BeamState(results[2])
+                rssi = self.get_rssi()
+                reginfo = self._at_command_response('AT%REGINFO', '%REGINFO:')
+                vcid = int([x for x in reginfo.split(',')][5])
+        except Exception as exc:
+            _log.warn('Unable to retrieve AcquisitionInfo: %s', exc) 
+            return AcquisitionInfo()
+    
         return AcquisitionInfo(ctrl_state, beam_state, rssi, vcid)
     
     def send_data(self, data: bytes, **kwargs) -> 'str|MoMessage':
         """Submits data to send as a mobile-originated message.
         
         If a `message_name` is not supplied one will be generated using the
-        least significant 8 digits of unix timestamp.
+        least significant 8 digits of unix timestamp or randomly generated
+        id betweeen 0-999 (for OGx)
         
         Args:
             data (bytes): The data to send.
         
         Keyword Args:
             message_name (str): Optional handle for message in Tx queue. Max 8
-                characters for Orbcomm modem or 12 for Quectel.
+                characters for Orbcomm modem or 12 for Quectel. For Orbcomm OGx
+                modem, the message_name is an id between 0-999.
             priority (int): Optional priority 1 (highest) .. 4 (low, default).
                 May use `MessagePriority`.
             codec_sin (int): Optional first byte of payload to add as a codec
@@ -516,8 +593,13 @@ class NimoModem:
         data_size = len(data)
         msg_payload_sin_min = b''
         message_name = kwargs.get('message_name', '')
-        priority = MessagePriority(kwargs.get('priority',
-                                              MessagePriority.LOW.value))
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            priority = MessagePriority(kwargs.get('priority',
+                                                MessagePriority.MEDL.value))
+        else:
+            priority = MessagePriority(kwargs.get('priority',
+                                                MessagePriority.LOW.value))
+        lifetime: int = kwargs.get('lifetime', 5)
         codec_sin: int = kwargs.get('codec_sin', -1)
         codec_min: int = kwargs.get('codec_min', -1)
         if codec_sin > -1:
@@ -526,10 +608,20 @@ class NimoModem:
         if codec_min > -1:
             data_size += 1
             msg_payload_sin_min += codec_min.to_bytes(1, 'big')
+        _log.debug('After SinMin Data: %s | Size: %s',data,data_size)
         if not 2 <= data_size <= MSG_MO_MAX_SIZE:
             raise ValueError('Invalid mobile-originated message size')
-        if message_name and len(message_name) > self._mo_msg_name_len_max:
-            raise ValueError('Message name too long')
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            if message_name and int(message_name)<=0 and int(message_name)>=999:
+                raise ValueError(f'Invalid message name, out of range between 0-999')
+            if not message_name:
+                message_name = int((time.time() % 1) * 1000)
+        else:
+            max_name_len = self._mo_msg_name_len_max
+            if message_name and len(message_name) > max_name_len:
+                raise ValueError(f'Invalid message name longer than {max_name_len}')
+            if len(message_name) == 0:
+                message_name = f'{int(time.time())}'[-max_name_len:]
         data_index = 0
         if codec_sin <= -1:
             codec_sin = data[0]
@@ -543,11 +635,6 @@ class NimoModem:
             data_size -= 1
         if codec_min > 255:
             raise ValueError('Invalid second payload byte MIN must be 0..255')
-        max_name_len = self._mo_msg_name_len_max
-        if message_name and len(message_name) > max_name_len:
-            raise ValueError(f'Invalid message name longer than {max_name_len}')
-        if len(message_name) == 0:
-            message_name = f'{int(time.time())}'[-max_name_len:]
         # Convert to base64 string for serial efficiency
         #   no effect on OTA size, modem always decodes and sends raw bytes OTA
         data_format = DataFormat.BASE64
@@ -559,10 +646,24 @@ class NimoModem:
             codec_sep = ','
         cmd = (f'{cmd}"{message_name}",{priority},{codec_sin}{codec_sep}'
                f'{codec_min},{data_format},{formatted_data}')
+        
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            data_format = DataFormat.BASE64
+            hex_data = base64.b64decode(formatted_data).hex()
+            msg_payload_sin_min += bytes.fromhex(hex_data)
+            data_size = len(msg_payload_sin_min)
+            base64_data = base64.b64encode(msg_payload_sin_min).decode('utf-8')
+            cmd = (f'AT%MOMT={message_name},{priority},{lifetime},{data_size},{data_format},{base64_data}')
+            
         self._at_command_response(cmd)
+        message_name = str(message_name)
         if kwargs.get('return_message', False) is True:
-            return MoMessage(message_name, priority, MessageState.TX_READY,
-                                payload=(msg_payload_sin_min + data))
+            if self._mfr == Manufacturer.ORBCOMM_OGX:
+                return MoMessage(message_name, priority, MessageState.TX_READY,
+                                    payload=(msg_payload_sin_min + data))
+            else:
+                return MoMessage(message_name, priority, MessageState.TX_READY,
+                                    payload=(msg_payload_sin_min + data))
         return message_name
     
     def send_text(self, text: str, **kwargs) -> 'str|MoMessage':
@@ -594,7 +695,7 @@ class NimoModem:
         """Attempts to cancel a previously submitted mobile-originated message.
         
         Args:
-            message_name (str): The mobile-originated message handle to delete.
+            message_name (str): The mobile-originated message handle to cancel.
         
         """
         _log.debug('Attempting to cancel MO message %s', message_name)
@@ -602,6 +703,10 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QSMGC'
         cmd += f'="{message_name}"'
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            # TODO:
+            cmd = 'AT%MOMC'
+            cmd += f'={message_name}'
         self._at_command_response(cmd)
         message_states = self.get_mo_message_states(message_name)
         if len(message_states) > 0:
@@ -612,6 +717,23 @@ class NimoModem:
             return True
         _log.warn('Failed to cancel message %s', message_name)
         return False
+    
+    def delete_mo_message(self, message_name: str) -> bool:
+        """Attempts to delete a completed mobile-originated message.
+        
+        Args:
+            message_name (str): The mobile-originated message handle to delete.
+        
+        """
+        _log.debug('Attempting to delete MO message %s', message_name)
+        cmd = 'AT%MGRD'
+        cmd += f'="{message_name}"'
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%MOMD'
+            cmd += f'={message_name}'
+        response_str = self._at_command_response(cmd)
+        #TODO: Determine if failed or not
+        return True
     
     def get_mo_message_states(self, message_name: str = '') -> 'list[MoMessage]':
         """Get a list of mobile-originated message states in the modem Tx queue.
@@ -628,6 +750,9 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QSMGS'
             prefix = '+QSMGS:'
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%MOQS'
+            prefix = '%MOQS:'
         if message_name and not self._is_simulator:
             # Orbcomm Modem Simulator returns ERROR for %MGRS= command
             cmd += f'="{message_name}"'
@@ -649,8 +774,7 @@ class NimoModem:
         for meta in states_meta:
             message = MoMessage() if is_mo else MtMessage()
             for field_idx, field_data in enumerate(meta.split(',')):
-                self._update_message_state(message, field_idx,
-                                           field_data, is_mo)
+                self._update_message_state(message, field_idx, field_data, is_mo)
             mo_states.append(message)
         return mo_states
     
@@ -664,33 +788,57 @@ class NimoModem:
             _log.debug('Parsing %s message state index %d: %s',
                        'MO' if is_mo else 'MT', field_idx, field_data)
         mfr = self._mfr
-        if field_idx == 0:
-            message_state.name = field_data.replace('"', '')
+        if ((field_idx == 0 and mfr != Manufacturer.ORBCOMM_OGX) or
+            (field_idx == 1 and mfr == Manufacturer.ORBCOMM_OGX)): 
+            message_state.name = str(field_data.replace('"', ''))
             if vlog(VLOG_TAG):
                 _log.debug('Message name: %s', message_state.name)
+        elif field_idx == 0 and mfr == Manufacturer.ORBCOMM_OGX:
+            if vlog(VLOG_TAG):
+                _log.debug('Ignoring type %s', field_data)
         elif field_idx == 1 and mfr == Manufacturer.ORBCOMM:
             if vlog(VLOG_TAG):
                 _log.debug('Ignoring msgNum %s', field_data)
-        elif ((field_idx == 2 and mfr == Manufacturer.ORBCOMM) or
-              (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
-            message_state.priority = MessagePriority(int(field_data))
+        elif field_idx == 2 and mfr == Manufacturer.ORBCOMM_OGX:
             if vlog(VLOG_TAG):
-                _log.debug('Message priority %s', message_state.priority.name)
+                _log.debug('Ignoring timestamp %s', field_data)
+        elif ((field_idx == 2 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 5 and mfr == Manufacturer.ORBCOMM_OGX) or
+              (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+            if(mfr == Manufacturer.ORBCOMM_OGX and not is_mo):
+                message_state.length = int(field_data)
+                if vlog(VLOG_TAG):
+                    _log.debug('Message size: %d bytes', message_state.length)
+            else:
+                message_state.priority = MessagePriority(int(field_data))
+                if vlog(VLOG_TAG):
+                    _log.debug('Message priority %s', message_state.priority.name)
         elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
               (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
             if vlog(VLOG_TAG):
                 _log.debug('Ignoring codec SIN %s', field_data)
         elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM) or
-              (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
+              (field_idx == 3 and mfr == Manufacturer.QUECTEL) or
+              (field_idx == 3 and mfr == Manufacturer.ORBCOMM_OGX)):
             message_state.state = MessageState(int(field_data))
             if vlog(VLOG_TAG):
                 _log.debug('Message state: %s', message_state.state.name)
+        elif ((field_idx == 4 and mfr == Manufacturer.ORBCOMM_OGX)):
+            message_state.closed = MessageClosed(int(field_data))
+            if vlog(VLOG_TAG):
+                _log.debug('Message closed: %s', message_state.closed.name)
+        elif (field_idx == 6 and mfr == Manufacturer.ORBCOMM_OGX):
+            message_state.lifetime = int(field_data)
+            if vlog(VLOG_TAG):
+                _log.debug('Message lifetime: %s', message_state.lifetime)
         elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 7 and mfr == Manufacturer.ORBCOMM_OGX) or
               (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
             message_state.length = int(field_data)
             if vlog(VLOG_TAG):
                 _log.debug('Message size: %d bytes', message_state.length)
         elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+              (field_idx == 8 and mfr == Manufacturer.ORBCOMM_OGX) or
               (field_idx == 5 and mfr == Manufacturer.QUECTEL)):
             message_state.bytes_delivered = int(field_data)
             if vlog(VLOG_TAG):
@@ -714,6 +862,9 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QRMGN' if not message_name else 'AT+QRMGS'
             prefix = '+QRMGN:' if not message_name else '+QRMGS:'
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%MTQS' if not message_name else 'AT%MTQS'
+            prefix = '%MTQS:' if not message_name else '%MTQS:'
         if message_name and not self._is_simulator:
             cmd += f'="{message_name}"'
         response_str = self._at_command_response(cmd, prefix)
@@ -726,10 +877,19 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+GRMGR'
             prefix = '+GRMGR:'
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%MTMG'
+            prefix = '%MTMG:'
         data_format = DataFormat.BASE64
-        cmd += f'="{message_name}",{data_format}'
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd += f'={message_name},{data_format}'
+        else:
+            cmd += f'="{message_name}",{data_format}'
         response = self._at_command_response(cmd, prefix)
         if response:
+            # TODO: Keep or remove?
+            if self._mfr == Manufacturer.ORBCOMM_OGX:
+                self.delete_mt_message(message_name)
             return self._parse_mt_message(response)
         return None
     
@@ -738,6 +898,7 @@ class NimoModem:
         if vlog(VLOG_TAG):
             _log.debug('Parsing MT message from meta: %s', meta)
         data_includes_sin = False
+        data_includes_min = False
         mfr = self._mfr
         message = MtMessage()
         for field_idx, field_data in enumerate(meta.split(',')):
@@ -753,27 +914,40 @@ class NimoModem:
                 if vlog(VLOG_TAG):
                     _log.debug('Message priority %s', message.priority.name)
             elif ((field_idx == 3 and mfr == Manufacturer.ORBCOMM) or
-                  (field_idx == 1 and mfr == Manufacturer.QUECTEL)):
+                  (field_idx == 1 and mfr == Manufacturer.QUECTEL) or
+                  (field_idx == 4 and mfr == Manufacturer.ORBCOMM_OGX and data_format == DataFormat.TEXT)):
                 codec_sin = int(field_data)
                 if not data_includes_sin:
                     message.payload += codec_sin.to_bytes(1, 'big')
+                    data_includes_sin = True
                 if vlog(VLOG_TAG):
                     _log.debug('Added SIN as first payload byte: %d', codec_sin)
+            elif (field_idx == 5 and mfr == Manufacturer.ORBCOMM_OGX and data_format == DataFormat.TEXT):
+                codec_min = int(field_data)
+                if not data_includes_min:
+                    message.payload += codec_min.to_bytes(1, 'big')
+                    data_includes_min = True
+                if vlog(VLOG_TAG):
+                    _log.debug('Added MIN as second payload byte: %d', codec_min)
             elif (field_idx == 4 and mfr == Manufacturer.ORBCOMM):
                 message.state = MessageState(int(field_data))
                 if vlog(VLOG_TAG):
                     _log.debug('Message state %s', message.state.name)
             elif ((field_idx == 5 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 2 and mfr == Manufacturer.ORBCOMM_OGX) or
                   (field_idx == 2 and mfr == Manufacturer.QUECTEL)):
                 message.length = int(field_data)
                 if vlog(VLOG_TAG):
                     _log.debug('Message size: %d bytes', message.length)
             elif ((field_idx == 6 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 3 and mfr == Manufacturer.ORBCOMM_OGX) or
                   (field_idx == 3 and mfr == Manufacturer.QUECTEL)):
                 data_format = DataFormat(int(field_data))
                 if vlog(VLOG_TAG):
                     _log.debug('Data format %s', data_format.name)
             elif ((field_idx == 7 and mfr == Manufacturer.ORBCOMM) or
+                  (field_idx == 4 and mfr == Manufacturer.ORBCOMM_OGX) or
+                  (field_idx == 6 and mfr == Manufacturer.ORBCOMM_OGX) or
                   (field_idx == 4 and mfr == Manufacturer.QUECTEL)):
                 if vlog(VLOG_TAG):
                     _log.debug('Decoding payload from: %s', field_data)
@@ -794,7 +968,13 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QRMGM'
         cmd += f'="{message_name}"'
+        
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = f'AT%MTMD={message_name}'
+            
         self._at_command_response(cmd)
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            return True
         check = self.get_mt_message_states(message_name)
         if check and check[0].state == MessageState.RX_RETRIEVED:
             return True
@@ -935,26 +1115,40 @@ class NimoModem:
         """
         geobeam = None
         modem_location = self.get_location()
-        if (modem_location is not None and
-            self.get_network_status() > NetworkStatus.RX_SEARCHING):
+        if (modem_location is not None and self.get_network_status() > NetworkStatus.RX_SEARCHING):
             # satellite has been found
             cmd = 'ATS90=3 S91=5 S92=1 S102?'
             prefix = ''
             if self._mfr == Manufacturer.QUECTEL:
                 cmd = 'AT+QEVNT=3,5'
                 prefix = '+QEVNT:'
+            if self._mfr == Manufacturer.ORBCOMM_OGX:
+                cmd = 'AT%REGINFO'
+                prefix = '%REGINFO:'
             response = self._at_command_response(cmd, prefix)
-            if self._mfr == Manufacturer.QUECTEL:
+            if self._mfr == Manufacturer.ORBCOMM_OGX:
+                # values = response.split(',')
+                # satellite_id = values[3]
+                # beam_id = values[4]
+                # if satellite_id == 1:
+                #     satellite_id = 0
+                # else:
+                #     satellite_id = satellite_id * 10
+                # response = (satellite_id + beam_id)
+                satellite = get_satellite_location(modem_location, None)
+                response = 16
+            elif self._mfr == Manufacturer.QUECTEL:
                 # workaround documentation error
                 response = response.replace('+QEVENT:', '').strip()
                 response = response.split(',')[9]
             geobeam = GeoBeam(int(response))
+
             return get_satellite_location(modem_location, geobeam)
         return None
     
     def get_event_mask(self) -> int:
         """Get the set of monitored events that trigger event notification."""
-        if self._mfr != Manufacturer.ORBCOMM:
+        if self._mfr != Manufacturer.ORBCOMM and self._mfr != Manufacturer.ORBCOMM_OGX:
             raise ModemError('Operation not supported by this modem')
         cmd = 'ATS88?'
         try:
@@ -964,7 +1158,7 @@ class NimoModem:
     
     def set_event_mask(self, event_mask: int) -> None:
         """Set monitored events that trigger event notification."""
-        if self._mfr != Manufacturer.ORBCOMM:
+        if self._mfr != Manufacturer.ORBCOMM and self._mfr != Manufacturer.ORBCOMM_OGX:
             raise ModemError('Operation not supported by this modem')
         max_bits = 12
         if not isinstance(event_mask, int) or event_mask > 2**max_bits-1:
@@ -974,7 +1168,7 @@ class NimoModem:
     
     def get_events_asserted_mask(self) -> int:
         """Get the set of events that are active following a notification."""
-        if self._mfr != Manufacturer.ORBCOMM:
+        if self._mfr != Manufacturer.ORBCOMM and self._mfr != Manufacturer.ORBCOMM_OGX:
             raise ModemError('Operation not supported by this modem')
         cmd = 'ATS89?'
         try:
@@ -997,7 +1191,7 @@ class NimoModem:
             `ModemError` if unsupported by the modem type.
         
         """
-        if self._mfr != Manufacturer.ORBCOMM:
+        if self._mfr != Manufacturer.ORBCOMM and self._mfr != Manufacturer.ORBCOMM_OGX:
             raise ModemError('Operation not supported by this modem')
         cmd = 'AT%EVMON'
         prefix = '%EVMON:'
@@ -1096,33 +1290,45 @@ class NimoModem:
     
     def get_wakeup_period(self) -> WakeupPeriod:
         """Get the modem's wakeup period configuration."""
-        cmd = 'ATS51?'
-        prefix = ''
         if self._mfr == Manufacturer.QUECTEL:
             cmd = 'AT+QWKUPCFG?'
             prefix = '+QWKUPCFG:'
-        if self._mfr == Manufacturer.QUECTEL:
-            return WakeupPeriod(int(
-                self._at_command_response(cmd, prefix).split(',')[0]))
-        return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+        elif self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%WAKEUP?'
+            prefix = '%WAKEUP:'
+        else:
+            cmd = 'ATS51?'
+            prefix = ''
+        
+        if self._mfr != Manufacturer.ORBCOMM:
+            return WakeupPeriod(int(self._at_command_response(cmd, prefix).split(',')[0]))
+        else:        
+            return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
     
-    def set_wakeup_period(self,
-                          wakeup_period: WakeupPeriod,
-                          wakeup_way: 'WakeupWay|None' = None,
-                          ) -> None:
+    def set_wakeup_period(self, wakeup_period: WakeupPeriod, **kwargs) -> None:
         """Set the modem's wakeup period configuration.
         
-        The configuration does not update until confimed by the network.
+        The configuration does not update until confirmed by the network.
         
         """
         if not WakeupPeriod.is_valid(wakeup_period):
             raise ValueError('Invalid wakeup period')
         cmd = f'ATS51={wakeup_period}'
         if self._mfr == Manufacturer.QUECTEL:
+            wakeup_way = kwargs.get('wakeup_way', None)
             if wakeup_way is None:
                 query = self._at_command_response('AT+QWKUPCFG?', '+QWKUPCFG:')
+                
                 wakeup_way = WakeupWay(int(query.split(',')[1]))
             cmd = f'AT+QWKUPCFG={wakeup_period},{wakeup_way}'
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            # TODO: Properly handle passing in ROS value
+            ros: int = kwargs.get('ros', 2)
+            if ros >= 2:
+                _log.warn('ROS omitted in AT Command')
+                cmd = f'AT%WAKEUP={wakeup_period}'
+            else:
+                cmd = f'AT%WAKEUP={wakeup_period},{ros}'
         self._at_command_response(cmd)
     
     def get_wakeup_way(self) -> WakeupWay:
@@ -1133,6 +1339,28 @@ class NimoModem:
         prefix = '+QWKUPCFG:'
         wakeup_way = self._at_command_response(cmd, prefix).split(',')[1]
         return WakeupWay(int(wakeup_way))
+    
+    def get_receive_on_send(self) -> bool:
+        if self._mfr != Manufacturer.ORBCOMM_OGX:
+            raise ModemError('Operation not supported by this modem')
+        cmd = 'AT%WAKEUP?'
+        prefix = '%WAKEUP:'
+        ros = self._at_command_response(cmd, prefix).split(',')[1]
+        return bool(ros)
+    
+    def get_in_progress(self) -> bool:
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            cmd = 'AT%NETINFO'
+            prefix = '%NETINFO:'
+            response = self._at_command_response(cmd,prefix)
+            try:
+                rx_in_progress = int(response.split(',')[NetworkInfoParametersOGx.RX_IN_PROGRESS])
+                tx_in_progress = int(response.split(',')[NetworkInfoParametersOGx.TX_IN_PROGRESS])
+                return rx_in_progress or tx_in_progress
+            except Exception as exc:
+                _log.warn('Unable to determine if TX or RX in progress: %s', exc)
+                return True
+        return False
     
     def power_down(self) -> None:
         """Prepare the modem for power-down."""
