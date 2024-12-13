@@ -34,6 +34,7 @@ from .constants import (
     GnssMode,
     GnssModeOrbcomm,
     GnssModeQuectel,
+    Manufacturer,
     MessageClosed,
     MessagePriority,
     MessageState,
@@ -63,14 +64,6 @@ from .nimoutils import iso_to_ts, vlog
 VLOG_TAG = 'nimomodem'
 
 _log = logging.getLogger(__name__)
-
-
-class Manufacturer(IntEnum):
-    """Supported NIMO modem implementations."""
-    NONE = 0
-    ORBCOMM = 1
-    QUECTEL = 2
-    ORBCOMM_OGX = 3
 
 @dataclass
 class AcquisitionInfo:
@@ -1299,11 +1292,8 @@ class NimoModem:
         else:
             cmd = 'ATS51?'
             prefix = ''
-        
-        if self._mfr != Manufacturer.ORBCOMM:
-            return WakeupPeriod(int(self._at_command_response(cmd, prefix).split(',')[0]))
-        else:        
-            return WakeupPeriod(int(self._at_command_response(cmd, prefix)))
+        WakeupPeriod.convert(self._mfr)
+        return WakeupPeriod(int(self._at_command_response(cmd, prefix).split(',')[0]))
     
     def set_wakeup_period(self, wakeup_period: WakeupPeriod, **kwargs) -> None:
         """Set the modem's wakeup period configuration.

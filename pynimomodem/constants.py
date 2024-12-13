@@ -14,6 +14,12 @@ MSG_MO_NAME_QMAX_LEN = 12   # Max characters for name in Quectel modems
 BAUDRATES = [1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
 GEOSTATIONARY_DISTANCE_M = 35786000
 
+class Manufacturer(IntEnum):
+    """Supported NIMO modem implementations."""
+    NONE = 0
+    ORBCOMM = 1
+    QUECTEL = 2
+    ORBCOMM_OGX = 3
 
 class NimoIntEnum(IntEnum):
     """IntEnum class wrapper with is_valid method."""
@@ -222,26 +228,62 @@ class WakeupPeriod(NimoIntEnum):
     mobile-terminated messages to be delivered by the network.
     
     """
-    NONE = 0   # 5 seconds
+    SECONDS_5 = 0    # 5 seconds
     SECONDS_30 = 1
     MINUTES_1 = 2
-    MINUTES_3 = 3
-    MINUTES_10 = 4
-    MINUTES_30 = 5
-    MINUTES_60 = 6
-    MINUTES_2 = 7
-    MINUTES_5 = 8
-    MINUTES_15 = 9
-    MINUTES_20 = 10
+    MINUTES_2 = 3
+    MINUTES_3 = 4
+    MINUTES_5 = 5
+    MINUTES_10 = 6
+    MINUTES_15 = 7
+    MINUTES_20 = 8
+    MINUTES_30 = 9
+    MINUTES_60 = 10
+    HOURS_2 = 11
+    HOURS_3 = 12
+    HOURS_6 = 13
+    HOURS_12 = 14
+    HOURS_24 = 15
 
+    """ ----- PREVIOUS IDP Values
+        NONE = 0   # 5 seconds
+        SECONDS_30 = 1
+        MINUTES_1 = 2
+        MINUTES_3 = 3
+        MINUTES_10 = 4
+        MINUTES_30 = 5
+        MINUTES_60 = 6
+        MINUTES_2 = 7
+        MINUTES_5 = 8
+        MINUTES_15 = 9
+        MINUTES_20 = 10
+    """   
+    def convert(manufacturer: Manufacturer):
+        if (manufacturer == Manufacturer.ORBCOMM) or (manufacturer == Manufacturer.QUECTEL):
+            globals()['WakeupPeriod'] = NimoIntEnum('WakeupPeriod',
+                                                    'NONE \
+                                                    SECONDS_30 \
+                                                    MINUTES_1 \
+                                                    MINUTES_3 \
+                                                    MINUTES_10 \
+                                                    MINUTES_30 \
+                                                    MINUTES_60 \
+                                                    MINUTES_2 \
+                                                    MINUTES_5 \
+                                                    MINUTES_15 \
+                                                    MINUTES_20',
+                                                    module=__name__, start=0)
+        
     def seconds(self):
         if self.name == 'NONE':
             return 5
-        value = int(self.name.split('_'))[1]
+        value = int(self.name.split('_')[1])
         if self.name.startswith('MINUTES'):
             return value * 60
+        elif self.name.startswith('HOURS'):
+            return value * 3600
+        
         return value
-
 
 class WakeupWay(NimoIntEnum):
     """Quectel CC200A-LB wakeup methods."""
