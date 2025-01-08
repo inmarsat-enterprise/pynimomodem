@@ -221,6 +221,15 @@ class PowerMode(NimoIntEnum):
         return 1600 * 60
 
 
+class WakeupMode(NimoIntEnum):
+    """The Wakeup Mode setting of the NIMO modem.
+    
+    """
+    ALWAYS_ON = 0
+    WAKEUP = 1
+    RECEIVE_ON_SEND = 2
+    HYBRID = 3
+
 class WakeupPeriod(NimoIntEnum):
     """The Wakeup Period setting of a NIMO modem.
     

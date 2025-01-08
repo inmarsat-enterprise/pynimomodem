@@ -10,6 +10,7 @@ from pynimomodem.constants import (
     AtErrorCode,
     EventNotification,
     PowerMode,
+    WakeupMode,
     WakeupPeriod,
     WakeupWay,
 )

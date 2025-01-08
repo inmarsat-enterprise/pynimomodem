@@ -33,6 +33,7 @@ from .constants import (
     SignalQuality,
     UrcCode,
     UrcControl,
+    WakeupMode,
     WakeupPeriod,
     WakeupWay,
     WorkMode,

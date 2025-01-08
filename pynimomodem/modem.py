@@ -50,6 +50,7 @@ from .constants import (
     UrcCode,
     WakeupPeriod,
     WakeupWay,
+    WakeupMode,
     WorkMode,
 )
 from .location import (
@@ -458,7 +459,7 @@ class NimoModem:
                 parameters = [x for x in response_str.split(',')]
                 if len(parameters) <= 1:
                     raise ValueError(f'No signal quality information returned!')
-                cno = parameters[SignalQualityParameters.MEAN_CNO.value]
+                cno = parameters[SignalQualityParameters.LAST_CNO.value]
                 _log.debug('CNO Value: %s', cno)
             else:
                 cno = self._at_command_response(cmd, prefix)
@@ -546,7 +547,11 @@ class NimoModem:
                 beam_state = BeamState(results[2])
                 rssi = self.get_rssi()
                 reginfo = self._at_command_response('AT%REGINFO', '%REGINFO:')
-                vcid = int([x for x in reginfo.split(',')][5])
+                reginfo_results = reginfo.split(',')
+                if int(reginfo_results[0]) == 2:
+                    vcid = int(reginfo_results[5])
+                else:
+                    vcid = 0
         except Exception as exc:
             _log.warn('Unable to retrieve AcquisitionInfo: %s', exc) 
             return AcquisitionInfo()
@@ -1120,16 +1125,7 @@ class NimoModem:
                 prefix = '%REGINFO:'
             response = self._at_command_response(cmd, prefix)
             if self._mfr == Manufacturer.ORBCOMM_OGX:
-                # values = response.split(',')
-                # satellite_id = values[3]
-                # beam_id = values[4]
-                # if satellite_id == 1:
-                #     satellite_id = 0
-                # else:
-                #     satellite_id = satellite_id * 10
-                # response = (satellite_id + beam_id)
-                satellite = get_satellite_location(modem_location, None)
-                response = 16
+                response = response.split(',')[4]
             elif self._mfr == Manufacturer.QUECTEL:
                 # workaround documentation error
                 response = response.replace('+QEVENT:', '').strip()
@@ -1280,6 +1276,22 @@ class NimoModem:
         if self._mfr == Manufacturer.QUECTEL:
             cmd = f'AT+QPMD={power_mode}'
         self._at_command_response(cmd)
+    
+    def get_wakeup_mode(self) -> WakeupMode:
+        """Get the modem's wakeup mode configuration."""
+        cmd = 'ATS51?'
+        prefix = ''
+        if self._mfr == Manufacturer.ORBCOMM_OGX:
+            reginfo = self._at_command_response('AT%REGINFO', '%REGINFO:')
+            reginfo_results = reginfo.split(',')
+            response = reginfo_results[12] # Mode
+        else:
+            wakeup_interval = self._at_command_response(cmd, prefix)
+            if(int(wakeup_interval)>0):
+                response = WakeupMode.WAKEUP
+            else:
+                response = WakeupMode.ALWAYS_ON
+        return WakeupMode(int(response))   
     
     def get_wakeup_period(self) -> WakeupPeriod:
         """Get the modem's wakeup period configuration."""
