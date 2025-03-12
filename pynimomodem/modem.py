@@ -381,7 +381,7 @@ class NimoModem:
     def get_firmware_version(self) -> str:
         """Get the modem's firmware version."""
         # TODO: Firmware structure with hardware, firmware, software?
-        return self._at_command_response('AT+GMR', '+GMR:')
+        return self._at_command_response('ATI3', '')
     
     def get_system_time(self) -> int:
         """Get the system/GNSS time from the modem."""
